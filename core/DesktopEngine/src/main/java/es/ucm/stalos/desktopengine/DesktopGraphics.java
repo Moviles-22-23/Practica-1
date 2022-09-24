@@ -1,17 +1,44 @@
 package es.ucm.stalos.desktopengine;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferStrategy;
 
 import es.ucm.stalos.engine.AbstractGraphics;
+import es.ucm.stalos.engine.Engine;
 import es.ucm.stalos.engine.Font;
 import es.ucm.stalos.engine.Image;
 
 public class DesktopGraphics extends AbstractGraphics {
 
-    public DesktopGraphics(String winTitle, int w, int h) {
+    public DesktopGraphics(String title, Engine engine, int w, int h) {
         super(w, h);
+        _mainEngine = engine;
+        _title = title;
     }
 
+    public boolean init() {
+        // Creación de la ventana
+        _screen = new DesktopScreen(_title);
+        _screen.addMouseListener((DesktopInput) _mainEngine.getInput());
+        _screen.addMouseMotionListener((DesktopInput) _mainEngine.getInput());
+
+        return _screen.init((int) _logWidth, (int) _logHeight);
+    }
+
+    public DesktopScreen getScreen() {
+        return _screen;
+    }
+
+    public BufferStrategy getStrategy() {
+        return _screen.getStrategy();
+    }
+
+    public java.awt.Graphics getJavaGraphics() {
+        return _graphics;
+    }
+
+    //---------------------------------------//
     @Override
     public Image newImage(String name) {
         DesktopImage img = new DesktopImage(name);
@@ -74,13 +101,47 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public int getWidth() {
+//        return _screen.getWidth();
         return 0;
     }
 
     @Override
     public int getHeight() {
+//        return _screen.getHeight();
         return 0;
     }
 
+    @Override
+    public void updateGraphics() {
+        while (getStrategy() == null) {
+            System.out.println("NULL");
+        }
+        _graphics = getStrategy().getDrawGraphics();
+    }
+
+    @Override
+    public void translate(int x, int y) {
+        ((Graphics2D) _graphics).translate(x, y);
+    }
+
+    @Override
+    public void scale(float x, float y) {
+        ((Graphics2D) _graphics).scale(x, y);
+    }
+
+    @Override
+    public void save() {
+
+    }
+
+    @Override
+    public void restore() {
+        _graphics.dispose();
+    }
+
+    // VARIABLES
+    private final Engine _mainEngine;
+    private final String _title;
+    private DesktopScreen _screen;
     private java.awt.Graphics _graphics;
 }

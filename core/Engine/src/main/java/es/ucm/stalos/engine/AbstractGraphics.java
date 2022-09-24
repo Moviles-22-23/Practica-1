@@ -31,12 +31,10 @@ public abstract class AbstractGraphics implements Graphics {
     protected int[] finalPosition(float x, float y) {
         _scale = scale();
 
-        int[] finalPos = new int[2];
-
-        finalPos[0] = (int) (x * _scale);
-        finalPos[1] = (int) (y * _scale);
-
-        return finalPos;
+        return new int[] {
+                (int) (x * _scale),
+                (int) (y * _scale)
+        };
     }
 
     /**
@@ -49,12 +47,10 @@ public abstract class AbstractGraphics implements Graphics {
     protected int[] finalSize(float w, float h) {
         _scale = scale();
 
-        int[] finalSize = new int[2];
-
-        finalSize[0] = (int) (w * _scale);
-        finalSize[1] = (int) (h * _scale);
-
-        return finalSize;
+        return new int[]{
+                (int) (w * _scale),
+                (int) (h * _scale)
+        };
     }
 
     /**
@@ -67,6 +63,12 @@ public abstract class AbstractGraphics implements Graphics {
         _scale = scale();
         return (int) (size * _scale);
     }
+
+    @Override
+    public void prepareFrame() {
+
+    }
+
 
     // Logic position
     protected float _logPosX, _logPosY;

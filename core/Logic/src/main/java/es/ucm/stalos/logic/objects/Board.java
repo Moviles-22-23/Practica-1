@@ -1,4 +1,4 @@
-package es.ucm.stalos.logic;
+package es.ucm.stalos.logic.objects;
 
 // Borrar luego
 //     1   1
@@ -8,6 +8,8 @@ package es.ucm.stalos.logic;
 // 1 1 - X - X -
 //   1 - X - - -
 //   3 X X X - -
+
+import es.ucm.stalos.logic.enums.CellType;
 
 public class Board {
     // Numero de filas y columnas del tablero

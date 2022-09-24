@@ -1,4 +1,4 @@
-package es.ucm.stalos.logic;
+package es.ucm.stalos.logic.enums;
 
 public enum CellType {
     GREY(0),

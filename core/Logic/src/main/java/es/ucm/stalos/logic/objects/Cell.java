@@ -1,4 +1,6 @@
-package es.ucm.stalos.logic;
+package es.ucm.stalos.logic.objects;
+
+import es.ucm.stalos.logic.enums.CellType;
 
 public class Cell {
     Cell() { this.cellType = CellType.GREY; }

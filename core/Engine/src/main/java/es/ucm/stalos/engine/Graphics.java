@@ -73,6 +73,21 @@ public interface Graphics {
     int getHeight();
 
     // TODO
-    // For canvas (translata(x,y), scale(x,y). save(), restore())
+    /**
+     * Updates the buffer
+     * */
+    void updateGraphics();
 
+    /**
+     * Prepare the next frame
+     */
+    void prepareFrame();
+
+    void translate(int x, int y);
+
+    void scale(float x, float y);
+
+    void save();
+
+    void restore();
 }
