@@ -10,7 +10,7 @@ public class LoadState implements State {
 
     @Override
     public boolean init() {
-        return false;
+        return true;
     }
 
     @Override

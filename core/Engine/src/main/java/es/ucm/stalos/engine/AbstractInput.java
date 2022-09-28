@@ -11,7 +11,7 @@ public class AbstractInput implements Input {
 
     @Override
     public List<TouchEvent> getTouchEvents() {
-        return null;
+        return _events;
     }
 
     protected Engine _engine;
