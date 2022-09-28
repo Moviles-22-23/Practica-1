@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(_surface);
 
         _engine = new AndroidEngine();
+
+        //if(!_engine.init(loadAssets, 400, 600));
     }
 
     @Override

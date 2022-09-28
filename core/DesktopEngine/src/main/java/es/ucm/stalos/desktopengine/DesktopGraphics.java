@@ -101,14 +101,14 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public int getWidth() {
-//        return _screen.getWidth();
-        return 0;
+        return _screen.getWidth();
+        //return 0;
     }
 
     @Override
     public int getHeight() {
-//        return _screen.getHeight();
-        return 0;
+        return _screen.getHeight();
+        //return 0;
     }
 
     @Override
