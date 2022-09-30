@@ -41,7 +41,7 @@ public class DesktopGraphics extends AbstractGraphics {
     //---------------------------------------//
     @Override
     public Image newImage(String name) {
-        DesktopImage img = new DesktopImage(name);
+        DesktopImage img = new DesktopImage("./assets/" + name);
         if (img.init()) return img;
         return null;
     }
@@ -59,7 +59,10 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public void drawImage(Image image, int[] pos, float[] size) {
-
+//        int[] newPos = realPos(x, y);
+//        int[] newSize = realSize(w, h);
+        _graphics.drawImage(((DesktopImage) image).getImage(), pos[0], pos[1],
+                (int)size[0], (int)size[1], null);
     }
 
     @Override

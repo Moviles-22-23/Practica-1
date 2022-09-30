@@ -66,9 +66,18 @@ public abstract class AbstractGraphics implements Graphics {
 
     @Override
     public void prepareFrame() {
-
+        //TODO
     }
 
+    @Override
+    public int getLogWidth() {
+        return (int) _logWidth;
+    }
+
+    @Override
+    public int getLogHeight() {
+        return (int) _logHeight;
+    }
 
     // Logic position
     protected float _logPosX, _logPosY;

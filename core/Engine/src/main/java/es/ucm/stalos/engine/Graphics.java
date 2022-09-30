@@ -71,6 +71,14 @@ public interface Graphics {
      * @return window height
      */
     int getHeight();
+    /**
+     * Devuelve el ancho de la ventana lógica
+     * */
+    int getLogWidth();
+    /**
+     * Devuelve el alto de la ventana lógica
+     * */
+    int getLogHeight();
 
     // TODO
     /**
