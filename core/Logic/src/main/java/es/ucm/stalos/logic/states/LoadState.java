@@ -24,21 +24,22 @@ public class LoadState implements State {
             Assets.cellHelp2 = graphics.newImage("cellHelp2.png");
             Assets.cellHelp3 = graphics.newImage("cellHelp3.png");
 
+            //Fonts
+            Assets.jose = graphics.newFont("JosefinSans-Bold.ttf", 42, true);
+            Assets.molle = graphics.newFont("Molle-Regular.ttf", 50, true);
 
+            // Start MainMenu
+            State mainMenu = new MainMenuState(_engine);
+            _engine.reqNewState(mainMenu);
 
-            //Fuentes
-//            Assets.jose = graphics.newFont("JosefinSans-Bold.ttf", 1, true);
-
-            // Estado MainMenu
-//            State mainMenu = new MainMenuState(_engine);
-//            _engine.reqNewState(mainMenu);
-
-            // Levels
-            Assets.testLevel = "testLevel.txt";
-
-            // Estado GameState
-            State playState = new GameState(_engine, 5, 5);
-            _engine.reqNewState(playState);
+//TODO: Borrar esto
+//---------------------------TESTEO-----------------------------------//
+//            // Levels
+//            Assets.testLevel = "testLevel.txt";
+//
+//            // Estado GameState
+//            State playState = new GameState(_engine, 5, 5);
+//            _engine.reqNewState(playState);
         }
         catch (Exception e) {
             System.err.println(e);

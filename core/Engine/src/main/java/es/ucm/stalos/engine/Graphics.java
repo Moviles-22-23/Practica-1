@@ -16,14 +16,21 @@ public interface Graphics {
      * @param isBold true for bold letters
      * @return
      */
-    Font newFont(String filename, int size, boolean isBold);
+    Font newFont(String filename, int size, boolean isBold) throws Exception;
 
+//-----------------------------------------------------------------//
     /**
      * Clear the screen with a specified color
      * @param color color to fill screen
      */
     void clear(int color);
 
+    /**
+     * Set color to use in next drawn operations
+     * @param color color to use
+     */
+    void setColor(int color);
+//-----------------------------------------------------------------//
     /**
      * Show an image in the screen
      * @param image Image to show
@@ -33,10 +40,21 @@ public interface Graphics {
     void drawImage(Image image, int[] pos, float[]size);
 
     /**
-     * Set color to use in next drawn operations
-     * @param color color to use
+     * Draw a text from Upper-Left position
      */
-    void setColor(int color);
+    void drawText(String text, int[] pos, Font font);
+
+    /**
+     * Draw an empty square
+     * @param pos Position to draw
+     * @param side Side Length
+     */
+    void drawRect(int[] pos, float side);
+
+    /**
+     * Draw a line
+     */
+    void drawLine(int[] start, int[] end);
 
     /**
      * Draw a filled square
@@ -45,23 +63,7 @@ public interface Graphics {
      */
     void fillSquare(int[] pos, float side);
 
-    /**
-     * Draw an empty square
-     * @param pos Position to draw
-     * @param side Side Length
-     */
-    void drawSquare(int[] pos, float side);
-
-    /**
-     * Draw a line
-     */
-    void drawLine(int[] start, int[] end);
-
-    /**
-     * Draw a text from Upper-Left position
-     */
-    void drawText(String text, int[] pos);
-
+//----------------------------------------------------------------//
     /**
      * @return window width
      */
@@ -80,6 +82,7 @@ public interface Graphics {
      * */
     int getLogHeight();
 
+//----------------------------------------------------------------//
     // TODO
     /**
      * Updates the buffer

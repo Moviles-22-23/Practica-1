@@ -38,7 +38,8 @@ public class DesktopGraphics extends AbstractGraphics {
         return _graphics;
     }
 
-    //---------------------------------------//
+//-----------------------------------------------------------------//
+
     @Override
     public Image newImage(String name) {
         DesktopImage img = new DesktopImage("./assets/" + name);
@@ -47,22 +48,19 @@ public class DesktopGraphics extends AbstractGraphics {
     }
 
     @Override
-    public Font newFont(String filename, int size, boolean isBold) {
-        return null;
+    public Font newFont(String filename, int size, boolean isBold) throws Exception {
+        DesktopFont newFont = new DesktopFont("./assets/" + filename, size, isBold);
+        if (!newFont.init())
+            throw new Exception();
+        return newFont;
     }
 
+//-----------------------------------------------------------------//
     @Override
     public void clear(int color) {
+        _graphics = getStrategy().getDrawGraphics();
         setColor(color);
         _graphics.fillRect(0, 0, getWidth(), getHeight());
-    }
-
-    @Override
-    public void drawImage(Image image, int[] pos, float[] size) {
-//        int[] newPos = realPos(x, y);
-//        int[] newSize = realSize(w, h);
-        _graphics.drawImage(((DesktopImage) image).getImage(), pos[0], pos[1],
-                (int)size[0], (int)size[1], null);
     }
 
     @Override
@@ -75,6 +73,41 @@ public class DesktopGraphics extends AbstractGraphics {
         Color c = new Color(r, g, b, a);
         _graphics.setColor(c);
     }
+//-----------------------------------------------------------------//
+
+    @Override
+    public void drawImage(Image image, int[] pos, float[] size) {
+        int[] newPos = finalPosition(pos[0], pos[1]);
+        int[] newSize = finalSize(size[0], size[1]);
+        _graphics.drawImage(((DesktopImage) image).getImage(), newPos[0], newPos[1],
+                newSize[0], newSize[1], null);
+    }
+
+    @Override
+    public void drawRect(int[] pos, float side) {
+        int[] finalPos = finalPosition(pos[0], pos[1]);
+        int finalSize = finalSize(side);
+        _graphics.drawRect(finalPos[0], finalPos[1], finalSize, finalSize);
+    }
+
+    @Override
+    public void drawLine(int[] start, int[] end) {
+        int[] newPos = finalPosition(start[0], start[1]);
+        int[] newSize = finalSize(end[0], end[1]);
+        _graphics.drawLine(newPos[0], newPos[1], newSize[0], newSize[1]);
+    }
+
+    @Override
+    public void drawText(String text, int[] pos, Font font) {
+        java.awt.Font javaFont = ((DesktopFont)font).getJavaFont();
+        float tam = finalSize(font.getSize());
+        javaFont = javaFont.deriveFont(tam);
+        _graphics.setFont(javaFont);
+        int[] newPos = finalPosition(pos[0], pos[1]);
+        _graphics.drawString(text, newPos[0], newPos[1]);
+    }
+
+//-----------------------------------------------------------------//
 
     @Override
     public void fillSquare(int[] pos, float side) {
@@ -83,36 +116,19 @@ public class DesktopGraphics extends AbstractGraphics {
         _graphics.fillRect(finalPos[0], finalPos[1], finalSize, finalSize);
     }
 
-    @Override
-    public void drawSquare(int[] pos, float side) {
-        int[] finalPos = finalPosition(pos[0], pos[1]);
-        int finalSize = finalSize(side);
-        _graphics.drawRect(finalPos[0], finalPos[1], finalSize, finalSize);
-    }
-
-    @Override
-    public void drawLine(int[] start, int[] end) {
-        int[] finalStart = finalPosition(start[0], start[1]);
-        int[] finalEnd = finalPosition(end[0], end[1]);
-        _graphics.drawLine(finalStart[0], finalStart[1], finalEnd[0], finalEnd[1]);
-    }
-
-    @Override
-    public void drawText(String text, int[] pos) {
-
-    }
+//-----------------------------------------------------------------//
 
     @Override
     public int getWidth() {
         return _screen.getWidth();
-        //return 0;
     }
 
     @Override
     public int getHeight() {
         return _screen.getHeight();
-        //return 0;
     }
+
+//-----------------------------------------------------------------//
 
     @Override
     public void updateGraphics() {

@@ -72,13 +72,6 @@ public class GameState implements State {
     }
 
     public void renderButtons(){
-        // Attributes
-        int color = 0X313131FF;
-        int tamF = 100;
-        // Font font = Assets.molle;
-
-        _graphics.setColor(color);
-
         // Give Up Button
         _graphics.drawImage(_giveUpButtonImage, _posGiveUpButton, _sizeGiveUpButton);
         // Check Button
@@ -109,11 +102,11 @@ public class GameState implements State {
 
     // Give Up Button attributes
     Image _giveUpButtonImage;
-    int _posGiveUpButton[] = new int[2];
-    float _sizeGiveUpButton[] = new float[2];
+    int[] _posGiveUpButton = new int[2];
+    float[] _sizeGiveUpButton = new float[2];
 
     // Give Up Button attributes
     Image _checkButtonImage;
-    int _posCheckButton[] = new int[2];
-    float _sizeCheckButton[] = new float[2];
+    int[] _posCheckButton = new int[2];
+    float[] _sizeCheckButton = new float[2];
 }

@@ -30,12 +30,17 @@ public class DesktopFont implements Font {
         _javaFont = _javaFont.deriveFont(newSize);
     }
 
+    @Override
+    public float getSize() {
+        return _size;
+    }
+
     public java.awt.Font getJavaFont() {
         return _javaFont;
     }
 
-    java.awt.Font _javaFont;
-    String _fileName;
-    float _size;
-    boolean _isBold;
+    private java.awt.Font _javaFont;
+    private String _fileName;
+    private float _size;
+    private boolean _isBold;
 }

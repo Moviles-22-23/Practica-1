@@ -13,6 +13,7 @@ public class DesktopScreen extends JFrame {
         setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+        setLocationRelativeTo(null);
         // Renderizado activo
         setIgnoreRepaint(true);
 

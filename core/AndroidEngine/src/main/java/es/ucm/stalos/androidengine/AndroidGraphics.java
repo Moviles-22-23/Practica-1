@@ -54,7 +54,7 @@ public class AndroidGraphics extends AbstractGraphics {
     }
 
     @Override
-    public void drawSquare(int[] pos, float side) {
+    public void drawRect(int[] pos, float side) {
         int[] finalPos = finalPosition(pos[0], pos[1]);
         int finalSize = finalSize(side);
 
@@ -70,7 +70,7 @@ public class AndroidGraphics extends AbstractGraphics {
     }
 
     @Override
-    public void drawText(String text, int[] pos) {
+    public void drawText(String text, int[] pos, Font font) {
 
     }
 

@@ -26,16 +26,17 @@ public class AbstractInput implements Input {
      * @param x Posición X física donde se recibió el input
      * @param y Posición Y física donde se recibió el input
      */
-//    protected void onTouchDownEvent(int x, int y) {
-//        AbstractGraphics g = (AbstractGraphics) _engine.getGraphics();
-//
-//        TouchEvent currEvent = TouchEvent.touchDown;
-//        int[] eventPos = g.logPos(x, y);
-//        currEvent.setX(eventPos[0]);
-//        currEvent.setY(eventPos[1]);
-//
-//        events.add(currEvent);
-//    }
+    protected void onTouchDownEvent(int x, int y) {
+        AbstractGraphics g = (AbstractGraphics) _engine.getGraphics();
+
+        TouchEvent currEvent = TouchEvent.touchDown;
+        // TODO: escalado
+        //int[] eventPos = g.logPos(x, y);
+        currEvent.setX(x);
+        currEvent.setY(y);
+
+        _events.add(currEvent);
+    }
 
     protected Engine _engine;
     protected List<TouchEvent> _events;

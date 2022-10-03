@@ -168,7 +168,7 @@ public class Board {
                 // Range of hints rows
                 else if(i >= _hintCols.length && j < _hintRows[0].length){
                     graphics.drawImage(Assets.cellHelp, pos, size);
-                    graphics.drawText("1", pos);
+                    graphics.drawText("1", pos, Assets.jose);
                 }
                 // Range of hints cols
                 else if(i < _hintCols.length && j >= _hintRows[0].length){

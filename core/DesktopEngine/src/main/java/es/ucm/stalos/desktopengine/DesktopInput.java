@@ -9,8 +9,7 @@ import es.ucm.stalos.engine.AbstractInput;
 import es.ucm.stalos.engine.Engine;
 
 public class DesktopInput extends AbstractInput implements MouseListener, MouseMotionListener {
-    public DesktopInput(Engine e)
-    {
+    public DesktopInput(Engine e) {
         super(e);
         _events = new ArrayList<>();
     }
@@ -29,8 +28,8 @@ public class DesktopInput extends AbstractInput implements MouseListener, MouseM
     }
 
     @Override
-    public void mousePressed(MouseEvent mouseEvent) {
-
+    public void mousePressed(MouseEvent e) {
+        onTouchDownEvent(e.getX(), e.getY());
     }
 
     @Override
