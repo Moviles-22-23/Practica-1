@@ -1,5 +1,7 @@
 package es.ucm.stalos.engine;
 
+import java.awt.FontMetrics;
+
 public interface Graphics {
 
     /**
@@ -43,6 +45,15 @@ public interface Graphics {
      * Draw a text from Upper-Left position
      */
     void drawText(String text, int[] pos, Font font);
+
+    /**
+     * Draw a String centered in the middle of a Rectangle.
+     *
+     * @param text The String to draw.
+     * @param pos The Up-Left corner
+     * @param size The Down-Righ corner
+     */
+    public void drawCenteredString(String text, int[] pos, float[] size, Font font);
 
     /**
      * Draw an empty square

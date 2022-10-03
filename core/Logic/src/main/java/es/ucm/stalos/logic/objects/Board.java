@@ -55,13 +55,22 @@ public class Board {
     private void readSolution(){
 //        File f = new File("./assets/testLevel.txt");
 //        FileReader fr = new FileReader(f);
+//         1   1
+//         1 2 1   1
+//         1 2 1 2 1
+//        __________
+//     5 | X X X X X
+//   1 1 | - X - X -
+// 1 1 1 | X - X - X
+//     1 | - X - - -
+//     3 | X X X - -
         // Estas lineas hay que obtenerlas leyendo un .txt pero ahora mismo me da error
-        String[] a = {"00000", "01110", "01010", "01110", "10101"};
+        String[] a = {"11111", "01010", "10101", "01000", "11100"};
 
         String line;
-        for(int i = 1; i < _rows; i++){
+        for(int i = 0; i < _rows; i++){
             line = a[i];
-            for(int j = 1; j < _cols; j++){
+            for(int j = 0; j < _cols; j++){
                 if(a[i].charAt(j) == '0') _sol[i][j] = false;
                 else _sol[i][j] = true;
             }
@@ -80,6 +89,7 @@ public class Board {
     private void loadHintsRows(){
         int cont, auxJ;
 
+        System.out.println(_sol.length + " " + (_sol[0].length - 1));
         // Cada fila de las pistas (Up to Down)
         for(int i = 0; i < _sol.length; i++){
             // Reset cont and auxJ
@@ -88,6 +98,7 @@ public class Board {
 
             // Columns (Right to Left)
             for(int j = _sol[0].length - 1; j >= 0; j--){
+                System.out.println("Find a :" + _sol[i][j] +" in i: " + i + ", j:" + j);
                 // Plus one to counter
                 if(_sol[i][j]){
                     cont++;
@@ -149,18 +160,22 @@ public class Board {
 
     public void render(Graphics graphics){
 //        System.out.println("RenderBoard with rows:" + (_boardState.length + _hintRows[0].length) + " cols:" + (_boardState[0].length + _hintCols.length));
+        // Number Colors
+        graphics.setColor(0x000000FF);
 
         // TOTAL ROWS
         for(int i = 0; i < (_boardState.length + _hintCols.length); i++){
             // TOTAL COLS
             for(int j = 0; j < (_boardState[0].length + _hintRows[0].length); j++){
                 int[] pos = new int[2];
-                pos[0] = _pos[0] + (int) (i * _cellSize);
-                pos[1] = _pos[1] + (int) (j * _cellSize);
+                // Carefull, position x is horizontall that corresponse with the j
+                pos[0] = _pos[0] + (int) (j * _cellSize);
+                pos[1] = _pos[1] + (int) (i * _cellSize);
                 float[] size = new float[2];
                 size[0] = _cellSize;
                 size[1] = _cellSize;
 
+                String numText;
                 // Range of empty space (BORRAR)
                 if(i < _hintCols.length && j < _hintRows[0].length){
                     // Empty
@@ -168,11 +183,17 @@ public class Board {
                 // Range of hints rows
                 else if(i >= _hintCols.length && j < _hintRows[0].length){
                     graphics.drawImage(Assets.cellHelp, pos, size);
-                    graphics.drawText("1", pos, Assets.jose);
+                    numText = Integer.toString(_hintRows[i - _hintCols.length][j]);
+//                    graphics.drawText(numText, pos, Assets.jose);
+                    graphics.drawCenteredString(numText, pos, size, Assets.jose);
                 }
                 // Range of hints cols
                 else if(i < _hintCols.length && j >= _hintRows[0].length){
                     graphics.drawImage(Assets.cellHelp2, pos, size);
+                    numText = Integer.toString(_hintCols[i][j - _hintRows[0].length]);
+//                    graphics.drawText(numText, pos, Assets.jose);
+                    graphics.drawCenteredString(numText, pos, size, Assets.jose);
+
                 }
                 // Range of board
                 else {
