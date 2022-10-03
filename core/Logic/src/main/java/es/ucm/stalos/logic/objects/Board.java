@@ -11,6 +11,13 @@ package es.ucm.stalos.logic.objects;
 //     1 | - X - - -
 //     3 | X X X - -
 
+import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.Scanner;
+
 import es.ucm.stalos.engine.Graphics;
 import es.ucm.stalos.logic.Assets;
 import es.ucm.stalos.logic.enums.CellType;
@@ -41,10 +48,107 @@ public class Board {
         _cellSize = Math.min(maxRowsSize,maxColsSize);
         System.out.println("CellSize: " + _cellSize);
 
+        readSolution();
+        loadLevel();
+    }
+
+    private void readSolution(){
+//        File f = new File("./assets/testLevel.txt");
+//        FileReader fr = new FileReader(f);
+        // Estas lineas hay que obtenerlas leyendo un .txt pero ahora mismo me da error
+        String[] a = {"00000", "01110", "01010", "01110", "10101"};
+
+        String line;
+        for(int i = 1; i < _rows; i++){
+            line = a[i];
+            for(int j = 1; j < _cols; j++){
+                if(a[i].charAt(j) == '0') _sol[i][j] = false;
+                else _sol[i][j] = true;
+            }
+        }
+    }
+
+    private void loadLevel(){
+        loadHintsRows();
+        loadHintsCols();
+    }
+
+    /**
+     * Is important to read right to left the row to fill hintsRows
+     * - 2 1 | 1 1 0 1 0
+     */
+    private void loadHintsRows(){
+        int cont, auxJ;
+
+        // Cada fila de las pistas (Up to Down)
+        for(int i = 0; i < _sol.length; i++){
+            // Reset cont and auxJ
+            cont = 0;
+            auxJ = _hintRows[0].length - 1;
+
+            // Columns (Right to Left)
+            for(int j = _sol[0].length - 1; j >= 0; j--){
+                // Plus one to counter
+                if(_sol[i][j]){
+                    cont++;
+                }
+                // Save the counter number as a hint
+                else if(cont > 0) {
+                    _hintRows[i][auxJ] = cont;
+                    cont = 0;
+                    auxJ--;
+                }
+            }
+            if(cont > 0) _hintRows[i][auxJ] = cont;
+        }
+        // Borrar es la prueba
+        String line = "";
+        for(int i = 0; i < _hintRows.length; i++){
+            line = "";
+            for(int j = 0; j < _hintRows[0].length; j++){
+                line += _hintRows[i][j];
+            }
+            System.out.println(line);
+        }
+    }
+
+    private void loadHintsCols(){
+        int cont, auxI;
+
+        // Cada columna de las pistas (Left to Right)
+        for(int j = 0; j < _sol[0].length; j++){
+            // Reset cont and auxJ
+            cont = 0;
+            auxI = _hintCols.length - 1;
+
+            // Filas (Down to Up)
+            for(int i = _sol.length - 1; i >= 0; i--){
+                // Plus one to counter
+                if(_sol[i][j]){
+                    cont++;
+                }
+                // Save the counter number as a hint
+                else if(cont > 0) {
+                    _hintCols[auxI][j] = cont;
+                    cont = 0;
+                    auxI--;
+                }
+            }
+            if(cont > 0) _hintCols[auxI][j] = cont;
+        }
+        // Borrar es la prueba
+        String line = "";
+        for(int i = 0; i < _hintCols.length; i++){
+            line = "";
+            for(int j = 0; j < _hintCols[0].length; j++){
+                line += _hintCols[i][j];
+            }
+            System.out.println(line);
+        }
     }
 
     public void render(Graphics graphics){
-        System.out.println("RenderBoard with rows:" + (_boardState.length + _hintRows[0].length) + " cols:" + (_boardState[0].length + _hintCols.length));
+//        System.out.println("RenderBoard with rows:" + (_boardState.length + _hintRows[0].length) + " cols:" + (_boardState[0].length + _hintCols.length));
 
         // TOTAL ROWS
         for(int i = 0; i < (_boardState.length + _hintCols.length); i++){
@@ -61,9 +165,10 @@ public class Board {
                 if(i < _hintCols.length && j < _hintRows[0].length){
                     // Empty
                 }
-                // Range of hints cols
+                // Range of hints rows
                 else if(i >= _hintCols.length && j < _hintRows[0].length){
                     graphics.drawImage(Assets.cellHelp, pos, size);
+                    graphics.drawText("1", pos);
                 }
                 // Range of hints cols
                 else if(i < _hintCols.length && j >= _hintRows[0].length){

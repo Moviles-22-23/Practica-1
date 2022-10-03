@@ -17,4 +17,7 @@ public class Assets {
 //    public static Font jose;
 
     // Audio -- no hay
+
+    // Levels
+    public static String testLevel;
 }

@@ -33,8 +33,11 @@ public class LoadState implements State {
 //            State mainMenu = new MainMenuState(_engine);
 //            _engine.reqNewState(mainMenu);
 
+            // Levels
+            Assets.testLevel = "testLevel.txt";
+
             // Estado GameState
-            State playState = new GameState(_engine, 9, 5);
+            State playState = new GameState(_engine, 5, 5);
             _engine.reqNewState(playState);
         }
         catch (Exception e) {
