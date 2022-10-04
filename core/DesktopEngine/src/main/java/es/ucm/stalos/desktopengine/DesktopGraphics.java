@@ -109,14 +109,6 @@ public class DesktopGraphics extends AbstractGraphics {
         _graphics.drawString(text, newPos[0], newPos[1]);
     }
 
-
-    /**
-     * Draw a String centered in the middle of a Rectangle.
-     *
-     * @param text The String to draw.
-     * @param pos The Up-Left corner
-     * @param size The Down-Righ corner
-     */
     @Override
     public void drawCenteredString(String text, int[] pos, float[] size, Font font) {
         java.awt.Font javaFont = ((DesktopFont)font).getJavaFont();
@@ -132,6 +124,7 @@ public class DesktopGraphics extends AbstractGraphics {
         _graphics.setFont(javaFont);
         // Draw the String
         int[] newPos = finalPosition(x,y);
+
         _graphics.drawString(text, newPos[0], newPos[1]);
     }
 //-----------------------------------------------------------------//

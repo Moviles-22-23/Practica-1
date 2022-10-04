@@ -42,7 +42,7 @@ public interface Graphics {
     void drawImage(Image image, int[] pos, float[]size);
 
     /**
-     * Draw a text from Upper-Left position
+     * Draw a text from Down-Left position
      */
     void drawText(String text, int[] pos, Font font);
 
@@ -51,7 +51,8 @@ public interface Graphics {
      *
      * @param text The String to draw.
      * @param pos The Up-Left corner
-     * @param size The Down-Righ corner
+     * @param size The Down-Right corner
+     * @param font
      */
     public void drawCenteredString(String text, int[] pos, float[] size, Font font);
 
