@@ -62,6 +62,7 @@ public class DesktopGraphics extends AbstractGraphics {
         _graphics = getStrategy().getDrawGraphics();
         setColor(color);
         _graphics.fillRect(0, 0, getWidth(), getHeight());
+        _graphics.setPaintMode();
     }
 
     @Override
@@ -82,6 +83,7 @@ public class DesktopGraphics extends AbstractGraphics {
         int[] newSize = finalSize(size[0], size[1]);
         _graphics.drawImage(((DesktopImage) image).getImage(), newPos[0], newPos[1],
                 newSize[0], newSize[1], null);
+        _graphics.setPaintMode();
     }
 
     @Override
@@ -89,6 +91,7 @@ public class DesktopGraphics extends AbstractGraphics {
         int[] finalPos = finalPosition(pos[0], pos[1]);
         int finalSize = finalSize(side);
         _graphics.drawRect(finalPos[0], finalPos[1], finalSize, finalSize);
+        _graphics.setPaintMode();
     }
 
     @Override
@@ -96,6 +99,7 @@ public class DesktopGraphics extends AbstractGraphics {
         int[] newPos = finalPosition(start[0], start[1]);
         int[] newSize = finalSize(end[0], end[1]);
         _graphics.drawLine(newPos[0], newPos[1], newSize[0], newSize[1]);
+        _graphics.setPaintMode();
     }
 
     @Override
@@ -107,6 +111,7 @@ public class DesktopGraphics extends AbstractGraphics {
         int[] newPos = finalPosition(pos[0], pos[1]); // Original
 //        int[] newPos = finalPosition(pos[0], pos[1] + tam); // Pivotado abajo izquierda
         _graphics.drawString(text, newPos[0], newPos[1]);
+        _graphics.setPaintMode();
     }
 
     @Override
@@ -126,6 +131,7 @@ public class DesktopGraphics extends AbstractGraphics {
         int[] newPos = finalPosition(x,y);
 
         _graphics.drawString(text, newPos[0], newPos[1]);
+        _graphics.setPaintMode();
     }
 //-----------------------------------------------------------------//
 
@@ -134,6 +140,7 @@ public class DesktopGraphics extends AbstractGraphics {
         int[] finalPos = finalPosition(pos[0], pos[1]);
         int finalSize = finalSize(side);
         _graphics.fillRect(finalPos[0], finalPos[1], finalSize, finalSize);
+        _graphics.setPaintMode();
     }
 
 //-----------------------------------------------------------------//

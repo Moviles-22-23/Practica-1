@@ -18,4 +18,5 @@ public interface State {
      * Updates input
      * */
     void handleInput();
+
 }

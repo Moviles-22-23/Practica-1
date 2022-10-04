@@ -25,7 +25,7 @@ public class LoadState implements State {
             Assets.cellHelp3 = graphics.newImage("cellHelp3.png");
 
             //Fonts
-            Assets.jose = graphics.newFont("JosefinSans-Bold.ttf", 42, true);
+            Assets.jose = graphics.newFont("JosefinSans-Bold.ttf", 24, true);
             Assets.molle = graphics.newFont("Molle-Regular.ttf", 50, true);
 
             // Start MainMenu
