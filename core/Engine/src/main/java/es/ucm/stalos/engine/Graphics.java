@@ -9,7 +9,7 @@ public interface Graphics {
      * @param name name of te image
      * @return the loaded image
      */
-    Image newImage(String name);
+    Image newImage(String name) throws Exception;
 
     /**
      * Create a new font with a specified size from a .ttf.

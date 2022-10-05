@@ -85,8 +85,50 @@ public class SelectLevelState implements State {
                }
            };
 
-           // TODO los otros 3 botones
+           // 8 X 8 BUTTON
+           _8x8ButtonImage = Assets.cellHelp;
+           aux = Math.min(((_graphics.getLogWidth() / 10) * 2), ((_graphics.getLogHeight() / 10) * 2));
+           _8x8ButtonSize[0] = aux;
+           _8x8ButtonSize[1] = aux;
+           _8x8ButtonPos[0] = (_graphics.getLogWidth() / 7) * 1;
+           _8x8ButtonPos[1] = (_graphics.getLogHeight() / 10) * 8;
+           _8x8Callback = new ButtonCallback() {
+               @Override
+               public void doSomething() {
+                   State gameState = new GameState(_engine, 8, 8);
+                   _engine.reqNewState(gameState);
+               }
+           };
 
+           // 5 X 10 BUTTON
+           _10x10ButtonImage = Assets.cellHelp;
+           aux = Math.min(((_graphics.getLogWidth() / 10) * 2), ((_graphics.getLogHeight() / 10) * 2));
+           _10x10ButtonSize[0] = aux;
+           _10x10ButtonSize[1] = aux;
+           _10x10ButtonPos[0] = (_graphics.getLogWidth() / 7) * 3;
+           _10x10ButtonPos[1] = (_graphics.getLogHeight() / 10) * 8;
+           _10x10Callback = new ButtonCallback() {
+               @Override
+               public void doSomething() {
+                   State gameState = new GameState(_engine, 10, 10);
+                   _engine.reqNewState(gameState);
+               }
+           };
+
+           // 10 X 15 BUTTON
+           _10x15ButtonImage = Assets.cellHelp;
+           aux = Math.min(((_graphics.getLogWidth() / 10) * 2), ((_graphics.getLogHeight() / 10) * 2));
+           _10x15ButtonSize[0] = aux;
+           _10x15ButtonSize[1] = aux;
+           _10x15ButtonPos[0] = (_graphics.getLogWidth() / 7) * 5;
+           _10x15ButtonPos[1] = (_graphics.getLogHeight() / 10) * 8;
+           _10x15Callback = new ButtonCallback() {
+               @Override
+               public void doSomething() {
+                   State gameState = new GameState(_engine, 10, 15);
+                   _engine.reqNewState(gameState);
+               }
+           };
        } catch (Exception e){
            System.out.println("Error init Select Level");
            System.out.println(e);
@@ -107,7 +149,6 @@ public class SelectLevelState implements State {
         _graphics.setColor(color);
 
         _graphics.drawText(_selectLevelTextText, _selectLevelTextPos, _selectLevelTextFont);
-
         _graphics.drawImage(_backButtonImage, _backButtonPos, _backButtonSize);
 
         // 4 x 4
@@ -119,6 +160,15 @@ public class SelectLevelState implements State {
 
         _graphics.drawImage(_5x10ButtonImage, _5x10ButtonPos, _5x10ButtonSize);
         _graphics.drawCenteredString("5 X 10", _5x10ButtonPos, _5x10ButtonSize, _selectLevelTextFont);
+
+        _graphics.drawImage(_8x8ButtonImage, _8x8ButtonPos, _8x8ButtonSize);
+        _graphics.drawCenteredString("8 X 8", _8x8ButtonPos, _8x8ButtonSize, _selectLevelTextFont);
+
+        _graphics.drawImage(_10x10ButtonImage, _10x10ButtonPos, _10x10ButtonSize);
+        _graphics.drawCenteredString("10 X 10", _10x10ButtonPos, _10x10ButtonSize, _selectLevelTextFont);
+
+        _graphics.drawImage(_10x15ButtonImage, _10x15ButtonPos, _10x15ButtonSize);
+        _graphics.drawCenteredString("10 X 15", _10x15ButtonPos, _10x15ButtonSize, _selectLevelTextFont);
 
     }
 
@@ -134,7 +184,9 @@ public class SelectLevelState implements State {
                 if(clickInside(clickPos, _4x4ButtonPos, _4x4ButtonSize)) _4x4Callback.doSomething();
                 if(clickInside(clickPos, _5x5ButtonPos, _5x5ButtonSize)) _5x5Callback.doSomething();
                 if(clickInside(clickPos, _5x10ButtonPos, _5x10ButtonSize)) _5x10Callback.doSomething();
-
+                if(clickInside(clickPos, _8x8ButtonPos, _8x8ButtonSize)) _8x8Callback.doSomething();
+                if(clickInside(clickPos, _10x10ButtonPos, _10x10ButtonSize)) _10x10Callback.doSomething();
+                if(clickInside(clickPos, _10x15ButtonPos, _10x15ButtonSize)) _10x15Callback.doSomething();
             }
         }
     }

@@ -42,10 +42,10 @@ public class DesktopGraphics extends AbstractGraphics {
 //-----------------------------------------------------------------//
 
     @Override
-    public Image newImage(String name) {
+    public Image newImage(String name) throws Exception {
         DesktopImage img = new DesktopImage("./assets/" + name);
-        if (img.init()) return img;
-        return null;
+        if(!img.init()) throw new Exception();
+        return img;
     }
 
     @Override

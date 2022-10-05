@@ -1,10 +1,14 @@
 package es.ucm.stalos.logic.states;
 
+import java.util.List;
+
 import es.ucm.stalos.engine.Engine;
 import es.ucm.stalos.engine.Graphics;
 import es.ucm.stalos.engine.Image;
+import es.ucm.stalos.engine.Input;
 import es.ucm.stalos.engine.State;
 import es.ucm.stalos.logic.Assets;
+import es.ucm.stalos.logic.interfaces.ButtonCallback;
 import es.ucm.stalos.logic.objects.Board;
 
 public class GameState implements State {
@@ -46,7 +50,22 @@ public class GameState implements State {
 
     @Override
     public void handleInput() {
+        List<Input.TouchEvent> events = _engine.getInput().getTouchEvents();
+        for (int i = 0; i < events.size(); i++) {
+            Input.TouchEvent currEvent = events.get(i);
+            if (currEvent == Input.TouchEvent.touchDown) {
+                int[] clickPos = {currEvent.getX(), currEvent.getY()};
 
+                if(clickInside(clickPos, _posGiveUpButton, _sizeGiveUpButton)) _giveUpCallback.doSomething();
+                if(clickInside(clickPos, _posCheckButton, _sizeCheckButton)) _checkCallback.doSomething();
+
+            }
+        }
+    }
+
+    public boolean clickInside(int[] clickPos, int[] buttonPos, float[] buttonSize){
+        return (clickPos[0] > buttonPos[0] && clickPos[0] < (buttonPos[0] + buttonSize[0]) &&
+                clickPos[1] > buttonPos[1] && clickPos[1] < (buttonPos[1] + buttonSize[1]));
     }
 
     public void initButtons(){
@@ -59,8 +78,15 @@ public class GameState implements State {
         _posGiveUpButton[0] = 0;
         _posGiveUpButton[1] = ((int)_sizeGiveUpButton[1] / 2);
         // Callback
+        _giveUpCallback = new ButtonCallback() {
+            @Override
+            public void doSomething() {
+                State selectLevelState = new SelectLevelState(_engine);
+                _engine.reqNewState(selectLevelState);
+            }
+        };
 
-        // GIVE UP
+        // CHECK
         _checkButtonImage = Assets.checkButton;
         // Size
         _sizeCheckButton[0] = _graphics.getLogWidth() * 0.4f;
@@ -69,6 +95,13 @@ public class GameState implements State {
         _posCheckButton[0] = 200;
         _posCheckButton[1] = ((int)_sizeCheckButton[1] / 2);
         // CallBack
+        _checkCallback = new ButtonCallback() {
+            @Override
+            public void doSomething() {
+                System.out.println("Check Callback");
+                //_board.check();
+            }
+        };
     }
 
     public void renderButtons(){
@@ -104,9 +137,11 @@ public class GameState implements State {
     Image _giveUpButtonImage;
     int[] _posGiveUpButton = new int[2];
     float[] _sizeGiveUpButton = new float[2];
+    ButtonCallback _giveUpCallback;
 
-    // Give Up Button attributes
+    // Check Button attributes
     Image _checkButtonImage;
     int[] _posCheckButton = new int[2];
     float[] _sizeCheckButton = new float[2];
+    ButtonCallback _checkCallback;
 }
