@@ -57,8 +57,8 @@ public class GameState implements State {
                 int[] clickPos = {currEvent.getX(), currEvent.getY()};
 
                 if(clickInside(clickPos, _posGiveUpButton, _sizeGiveUpButton)) _giveUpCallback.doSomething();
-                if(clickInside(clickPos, _posCheckButton, _sizeCheckButton)) _checkCallback.doSomething();
-
+                else if(clickInside(clickPos, _posCheckButton, _sizeCheckButton)) _checkCallback.doSomething();
+                else if(clickInside(clickPos, _posBoard, _sizeBoard)) _board.handleInput(clickPos);
             }
         }
     }

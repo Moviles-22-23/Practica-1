@@ -37,7 +37,7 @@ public class Board {
         this._rows = rows;
         this._cols = cols;
         this._sol = new boolean[rows][cols];
-        this._boardState = new CellType[rows][cols];
+        this._boardState = new Cell[rows][cols];
         this._hintRows = new int[rows][(int)Math.ceil(cols / 2.0f)];
         this._hintCols = new int[(int)Math.ceil(rows / 2.0f)][cols];
         System.out.println("hintsRows(" + rows + ", " + (int)Math.ceil(cols / 2.0f) + ")");
@@ -57,6 +57,23 @@ public class Board {
             loadLevel();
         } catch (Exception e){
             System.out.println("Error leyendo el mapa");
+        }
+    }
+
+    private void loadBoardState(){
+        int[] pos = new int[2];
+        pos[0] = _pos[0] + (int)(_size[0] * _hintRows[0].length / (_hintRows[0].length + _boardState[0].length));
+        pos[1] = _pos[1] + (int)(_size[1] * _hintCols.length / (_hintCols.length + _boardState[0].length));
+
+        int aux = pos[1];
+
+        for (int i = 0; i < _rows; i++) {
+            pos[1] = aux;
+            for (int j = 0; j < _cols; j++) {
+                _boardState[i][j] = new Cell(i, j, pos, _cellSize);
+                pos[1] += _cellSize;
+            }
+            pos[0] += _cellSize;
         }
     }
 
@@ -103,6 +120,7 @@ public class Board {
     private void loadLevel(){
         loadHintsRows();
         loadHintsCols();
+        loadBoardState();
     }
 
     /**
@@ -168,12 +186,21 @@ public class Board {
         // Number Colors
         graphics.setColor(0x000000FF);
 
+        float maxSide = Math.max(_boardState.length, _boardState[0].length);
+
         // At first we draw the _hintRows and _hintCols squares
-        pos[1] = _pos[1] + (int)(_size[1] * _hintCols.length / (_boardState.length + _hintCols.length));
         pos[0] = _pos[0];
-        size[0] = _size[0] * _hintRows[0].length / (_hintRows[0].length + _boardState[0].length);
-        size[1] = _size[1] * _hintRows.length / (_hintRows.length + _hintCols.length);
-        graphics.drawRect(pos, size[1]);
+        pos[1] = _pos[1] + (int)(_size[1] * _hintCols.length / (maxSide + _hintCols.length));
+        size[0] = _size[0] * _hintRows[0].length / (_hintRows[0].length + maxSide);
+        size[1] = _size[1] * _hintRows.length / (maxSide + _hintCols.length);
+        graphics.drawRect(pos, size);
+
+//        pos[0] = _pos[0] + (int)(_size[0] * _hintRows[0].length /(maxSide + _hintRows[0].length));
+//        pos[1] = _pos[1];
+//        size[0] = _size[0] * _hintCols[0].length / (_hintRows[0].length + maxSide);
+//        size[1] = _size[1] * _hintCols.length / (_hintRows.length + _hintCols.length);
+//        graphics.drawRect(pos, size);
+
 
         // TOTAL ROWS
         for(int i = 0; i < (_boardState.length + _hintCols.length); i++){
@@ -202,12 +229,19 @@ public class Board {
                 }
                 // Range of board
                 else {
-                    graphics.drawRect(pos, size[0]);
+                    _boardState[i - _hintCols.length][j - _hintRows[0].length].render(graphics);
+//                    graphics.drawRect(pos, size[0]);
                 }
             }
         }
+    }
 
-
+    public void handleInput(int[] clickPos){
+        for(int i = 0; i < _rows; i++){
+            for(int j = 0; j < _cols; j++){
+                _boardState[i][j].handleInput(clickPos);
+            }
+        }
     }
 
     // Numero de filas y columnas del tablero
@@ -225,7 +259,7 @@ public class Board {
     boolean[][] _sol;
     int[][] _hintRows;
     int[][] _hintCols;
-    CellType[][] _boardState;
+    Cell[][] _boardState;
 
     int[] _pos = new int[2];
     float[] _size = new float[2];

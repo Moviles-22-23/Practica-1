@@ -62,6 +62,8 @@ public interface Graphics {
      * @param side Side Length
      */
     void drawRect(int[] pos, float side);
+    void drawRect(int[] pos, float[] size);
+
 
     /**
      * Draw a line
@@ -74,6 +76,8 @@ public interface Graphics {
      * @param side Side Length
      */
     void fillSquare(int[] pos, float side);
+    void fillSquare(int[] pos, float[] size);
+
 
 //----------------------------------------------------------------//
     /**

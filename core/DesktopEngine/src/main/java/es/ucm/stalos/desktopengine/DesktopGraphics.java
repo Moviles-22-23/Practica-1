@@ -88,9 +88,17 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public void drawRect(int[] pos, float side) {
-        int[] finalPos = finalPosition(pos[0], pos[1]);
-        int finalSize = finalSize(side);
-        _graphics.drawRect(finalPos[0], finalPos[1], finalSize, finalSize);
+        int[] newPos = finalPosition(pos[0], pos[1]);
+        int newSize = finalSize(side);
+        _graphics.drawRect(newPos[0], newPos[1], newSize, newSize);
+        _graphics.setPaintMode();
+    }
+
+    @Override
+    public void drawRect(int[] pos, float[] size) {
+        int[] newPos = finalPosition(pos[0], pos[1]);
+        int[] newSize = finalSize(size[0], size[1]);
+        _graphics.drawRect(newPos[0], newPos[1], newSize[0], newSize[1]);
         _graphics.setPaintMode();
     }
 
@@ -137,9 +145,17 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public void fillSquare(int[] pos, float side) {
-        int[] finalPos = finalPosition(pos[0], pos[1]);
-        int finalSize = finalSize(side);
-        _graphics.fillRect(finalPos[0], finalPos[1], finalSize, finalSize);
+        int[] newPos = finalPosition(pos[0], pos[1]);
+        int newSize = finalSize(side);
+        _graphics.fillRect(newPos[0], newPos[1], newSize, newSize);
+        _graphics.setPaintMode();
+    }
+
+    @Override
+    public void fillSquare(int[] pos, float[] size) {
+        int[] newPos = finalPosition(pos[0], pos[1]);
+        int[] newSize = finalSize(size[0], size[1]);
+        _graphics.fillRect(newPos[0], newPos[1], newSize[0], newSize[1]);
         _graphics.setPaintMode();
     }
 
