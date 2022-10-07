@@ -17,6 +17,8 @@ public class Cell {
     public void render(Graphics graphics){
         graphics.setColor(color);
         graphics.fillSquare(new int[]{x,y}, size);
+        graphics.setColor(0x000000FF);
+        graphics.drawRect(new int[]{x,y}, size);
     }
 
     public void handleInput(int[] clickPos){

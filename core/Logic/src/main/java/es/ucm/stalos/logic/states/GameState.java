@@ -99,7 +99,15 @@ public class GameState implements State {
             @Override
             public void doSomething() {
                 System.out.println("Check Callback");
-                //_board.check();
+                // At first it checks the original solution
+                if(_board.checkOriginalSolution()){
+                    System.out.println("Correct with original solution");
+                }
+                // Then check for another one
+                else if(_board.checkAnotherSolution()){
+                    System.out.println("Correct with another solution");
+                }
+                else System.out.println("Not correct");
             }
         };
     }

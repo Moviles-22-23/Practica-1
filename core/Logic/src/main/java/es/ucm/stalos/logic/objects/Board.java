@@ -11,15 +11,10 @@ package es.ucm.stalos.logic.objects;
 //     1 | - X - - -
 //     3 | X X X - -
 
-import java.awt.Color;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.nio.Buffer;
 import java.util.Random;
-import java.util.Scanner;
 
 import es.ucm.stalos.engine.Graphics;
 import es.ucm.stalos.logic.Assets;
@@ -65,15 +60,15 @@ public class Board {
         pos[0] = _pos[0] + (int)(_size[0] * _hintRows[0].length / (_hintRows[0].length + _boardState[0].length));
         pos[1] = _pos[1] + (int)(_size[1] * _hintCols.length / (_hintCols.length + _boardState[0].length));
 
-        int aux = pos[1];
+        int aux = pos[0];
 
         for (int i = 0; i < _rows; i++) {
-            pos[1] = aux;
+            pos[0] = aux;
             for (int j = 0; j < _cols; j++) {
                 _boardState[i][j] = new Cell(i, j, pos, _cellSize);
-                pos[1] += _cellSize;
+                pos[0] += _cellSize;
             }
-            pos[0] += _cellSize;
+            pos[1] += _cellSize;
         }
     }
 
@@ -242,6 +237,114 @@ public class Board {
                 _boardState[i][j].handleInput(clickPos);
             }
         }
+    }
+
+    public boolean checkOriginalSolution(){
+        boolean possible = true;
+        int i = 0, j = 0;
+        while(possible && i < _rows){
+            j = 0;
+            while(possible && j < _cols){
+                if((_boardState[i][j].cellType == CellType.BLUE && _sol[i][j] == false) ||
+                        (_boardState[i][j].cellType != CellType.BLUE  && _sol[i][j] == true)){
+                    System.out.println("Error in row: " + i + ", col: " + j);
+                    System.out.println("That cell is: " + _boardState[i][j].cellType + ", and should be " + _sol[i][j]);
+                    possible = false;
+                }
+                j++;
+            }
+            i++;
+        }
+        return possible;
+    }
+
+    public boolean checkAnotherSolution(){
+        boolean possible = true;
+
+        // Check Rows
+        int i = 0;
+        while(possible && i < _rows){
+            possible = checkRow(i);
+            if(possible) System.out.println("La fila " + i + " es correcta");
+            i++;
+        }
+
+        // Check Cols
+        int j = 0;
+        while(possible && j < _cols){
+            possible = checkCol(j);
+            if(possible) System.out.println("La columna " + j + " es correcta");
+            j++;
+        }
+
+        return possible;
+    }
+
+    public boolean checkRow(int row){
+        boolean possible = true;
+        boolean hintStart = false;
+        int currCol = _cols - 1;
+        int currHint = _hintRows[0].length - 1;
+        int hintCounter = 0;
+
+        while(possible && currCol >= 0){
+            // Empieza a comprobar esa pista
+            if(_boardState[row][currCol].cellType == CellType.BLUE){
+                hintStart = true;
+                hintCounter++;
+            }
+            else hintStart = false;
+
+            // Si el contador tiene algun valor acumulado y se ha encontrado una casilla gris o el final del tablero
+            if(hintCounter > 0 && (!hintStart || currCol == 0)) {
+                if(hintCounter == _hintRows[row][currHint]){
+                    currHint--;
+                    hintCounter = 0;
+                }
+                else possible = false;
+            }
+
+            currCol--;
+        }
+        // Si no ha contado todas las pistas distintas de 0 tampoco es posible
+        // Si currHint es menor de 0 es que ha tenido que comprobar todas las pistas y por tanto esta bien,
+        // Si no ha tenido que comprobar todas, hay que ver que la siguiente que le tocase fuera un 0.
+        if(possible && currHint >= 0 && _hintRows[row][currHint] != 0) possible = false;
+
+        return possible;
+    }
+
+    public boolean checkCol(int col){
+        boolean possible = true;
+        boolean hintStart = false;
+        int currRow = _rows - 1;
+        int currHint = _hintCols.length - 1;
+        int hintCounter = 0;
+
+        while(possible && currRow >= 0){
+            // Empieza a comprobar esa pista
+            if(_boardState[currRow][col].cellType == CellType.BLUE){
+                hintStart = true;
+                hintCounter++;
+            }
+            else hintStart = false;
+            // Si el contador tiene algun valor acumulado y se ha encontrado una casilla gris o el final del tablero
+            if(hintCounter > 0 && (!hintStart || currRow == 0)) {
+                if(hintCounter == _hintCols[currHint][col]){
+                    currHint--;
+                    hintCounter = 0;
+                }
+                else possible = false;
+            }
+            currRow--;
+        }
+        // Si no ha contado todas las pistas distintas de 0 tampoco es posible
+        // Si currHint es menor de 0 es que ha tenido que comprobar todas las pistas y por tanto esta bien,
+        // Si no ha tenido que comprobar todas, hay que ver que la siguiente que le tocase fuera un 0.
+        if(possible && currHint >= 0 && _hintCols[currHint][col] != 0) {
+            possible = false;
+        }
+        return possible;
     }
 
     // Numero de filas y columnas del tablero
