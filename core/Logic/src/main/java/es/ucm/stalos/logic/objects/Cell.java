@@ -15,10 +15,12 @@ public class Cell {
     }
 
     public void render(Graphics graphics){
+        int[] pos = new int[]{x, y};
         graphics.setColor(color);
-        graphics.fillSquare(new int[]{x,y}, size);
+        graphics.fillSquare(pos, size);
         graphics.setColor(0x000000FF);
-        graphics.drawRect(new int[]{x,y}, size);
+        graphics.drawRect(pos, size);
+        if(cellType == CellType.WHITE) graphics.drawLine(pos, new int[]{pos[0] + (int)size, pos[1] + (int)size});
     }
 
     public void handleInput(int[] clickPos){
@@ -30,7 +32,7 @@ public class Cell {
                     cellType = CellType.BLUE;
                     break;
                 case BLUE:
-                    color = 0x00FF00FF;
+                    color = 0xFFFFFFFF;
                     cellType = CellType.WHITE;
                     break;
                 case WHITE:

@@ -86,11 +86,6 @@ public class Board {
 
             System.out.println("Level: " + levelChoosen);
 
-//            for(int f = 0; f < 100; f++){
-//                int aux = Math.abs(rn.nextInt() % numLevels);
-//                System.out.println(aux);
-//            }
-
             // Skip lines to be on the correct level
             for(int i = 0; i < levelChoosen; i++){
                 br.readLine();
@@ -186,15 +181,15 @@ public class Board {
         // At first we draw the _hintRows and _hintCols squares
         pos[0] = _pos[0];
         pos[1] = _pos[1] + (int)(_size[1] * _hintCols.length / (maxSide + _hintCols.length));
-        size[0] = _size[0] * _hintRows[0].length / (_hintRows[0].length + maxSide);
-        size[1] = _size[1] * _hintRows.length / (maxSide + _hintCols.length);
+        size[0] = _hintRows[0].length * _cellSize;
+        size[1] = _hintRows.length * _cellSize;
         graphics.drawRect(pos, size);
 
-//        pos[0] = _pos[0] + (int)(_size[0] * _hintRows[0].length /(maxSide + _hintRows[0].length));
-//        pos[1] = _pos[1];
-//        size[0] = _size[0] * _hintCols[0].length / (_hintRows[0].length + maxSide);
-//        size[1] = _size[1] * _hintCols.length / (_hintRows.length + _hintCols.length);
-//        graphics.drawRect(pos, size);
+        pos[0] = _pos[0] + (int)(_size[0] * _hintRows[0].length /(maxSide + _hintRows[0].length));
+        pos[1] = _pos[1];
+        size[0] = _hintCols[0].length * _cellSize;
+        size[1] = _hintCols.length * _cellSize;
+        graphics.drawRect(pos, size);
 
 
         // TOTAL ROWS
