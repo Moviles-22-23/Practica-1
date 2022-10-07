@@ -7,15 +7,17 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 import es.ucm.stalos.engine.AbstractGraphics;
+import es.ucm.stalos.engine.Engine;
 import es.ucm.stalos.engine.Font;
 import es.ucm.stalos.engine.Image;
 
 public class AndroidGraphics extends AbstractGraphics {
-    protected AndroidGraphics(int w, int h) {
+    protected AndroidGraphics(int w, int h, Canvas canvas) {
         super(w, h);
+        _canvas = canvas;
     }
 
-    public boolean init(){
+    public boolean init() {
         return true;
     }
 
@@ -54,11 +56,21 @@ public class AndroidGraphics extends AbstractGraphics {
     }
 
     @Override
+    public void fillSquare(int[] pos, float[] size) {
+
+    }
+
+    @Override
     public void drawRect(int[] pos, float side) {
         int[] finalPos = finalPosition(pos[0], pos[1]);
         int finalSize = finalSize(side);
 
         _canvas.drawRect(finalPos[0], finalPos[1], finalSize, finalSize, _paint);
+    }
+
+    @Override
+    public void drawRect(int[] pos, float[] size) {
+
     }
 
     @Override
@@ -71,6 +83,11 @@ public class AndroidGraphics extends AbstractGraphics {
 
     @Override
     public void drawText(String text, int[] pos, Font font) {
+
+    }
+
+    @Override
+    public void drawCenteredString(String text, int[] pos, float[] size, Font font) {
 
     }
 
@@ -109,6 +126,15 @@ public class AndroidGraphics extends AbstractGraphics {
         _canvas.restore();
     }
 
+    public Canvas getCanvas() {
+        return _canvas;
+    }
+
+    public void setCanvas(Canvas c) {
+        _canvas = c;
+    }
+
+    // VARIABLES
     private Canvas _canvas;
     private Paint _paint;
 }
