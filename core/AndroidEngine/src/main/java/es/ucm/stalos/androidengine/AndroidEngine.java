@@ -7,15 +7,17 @@ import es.ucm.stalos.engine.State;
 
 public class AndroidEngine extends AbstractEngine implements Runnable {
     public AndroidEngine() {
-        super();
+
     }
 
-    public boolean init(State initState, int w, int h) {
+    public boolean init(State initState, int w, int h, SurfaceView surfaceView) {
         //STATE
         _currState = initState;
         //GRAPHICS
-        _graphics = new AndroidGraphics(w, h);
+        _surfaceView = surfaceView;
+        _graphics = new AndroidGraphics(w, h, _surfaceView.getHolder().lockCanvas());
         // INPUT
+        _input = new AndroidInput(this);
 
         return ((AndroidGraphics) _graphics).init() && _currState.init();
     }
@@ -28,6 +30,28 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
             throw new RuntimeException("run() should not be called directly");
         }
         //TODO: Bucle principal en android
+        while (_running) {
+            // Refresco del deltaTime
+            updateDeltaTime();
+            // Refresco del estado actual
+            _currState.handleInput();
+            _currState.update(_deltaTime);
+
+            // Pintado del estado actual
+            while (!_surfaceView.getHolder().getSurface().isValid()) ;
+            ((AndroidGraphics) _graphics).setCanvas(_surfaceView.getHolder().lockCanvas());
+            _currState.render();
+            _surfaceView.getHolder().unlockCanvasAndPost(((AndroidGraphics) _graphics).getCanvas());
+
+            // Inicializacion del siguiente estado en diferido
+            if (_changeState) {
+                _changeState = false;
+                _currState = _newState;
+                _currState.init();
+            }
+
+
+        }
 
     }
 
@@ -58,4 +82,5 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
 
     private Thread _renderThread;
     private boolean _running;
+    private SurfaceView _surfaceView;
 }

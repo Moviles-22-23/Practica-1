@@ -19,7 +19,7 @@ public class DesktopInput extends AbstractInput implements MouseListener, MouseM
     }
 
     public boolean init() {
-        return true;
+        return _events != null;
     }
 
     @Override
