@@ -6,10 +6,18 @@ public interface Audio {
      * @param file filename
      * @return Sound
      */
-    Sound newSound(String file);
+    Sound newSound(String file) throws Exception;
 
     /**
-     * Play an specified sound by id
+     * Get an specified sound by id
      */
-    Sound playSound(String id);
+    Sound getSound(String id);
+
+    void play(Sound sound, boolean loop);
+
+    void pause(Sound sound);
+
+    void stop(Sound sound);
+
+    void resume(Sound sound);
 }
