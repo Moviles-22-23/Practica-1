@@ -12,10 +12,17 @@ public class Assets {
     public static Image cellHelp;
     public static Image cellHelp2;
     public static Image cellHelp3;
+    public static Image backArrow;
+    public static Image lens;
+
 
     // Fonts
-    public static Font jose;
-    public static Font molle;
+    public static Font bigJosse;
+    public static Font bigMolly;
+    public static Font mediumJosse;
+    public static Font mediumMolly;
+    public static Font littleJosse;
+    public static Font littleMolly;
 
     // Audio -- no hay
 

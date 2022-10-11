@@ -23,10 +23,16 @@ public class LoadState implements State {
             Assets.cellHelp = graphics.newImage("cellHelp.png");
             Assets.cellHelp2 = graphics.newImage("cellHelp2.png");
             Assets.cellHelp3 = graphics.newImage("cellHelp3.png");
+            Assets.backArrow = graphics.newImage("backArrow.png");
+            Assets.lens = graphics.newImage("lupaEnIngles.png");
 
             //Fonts
-            Assets.jose = graphics.newFont("JosefinSans-Bold.ttf", 24, true);
-            Assets.molle = graphics.newFont("Molle-Regular.ttf", 50, true);
+            Assets.bigJosse = graphics.newFont("JosefinSans-Bold.ttf", 50, true);
+            Assets.bigMolly = graphics.newFont("Molle-Regular.ttf", 50, true);
+            Assets.mediumJosse = graphics.newFont("JosefinSans-Bold.ttf", 35, true);
+            Assets.mediumMolly = graphics.newFont("Molle-Regular.ttf", 35, true);
+            Assets.littleJosse = graphics.newFont("JosefinSans-Bold.ttf", 20, true);
+            Assets.littleMolly = graphics.newFont("Molle-Regular.ttf", 20, true);
 
             // Start MainMenu
             State mainMenu = new MainMenuState(_engine);

@@ -22,11 +22,12 @@ public class SelectLevelState implements State {
     public boolean init() {
        try {
            // BACK LEVEL
-           _backButtonImage = Assets.giveUpButton;
-           _backButtonSize[0] = (_graphics.getLogWidth() / 13) * 3;
-           _backButtonSize[1] = (_graphics.getLogHeight() / 13) * 3;
+           _backButtonText = "Volver";
+           _backButtonImage = Assets.backArrow;
            _backButtonPos[0] = 0;
-           _backButtonPos[1] = 0;
+           _backButtonPos[1] = 30;
+           _backButtonSize[0] = (_graphics.getLogWidth() / 20) * 8;
+           _backButtonSize[1] = (_graphics.getLogHeight() / 20) * 2;
            _backCallback = new ButtonCallback() {
                @Override
                public void doSomething() {
@@ -36,7 +37,7 @@ public class SelectLevelState implements State {
            };
 
            // SELECT LEVEL TEXT
-           _selectLevelTextFont = Assets.jose;
+           _selectLevelTextFont = Assets.littleJosse;
            _selectLevelTextPos[0] = _graphics.getLogWidth() / 8;
            _selectLevelTextPos[1] = _graphics.getLogHeight() / 3;
 
@@ -149,7 +150,15 @@ public class SelectLevelState implements State {
         _graphics.setColor(color);
 
         _graphics.drawText(_selectLevelTextText, _selectLevelTextPos, _selectLevelTextFont);
-        _graphics.drawImage(_backButtonImage, _backButtonPos, _backButtonSize);
+
+        // Back Button
+        color = 0XAAAAAAFF;
+        _graphics.setColor(color);
+        _graphics.fillSquare(_backButtonPos, _backButtonSize);
+        color = 0X000000FF;
+        _graphics.setColor(color);
+        _graphics.drawCenteredString(_backButtonText, _backButtonPos, _backButtonSize, _selectLevelTextFont);
+        _graphics.drawImage(_backButtonImage, new int[]{_backButtonPos[0], _backButtonPos[1] + (int)_backButtonSize[1] / 4}, new float[]{_backButtonSize[0] / 4, _backButtonSize[1] / 4});
 
         // 4 x 4
         _graphics.drawImage(_4x4ButtonImage, _4x4ButtonPos, _4x4ButtonSize);
@@ -200,6 +209,7 @@ public class SelectLevelState implements State {
     Graphics _graphics;
 
     // BACK BUTTON
+    String _backButtonText;
     Image _backButtonImage;
     int[] _backButtonPos = new int[2];
     float[] _backButtonSize = new float[2];

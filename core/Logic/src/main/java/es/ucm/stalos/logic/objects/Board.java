@@ -210,12 +210,12 @@ public class Board {
                 // Range of hints rows
                 else if(i >= _hintCols.length && j < _hintRows[0].length){
                     numText = Integer.toString(_hintRows[i - _hintCols.length][j]);
-                    graphics.drawCenteredString(numText, pos, size, Assets.jose);
+                    graphics.drawCenteredString(numText, pos, size, Assets.bigJosse);
                 }
                 // Range of hints cols
                 else if(i < _hintCols.length && j >= _hintRows[0].length){
                     numText = Integer.toString(_hintCols[i][j - _hintRows[0].length]);
-                    graphics.drawCenteredString(numText, pos, size, Assets.jose);
+                    graphics.drawCenteredString(numText, pos, size, Assets.bigJosse);
                 }
                 // Range of board
                 else {
