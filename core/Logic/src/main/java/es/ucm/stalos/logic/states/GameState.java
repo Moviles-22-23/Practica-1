@@ -2,8 +2,8 @@ package es.ucm.stalos.logic.states;
 
 import java.util.List;
 
+import es.ucm.stalos.engine.AbstractState;
 import es.ucm.stalos.engine.Engine;
-import es.ucm.stalos.engine.Graphics;
 import es.ucm.stalos.engine.Image;
 import es.ucm.stalos.engine.Input;
 import es.ucm.stalos.engine.State;
@@ -11,7 +11,7 @@ import es.ucm.stalos.logic.Assets;
 import es.ucm.stalos.logic.interfaces.ButtonCallback;
 import es.ucm.stalos.logic.objects.Board;
 
-public class GameState implements State {
+public class GameState extends AbstractState {
 
     GameState(Engine engine, int rows, int columns){
         this._engine = engine;
@@ -55,16 +55,11 @@ public class GameState implements State {
             if (currEvent == Input.TouchEvent.touchDown) {
                 int[] clickPos = {currEvent.getX(), currEvent.getY()};
 
-                if(clickInside(clickPos, _posGiveUpButton, _sizeGiveUpButton)) _giveUpCallback.doSomething();
-                else if(clickInside(clickPos, _posCheckButton, _sizeCheckButton)) _checkCallback.doSomething();
-                else if(clickInside(clickPos, _posBoard, _sizeBoard)) _board.handleInput(clickPos);
+                if(clickInsideSquare(clickPos, _posGiveUpButton, _sizeGiveUpButton)) _giveUpCallback.doSomething();
+                else if(clickInsideSquare(clickPos, _posCheckButton, _sizeCheckButton)) _checkCallback.doSomething();
+                else if(clickInsideSquare(clickPos, _posBoard, _sizeBoard)) _board.handleInput(clickPos);
             }
         }
-    }
-
-    public boolean clickInside(int[] clickPos, int[] buttonPos, float[] buttonSize){
-        return (clickPos[0] > buttonPos[0] && clickPos[0] < (buttonPos[0] + buttonSize[0]) &&
-                clickPos[1] > buttonPos[1] && clickPos[1] < (buttonPos[1] + buttonSize[1]));
     }
 
     public void initButtons(){
@@ -130,8 +125,6 @@ public class GameState implements State {
     }
 
     // Atributos del estado
-    Engine _engine;
-    Graphics _graphics;
     int _rows;
     int _cols;
 

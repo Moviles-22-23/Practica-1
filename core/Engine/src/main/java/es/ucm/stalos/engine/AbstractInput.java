@@ -19,12 +19,11 @@ public class AbstractInput implements Input {
     }
 
     /**
-     * Procesa las coordenadas del input entrante para transformar
-     * las posiciones x e y en posiciones lógicas.
-     * Añade el evento a la lista
-     *
-     * @param x Posición X física donde se recibió el input
-     * @param y Posición Y física donde se recibió el input
+     * Process input's coordinates to transform them into
+     * x and y logical positions.
+     * Also adds the event to the list
+     * @param x Window X position
+     * @param y Window Y position
      */
     protected void onTouchDownEvent(int x, int y) {
         AbstractGraphics g = (AbstractGraphics) _engine.getGraphics();

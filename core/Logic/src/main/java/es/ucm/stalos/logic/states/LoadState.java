@@ -1,5 +1,6 @@
 package es.ucm.stalos.logic.states;
 
+import es.ucm.stalos.engine.AbstractState;
 import es.ucm.stalos.engine.Audio;
 import es.ucm.stalos.engine.Engine;
 import es.ucm.stalos.engine.Graphics;
@@ -9,7 +10,7 @@ import es.ucm.stalos.logic.Assets;
 /**
  * This state is created to initialize all the assets of the game before it start
  */
-public class LoadState implements State {
+public class LoadState extends AbstractState {
     public LoadState(Engine engine) {
         _engine = engine;
     }
@@ -68,6 +69,4 @@ public class LoadState implements State {
     public void handleInput() {
 
     }
-
-    Engine _engine;
 }

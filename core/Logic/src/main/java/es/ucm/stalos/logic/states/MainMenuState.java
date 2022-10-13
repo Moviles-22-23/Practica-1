@@ -1,8 +1,10 @@
 package es.ucm.stalos.logic.states;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import es.ucm.stalos.engine.Audio;
+import es.ucm.stalos.engine.AbstractState;
 import es.ucm.stalos.engine.Engine;
 import es.ucm.stalos.engine.Font;
 import es.ucm.stalos.engine.Graphics;
@@ -11,7 +13,7 @@ import es.ucm.stalos.engine.State;
 import es.ucm.stalos.logic.Assets;
 import es.ucm.stalos.logic.interfaces.ButtonCallback;
 
-public class MainMenuState implements State {
+public class MainMenuState extends AbstractState {
 
     public MainMenuState(Engine engine){
         this._engine = engine;
@@ -20,8 +22,22 @@ public class MainMenuState implements State {
     @Override
     public boolean init() {
         try {
+
             _graphics = _engine.getGraphics();
             _audio = _engine.getAudio();
+
+            // TODO: Eliminar de aquí la prueba
+            _audio.play(Assets.testSound, 0);
+            _timer = new Timer();
+            _timeDelay = 1000;
+            _timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    System.out.println("Audio parado...");
+                    _audio.stop(Assets.testSound);
+                }
+            };
+            _timer.schedule(_timerTask, _timeDelay);
 
             // TITLE
             _titleText = "Nonogramas";
@@ -44,12 +60,11 @@ public class MainMenuState implements State {
             _playCallback = new ButtonCallback() {
                 @Override
                 public void doSomething() {
-                    // TODO: Eliminar de aquí la prueba
-                    _audio.play(Assets.testSound, 0);
                     // Levels
                     Assets.testLevel = "testLevel.txt";
                     State selectLevelState = new SelectLevelState(_engine);
                     _engine.reqNewState(selectLevelState);
+                    _audio.stop(Assets.testSound);
                 }
             };
         }
@@ -93,23 +108,13 @@ public class MainMenuState implements State {
             TouchEvent currEvent = events.get(i);
             if (currEvent == TouchEvent.touchDown) {
                 int[] clickPos = {currEvent.getX(), currEvent.getY()};
-                if(clickInside(clickPos, _playButtonPos, _playButtonSize)){
+                if(clickInsideSquare(clickPos, _playButtonPos, _playButtonSize)){
                     _playCallback.doSomething();
                 }
             }
         }
     }
 
-    public boolean clickInside(int[] clickPos, int[] buttonPos, float[] buttonSize){
-        return (clickPos[0] > buttonPos[0] && clickPos[0] < (buttonPos[0] + buttonSize[0]) &&
-                clickPos[1] > buttonPos[1] && clickPos[1] < (buttonPos[1] + buttonSize[1]));
-    }
-
-    Engine _engine;
-    Graphics _graphics;
-    Audio _audio;
-
-    // ATTRIBUTES
     // TITLE
     String _titleText;
     Font _titleFont;

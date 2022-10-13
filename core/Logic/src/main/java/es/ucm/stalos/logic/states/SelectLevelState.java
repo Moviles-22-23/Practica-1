@@ -2,16 +2,16 @@ package es.ucm.stalos.logic.states;
 
 import java.util.List;
 
+import es.ucm.stalos.engine.AbstractState;
 import es.ucm.stalos.engine.Engine;
 import es.ucm.stalos.engine.Font;
-import es.ucm.stalos.engine.Graphics;
 import es.ucm.stalos.engine.Image;
 import es.ucm.stalos.engine.Input;
 import es.ucm.stalos.engine.State;
 import es.ucm.stalos.logic.Assets;
 import es.ucm.stalos.logic.interfaces.ButtonCallback;
 
-public class SelectLevelState implements State {
+public class SelectLevelState extends AbstractState {
 
     public SelectLevelState(Engine engine) {
         this._engine = engine;
@@ -46,7 +46,7 @@ public class SelectLevelState implements State {
             float aux = Math.min(((_graphics.getLogWidth() / 10) * 2), ((_graphics.getLogHeight() / 10) * 2));
             _4x4ButtonSize[0] = aux;
             _4x4ButtonSize[1] = aux;
-            _4x4ButtonPos[0] = (_graphics.getLogWidth() / 7) * 1;
+            _4x4ButtonPos[0] = (_graphics.getLogWidth() / 7);
             _4x4ButtonPos[1] = (_graphics.getLogHeight() / 10) * 6;
             _4x4Callback = new ButtonCallback() {
                 @Override
@@ -91,7 +91,7 @@ public class SelectLevelState implements State {
             aux = Math.min(((_graphics.getLogWidth() / 10) * 2), ((_graphics.getLogHeight() / 10) * 2));
             _8x8ButtonSize[0] = aux;
             _8x8ButtonSize[1] = aux;
-            _8x8ButtonPos[0] = (_graphics.getLogWidth() / 7) * 1;
+            _8x8ButtonPos[0] = (_graphics.getLogWidth() / 7);
             _8x8ButtonPos[1] = (_graphics.getLogHeight() / 10) * 8;
             _8x8Callback = new ButtonCallback() {
                 @Override
@@ -158,7 +158,8 @@ public class SelectLevelState implements State {
         color = 0X000000FF;
         _graphics.setColor(color);
         _graphics.drawCenteredString(_backButtonText, _backButtonPos, _backButtonSize, _selectLevelTextFont);
-        _graphics.drawImage(_backButtonImage, new int[]{_backButtonPos[0], _backButtonPos[1] + (int) _backButtonSize[1] / 4}, new float[]{_backButtonSize[0] / 4, _backButtonSize[1] / 4});
+        _graphics.drawImage(_backButtonImage, new int[]{_backButtonPos[0], _backButtonPos[1] + (int) _backButtonSize[1] / 4},
+                new float[]{_backButtonSize[0] / 4, _backButtonSize[1] / 4});
 
         // 4 x 4
         _graphics.drawImage(_4x4ButtonImage, _4x4ButtonPos, _4x4ButtonSize);
@@ -189,31 +190,23 @@ public class SelectLevelState implements State {
             if (currEvent == Input.TouchEvent.touchDown) {
                 int[] clickPos = {currEvent.getX(), currEvent.getY()};
 
-                if (clickInside(clickPos, _backButtonPos, _backButtonSize))
+                if (clickInsideSquare(clickPos, _backButtonPos, _backButtonSize))
                     _backCallback.doSomething();
-                if (clickInside(clickPos, _4x4ButtonPos, _4x4ButtonSize))
+                else if (clickInsideSquare(clickPos, _4x4ButtonPos, _4x4ButtonSize))
                     _4x4Callback.doSomething();
-                if (clickInside(clickPos, _5x5ButtonPos, _5x5ButtonSize))
+                else if (clickInsideSquare(clickPos, _5x5ButtonPos, _5x5ButtonSize))
                     _5x5Callback.doSomething();
-                if (clickInside(clickPos, _5x10ButtonPos, _5x10ButtonSize))
+                else if (clickInsideSquare(clickPos, _5x10ButtonPos, _5x10ButtonSize))
                     _5x10Callback.doSomething();
-                if (clickInside(clickPos, _8x8ButtonPos, _8x8ButtonSize))
+                else if (clickInsideSquare(clickPos, _8x8ButtonPos, _8x8ButtonSize))
                     _8x8Callback.doSomething();
-                if (clickInside(clickPos, _10x10ButtonPos, _10x10ButtonSize))
+                else if (clickInsideSquare(clickPos, _10x10ButtonPos, _10x10ButtonSize))
                     _10x10Callback.doSomething();
-                if (clickInside(clickPos, _10x15ButtonPos, _10x15ButtonSize))
+                else if (clickInsideSquare(clickPos, _10x15ButtonPos, _10x15ButtonSize))
                     _10x15Callback.doSomething();
             }
         }
     }
-
-    public boolean clickInside(int[] clickPos, int[] buttonPos, float[] buttonSize) {
-        return (clickPos[0] > buttonPos[0] && clickPos[0] < (buttonPos[0] + buttonSize[0]) &&
-                clickPos[1] > buttonPos[1] && clickPos[1] < (buttonPos[1] + buttonSize[1]));
-    }
-
-    Engine _engine;
-    Graphics _graphics;
 
     // BACK BUTTON
     String _backButtonText;

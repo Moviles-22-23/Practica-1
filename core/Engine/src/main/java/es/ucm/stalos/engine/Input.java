@@ -3,6 +3,9 @@ package es.ucm.stalos.engine;
 import java.util.List;
 
 public interface Input {
+    /**
+     * Enum to classify every TouchEvent that can happens
+     */
     enum TouchEvent {
         touchDown(0),
         touchUp(1),
@@ -23,5 +26,8 @@ public interface Input {
 
     }
 
+    /**
+     * @return return the list of all events
+     */
     List<TouchEvent> getTouchEvents();
 }
