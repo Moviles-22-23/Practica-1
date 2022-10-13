@@ -27,6 +27,14 @@ android {
     }
 }
 
+task copyData(type: Copy) {
+    description 'Copy images from the root to the assets folder'
+    from(rootDir){
+        include 'assets/**'
+    }
+    into 'src/main/assets'
+}
+
 dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.5.1'

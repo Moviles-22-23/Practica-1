@@ -1,18 +1,18 @@
 package es.ucm.stalos.desktopengine;
 
-import java.io.File;
-
 import es.ucm.stalos.engine.Audio;
 import es.ucm.stalos.engine.Sound;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 public class DesktopAudio implements Audio {
+    public DesktopAudio(){
+
+    }
+
     @Override
     public Sound newSound(String file) throws Exception {
-        DesktopSound sound = new DesktopSound("./assets/" + file);
+        DesktopSound sound = new DesktopSound("./assets/sounds/" + file);
         if(!sound.init()) throw new Exception();
         return sound;
     }
@@ -23,22 +23,42 @@ public class DesktopAudio implements Audio {
     }
 
     @Override
-    public void play(Sound sound, boolean loop) {
+    public void play(Sound sound, int numberLoop) {
+        Clip clip = ((DesktopSound)sound).getClip();
+        if(clip.isRunning()){
+            clip.stop();
+            clip.setFramePosition(0);
+        }
 
+        clip.loop(numberLoop);
+        clip.start();
     }
 
     @Override
     public void pause(Sound sound) {
+        Clip clip = ((DesktopSound)sound).getClip();
+        if(!clip.isRunning())
+            return;
 
+        // Calling just this method will paused the sound
+        clip.stop();
     }
 
     @Override
     public void stop(Sound sound) {
+        Clip clip = ((DesktopSound)sound).getClip();
+        if(!clip.isRunning())
+            return;
 
+        // Calling just this method will paused the sound
+        clip.stop();
+        // We have to call setFramePosition after to restart
+        clip.setFramePosition(0);
     }
 
     @Override
     public void resume(Sound sound) {
-
+        Clip clip = ((DesktopSound)sound).getClip();
+        clip.start();
     }
 }

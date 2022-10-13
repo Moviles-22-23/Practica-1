@@ -13,11 +13,28 @@ public interface Audio {
      */
     Sound getSound(String id);
 
-    void play(Sound sound, boolean loop);
+    /**
+     * Play an specified sound indicating the number of looping
+     * @param sound Sound to be played
+     * @param numberLoops Indicate number of extra-repetitions: -1 -> Infinite
+     */
+    void play(Sound sound, int numberLoops);
 
+    /**
+     * Pause an specified sound. It can be resume.
+     * @param sound Sound to be paused
+     */
     void pause(Sound sound);
 
+    /**
+     * Stopped an specified sound. Restart the clip.
+     * @param sound Sound to be stopped
+     */
     void stop(Sound sound);
 
+    /**
+     * Resume an specified paused sound.
+     * @param sound Sound to be resumed.
+     */
     void resume(Sound sound);
 }

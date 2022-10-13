@@ -36,7 +36,6 @@ public class GameState implements State {
         }
         return true;
     }
-
     @Override
     public void update(double deltaTime) {
 

@@ -2,6 +2,7 @@ package es.ucm.stalos.logic.states;
 
 import java.util.List;
 
+import es.ucm.stalos.engine.Audio;
 import es.ucm.stalos.engine.Engine;
 import es.ucm.stalos.engine.Font;
 import es.ucm.stalos.engine.Graphics;
@@ -20,6 +21,7 @@ public class MainMenuState implements State {
     public boolean init() {
         try {
             _graphics = _engine.getGraphics();
+            _audio = _engine.getAudio();
 
             // TITLE
             _titleText = "Nonogramas";
@@ -42,6 +44,8 @@ public class MainMenuState implements State {
             _playCallback = new ButtonCallback() {
                 @Override
                 public void doSomething() {
+                    // TODO: Eliminar de aquí la prueba
+                    _audio.play(Assets.testSound, 0);
                     // Levels
                     Assets.testLevel = "testLevel.txt";
                     State selectLevelState = new SelectLevelState(_engine);
@@ -103,6 +107,7 @@ public class MainMenuState implements State {
 
     Engine _engine;
     Graphics _graphics;
+    Audio _audio;
 
     // ATTRIBUTES
     // TITLE

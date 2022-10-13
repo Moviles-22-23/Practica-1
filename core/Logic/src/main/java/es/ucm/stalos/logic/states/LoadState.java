@@ -1,10 +1,14 @@
 package es.ucm.stalos.logic.states;
 
+import es.ucm.stalos.engine.Audio;
 import es.ucm.stalos.engine.Engine;
 import es.ucm.stalos.engine.Graphics;
 import es.ucm.stalos.engine.State;
 import es.ucm.stalos.logic.Assets;
 
+/**
+ * This state is created to initialize all the assets of the game before it start
+ */
 public class LoadState implements State {
     public LoadState(Engine engine) {
         _engine = engine;
@@ -14,6 +18,7 @@ public class LoadState implements State {
     public boolean init() {
         try {
             Graphics graphics = _engine.getGraphics();
+            Audio audio = _engine.getAudio();
 
             //Sprites
             Assets.playButton = graphics.newImage("playButton.png");
@@ -24,7 +29,7 @@ public class LoadState implements State {
             Assets.cellHelp2 = graphics.newImage("cellHelp2.png");
             Assets.cellHelp3 = graphics.newImage("cellHelp3.png");
             Assets.backArrow = graphics.newImage("backArrow.png");
-            Assets.lens = graphics.newImage("lupaEnIngles.png");
+            Assets.lens = graphics.newImage("lents.png");
 
             //Fonts
             Assets.bigJosse = graphics.newFont("JosefinSans-Bold.ttf", 50, true);
@@ -34,18 +39,12 @@ public class LoadState implements State {
             Assets.littleJosse = graphics.newFont("JosefinSans-Bold.ttf", 20, true);
             Assets.littleMolly = graphics.newFont("Molle-Regular.ttf", 20, true);
 
+            // Audio
+            Assets.testSound = audio.newSound("testSound.wav");
+
             // Start MainMenu
             State mainMenu = new MainMenuState(_engine);
             _engine.reqNewState(mainMenu);
-
-//TODO: Borrar esto
-//---------------------------TESTEO-----------------------------------//
-//            // Levels
-//            Assets.testLevel = "testLevel.txt";
-//
-//            // Estado GameState
-//            State playState = new GameState(_engine, 5, 5);
-//            _engine.reqNewState(playState);
         }
         catch (Exception e) {
             System.err.println(e);

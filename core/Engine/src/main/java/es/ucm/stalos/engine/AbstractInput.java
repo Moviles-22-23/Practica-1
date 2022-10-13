@@ -30,10 +30,9 @@ public class AbstractInput implements Input {
         AbstractGraphics g = (AbstractGraphics) _engine.getGraphics();
 
         TouchEvent currEvent = TouchEvent.touchDown;
-        // TODO: escalado
-        //int[] eventPos = g.logPos(x, y);
-        currEvent.setX(x);
-        currEvent.setY(y);
+        int[] eventPos = g.logPos(x, y);
+        currEvent.setX(eventPos[0]);
+        currEvent.setY(eventPos[1]);
 
         _events.add(currEvent);
     }

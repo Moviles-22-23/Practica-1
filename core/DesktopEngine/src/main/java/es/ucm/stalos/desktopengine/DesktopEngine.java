@@ -16,6 +16,8 @@ public class DesktopEngine extends AbstractEngine implements Runnable {
         _input = new DesktopInput(this);
         // GRAPHICS
         _graphics = new DesktopGraphics(nameGame, this, w, h);
+        // AUDIO
+        _audio = new DesktopAudio();
 
         return ((DesktopGraphics) _graphics).init() && ((DesktopInput) _input).init() && _currState.init();
     }

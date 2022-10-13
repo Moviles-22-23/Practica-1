@@ -2,6 +2,7 @@ package es.ucm.stalos.logic;
 
 import es.ucm.stalos.engine.Font;
 import es.ucm.stalos.engine.Image;
+import es.ucm.stalos.engine.Sound;
 
 public class Assets {
     // Images
@@ -24,7 +25,8 @@ public class Assets {
     public static Font littleJosse;
     public static Font littleMolly;
 
-    // Audio -- no hay
+    // Audio
+    public static Sound testSound;
 
     // Levels
     public static String testLevel;
