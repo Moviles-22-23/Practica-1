@@ -14,10 +14,6 @@ public class DesktopInput extends AbstractInput implements MouseListener, MouseM
         _events = new ArrayList<>();
     }
 
-    public DesktopInput GetInput() {
-        return this;
-    }
-
     public boolean init() {
         return _events != null;
     }

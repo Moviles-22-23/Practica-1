@@ -15,11 +15,11 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
         _currState = initState;
         //GRAPHICS
         _surfaceView = surfaceView;
-        _graphics = new AndroidGraphics(w, h, _surfaceView.getHolder().lockCanvas());
+        _graphics = new AndroidGraphics(w, h, _surfaceView.getHolder().lockCanvas(), _surfaceView.getContext().getAssets());
         // INPUT
         _input = new AndroidInput(this);
 
-        return ((AndroidGraphics) _graphics).init() && _currState.init();
+        return ((AndroidGraphics) _graphics).init() && ((AndroidInput) _input).init() && _currState.init();
     }
 
     @Override

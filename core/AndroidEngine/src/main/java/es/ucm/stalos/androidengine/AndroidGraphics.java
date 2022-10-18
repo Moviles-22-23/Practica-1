@@ -1,6 +1,7 @@
 package es.ucm.stalos.androidengine;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,18 +13,23 @@ import es.ucm.stalos.engine.Font;
 import es.ucm.stalos.engine.Image;
 
 public class AndroidGraphics extends AbstractGraphics {
-    protected AndroidGraphics(int w, int h, Canvas canvas) {
+    protected AndroidGraphics(int w, int h, Canvas canvas, AssetManager assetManager) {
         super(w, h);
         _canvas = canvas;
+        _assetManager = assetManager;
     }
 
     public boolean init() {
-        return true;
+        _paint = new Paint();
+        return _paint != null;
     }
 
     @Override
-    public Image newImage(String name) {
-        return null;
+    public Image newImage(String name) throws Exception {
+        AndroidImage img = new AndroidImage(name, _assetManager);
+        if (!img.init()) throw new Exception();
+
+        return img;
     }
 
     @Override
@@ -39,7 +45,7 @@ public class AndroidGraphics extends AbstractGraphics {
 
     @Override
     public void drawImage(Image image, int[] pos, float[] size) {
-
+        _canvas.drawBitmap(((AndroidImage) image).getBitmap(), pos[0], pos[1], _paint);
     }
 
     @Override
@@ -57,7 +63,10 @@ public class AndroidGraphics extends AbstractGraphics {
 
     @Override
     public void fillSquare(int[] pos, float[] size) {
+        int[] newPos = finalPosition(pos[0], pos[1]);
+        int[] newSize = finalSize(size[0], size[1]);
 
+        _canvas.drawRect(newPos[0], newPos[1], newSize[0], newSize[1], _paint);
     }
 
     @Override
@@ -137,4 +146,5 @@ public class AndroidGraphics extends AbstractGraphics {
     // VARIABLES
     private Canvas _canvas;
     private Paint _paint;
+    private AssetManager _assetManager;
 }

@@ -26,12 +26,12 @@ public class DesktopImage implements Image {
 
     @Override
     public int getWidth() {
-        return 0;
+        return _image.getWidth(null);
     }
 
     @Override
     public int getHeight() {
-        return 0;
+        return _image.getHeight(null);
     }
 
     public java.awt.Image getImage() {
