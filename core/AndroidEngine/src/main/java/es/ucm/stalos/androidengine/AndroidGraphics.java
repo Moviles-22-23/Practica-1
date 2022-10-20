@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 
 import es.ucm.stalos.engine.AbstractGraphics;
 import es.ucm.stalos.engine.Engine;
@@ -33,8 +34,10 @@ public class AndroidGraphics extends AbstractGraphics {
     }
 
     @Override
-    public Font newFont(String filename, int size, boolean isBold) {
-        return null;
+    public Font newFont(String filename, int size, boolean isBold) throws Exception {
+        AndroidFont font = new AndroidFont(filename, size, isBold, _assetManager);
+        if (!font.init()) throw new Exception();
+        return font;
     }
 
     @Override
@@ -45,7 +48,9 @@ public class AndroidGraphics extends AbstractGraphics {
 
     @Override
     public void drawImage(Image image, int[] pos, float[] size) {
-        _canvas.drawBitmap(((AndroidImage) image).getBitmap(), pos[0], pos[1], _paint);
+        int[] finalPos = finalPosition(pos[0], pos[1]);
+        //int finalSize=finalSize(finalSize())
+        _canvas.drawBitmap(((AndroidImage) image).getBitmap(), finalPos[0], finalPos[1], _paint);
     }
 
     @Override
@@ -92,7 +97,12 @@ public class AndroidGraphics extends AbstractGraphics {
 
     @Override
     public void drawText(String text, int[] pos, Font font) {
+        Typeface androidFont = ((AndroidFont) font).getAndroidFont();
+        int[] finalPos = finalPosition(pos[0], pos[1]);
 
+        _paint.setTextSize(font.getSize());
+        _paint.setTypeface(androidFont);
+        _canvas.drawText(text, finalPos[0], finalPos[1], _paint);
     }
 
     @Override

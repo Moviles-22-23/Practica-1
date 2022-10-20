@@ -15,7 +15,7 @@ import es.ucm.stalos.logic.interfaces.ButtonCallback;
 
 public class MainMenuState extends AbstractState {
 
-    public MainMenuState(Engine engine){
+    public MainMenuState(Engine engine) {
         this._engine = engine;
     }
 
@@ -27,25 +27,26 @@ public class MainMenuState extends AbstractState {
             _audio = _engine.getAudio();
 
             // TODO: Eliminar de aquí la prueba
-            _audio.play(Assets.testSound, 0);
-            _timer = new Timer();
-            _timeDelay = 1000;
-            _timerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    System.out.println("Audio parado...");
-                    _audio.stop(Assets.testSound);
-                }
-            };
-            _timer.schedule(_timerTask, _timeDelay);
+//            _audio.play(Assets.testSound, 0);
+//            _timer = new Timer();
+//            _timeDelay = 1000;
+//            _timerTask = new TimerTask() {
+//                @Override
+//                public void run() {
+//                    System.out.println("Audio parado...");
+//                    _audio.stop(Assets.testSound);
+//                }
+//            };
+//            _timer.schedule(_timerTask, _timeDelay);
 
             // TITLE
             _titleText = "Nonogramas";
             _titleFont = Assets.bigMolly;
             _titlePos[0] = 0;
-            _titlePos[1] = (_graphics.getLogHeight()/15);;
+            _titlePos[1] = (_graphics.getLogHeight() / 15);
+
             _titleSize[0] = (_graphics.getLogWidth());
-            _titleSize[1] = (_graphics.getLogHeight()/10);
+            _titleSize[1] = (_graphics.getLogHeight() / 10);
 
             // PLAYBUTTON
             _playButtonText = "Jugar";
@@ -67,8 +68,7 @@ public class MainMenuState extends AbstractState {
                     _audio.stop(Assets.testSound);
                 }
             };
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println(e);
             return false;
         }
@@ -108,7 +108,7 @@ public class MainMenuState extends AbstractState {
             TouchEvent currEvent = events.get(i);
             if (currEvent == TouchEvent.touchDown) {
                 int[] clickPos = {currEvent.getX(), currEvent.getY()};
-                if(clickInsideSquare(clickPos, _playButtonPos, _playButtonSize)){
+                if (clickInsideSquare(clickPos, _playButtonPos, _playButtonSize)) {
                     _playCallback.doSomething();
                 }
             }

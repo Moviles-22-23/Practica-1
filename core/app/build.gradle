@@ -25,15 +25,28 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+
+    sourceSets {
+        main {
+            assets {
+                srcDirs 'src\\main\\assets'
+            }
+        }
+    }
 }
 
 task copyData(type: Copy) {
     description 'Copy images from the root to the assets folder'
-    from(rootDir){
-        include 'assets/**'
+    def dir = rootDir.getAbsolutePath() + '/assets'
+
+    from(dir) {
+        include '**'
     }
     into 'src/main/assets'
 }
+
+preBuild.dependsOn copyData
 
 dependencies {
 

@@ -44,7 +44,7 @@ public class DesktopGraphics extends AbstractGraphics {
     @Override
     public Image newImage(String name) throws Exception {
         DesktopImage img = new DesktopImage("./assets/" + name);
-        if(!img.init()) throw new Exception();
+        if (!img.init()) throw new Exception();
         return img;
     }
 
@@ -56,7 +56,7 @@ public class DesktopGraphics extends AbstractGraphics {
         return newFont;
     }
 
-//-----------------------------------------------------------------//
+    //-----------------------------------------------------------------//
     @Override
     public void clear(int color) {
         _graphics = getStrategy().getDrawGraphics();
@@ -112,7 +112,7 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public void drawText(String text, int[] pos, Font font) {
-        java.awt.Font javaFont = ((DesktopFont)font).getJavaFont();
+        java.awt.Font javaFont = ((DesktopFont) font).getJavaFont();
         float tam = finalSize(font.getSize());
         javaFont = javaFont.deriveFont(tam);
         _graphics.setFont(javaFont);
@@ -124,19 +124,19 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public void drawCenteredString(String text, int[] pos, float[] size, Font font) {
-        java.awt.Font javaFont = ((DesktopFont)font).getJavaFont();
+        java.awt.Font javaFont = ((DesktopFont) font).getJavaFont();
         float tam = finalSize(font.getSize());
         javaFont = javaFont.deriveFont(tam);
         // Get the FontMetrics
         FontMetrics metrics = _graphics.getFontMetrics(javaFont);
         // Determine the X coordinate for the text
-        int x = pos[0] + ((int)size[0] - metrics.stringWidth(text)) / 2;
+        int x = pos[0] + ((int) size[0] - metrics.stringWidth(text)) / 2;
         // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
-        int y = pos[1] + (((int)size[1] - metrics.getHeight()) / 2) + metrics.getAscent();
+        int y = pos[1] + (((int) size[1] - metrics.getHeight()) / 2) + metrics.getAscent();
         // Set the font
         _graphics.setFont(javaFont);
         // Draw the String
-        int[] newPos = finalPosition(x,y);
+        int[] newPos = finalPosition(x, y);
 
         _graphics.drawString(text, newPos[0], newPos[1]);
         _graphics.setPaintMode();
@@ -175,9 +175,7 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public void updateGraphics() {
-        while (getStrategy() == null) {
-            System.out.println("NULL");
-        }
+        while (getStrategy() == null) ;
         _graphics = getStrategy().getDrawGraphics();
     }
 
