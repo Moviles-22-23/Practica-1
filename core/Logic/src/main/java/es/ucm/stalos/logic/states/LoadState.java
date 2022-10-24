@@ -41,7 +41,7 @@ public class LoadState extends AbstractState {
             Assets.littleMolly = graphics.newFont("Molle-Regular.ttf", 20, true);
 
             // Audio
-            //Assets.testSound = audio.newSound("testSound.wav");
+            Assets.testSound = audio.newSound("testSound.wav");
 
             // Start MainMenu
             State mainMenu = new MainMenuState(_engine);

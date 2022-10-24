@@ -18,6 +18,7 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
         _graphics = new AndroidGraphics(w, h, _surfaceView.getHolder().lockCanvas(), _surfaceView.getContext().getAssets());
         // INPUT
         _input = new AndroidInput(this);
+        _audio = new AndroidAudio(_surfaceView.getContext().getAssets());
 
         return ((AndroidGraphics) _graphics).init() && ((AndroidInput) _input).init() && _currState.init();
     }

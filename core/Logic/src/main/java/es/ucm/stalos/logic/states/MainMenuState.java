@@ -27,17 +27,17 @@ public class MainMenuState extends AbstractState {
             _audio = _engine.getAudio();
 
             // TODO: Eliminar de aquí la prueba
-//            _audio.play(Assets.testSound, 0);
-//            _timer = new Timer();
-//            _timeDelay = 1000;
-//            _timerTask = new TimerTask() {
-//                @Override
-//                public void run() {
-//                    System.out.println("Audio parado...");
-//                    _audio.stop(Assets.testSound);
-//                }
-//            };
-//            _timer.schedule(_timerTask, _timeDelay);
+            _audio.play(Assets.testSound, 0);
+            _timer = new Timer();
+            _timeDelay = 1000;
+            _timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    System.out.println("Audio parado...");
+                    _audio.stop(Assets.testSound);
+                }
+            };
+            _timer.schedule(_timerTask, _timeDelay);
 
             // TITLE
             _titleText = "Nonogramas";
