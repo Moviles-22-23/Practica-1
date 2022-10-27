@@ -49,7 +49,6 @@ public class DesktopEngine extends AbstractEngine implements Runnable {
             // Pintamos el frame con el BufferStrategy
             do {
                 do {
-                    _graphics.updateGraphics();
                     _graphics.prepareFrame();
                     _graphics.clear(0xFFFFFFFF);
                     try {

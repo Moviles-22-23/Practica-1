@@ -10,24 +10,20 @@ import es.ucm.stalos.engine.Input;
 import java.util.ArrayList;
 
 
-public class AndroidInput extends AbstractInput {
+public class AndroidInput extends AbstractInput implements View.OnTouchListener {
 
-    class TouchListener implements View.OnTouchListener {
-        @Override
-        public boolean onTouch(View v, MotionEvent e) {
-            if (e.getAction() == MotionEvent.ACTION_DOWN) {
-                onTouchDownEvent((int) e.getX(), (int) e.getY());
-            }
-            return true;
+
+    @Override
+    public boolean onTouch(View v, MotionEvent e) {
+        if (e.getAction() == MotionEvent.ACTION_DOWN) {
+            onTouchDownEvent((int) e.getX(), (int) e.getY());
         }
+        return true;
     }
+
 
     public AndroidInput(Engine e) {
         super(e);
         _events = new ArrayList<>();
-    }
-
-    public boolean init() {
-        return _events != null;
     }
 }

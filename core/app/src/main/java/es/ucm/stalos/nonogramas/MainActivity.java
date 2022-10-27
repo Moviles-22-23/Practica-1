@@ -14,14 +14,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        _surface = new SurfaceView(this);
-        setContentView(_surface);
+        getSupportActionBar().hide();
 
         _engine = new AndroidEngine();
         State loadAssets = new LoadState(_engine);
 
-        if (!_engine.init(loadAssets, 400, 600, this._surface)) {
+        if (!_engine.init(loadAssets, 400, 600, this)) {
             System.out.println("Error al inicializar el engine");
             return;
         }

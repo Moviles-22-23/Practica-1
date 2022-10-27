@@ -101,11 +101,7 @@ public interface Graphics {
 //----------------------------------------------------------------//
     // TODO
     /**
-     * Updates the buffer
-     * */
-    void updateGraphics();
-
-    /**
+     * Updates the buffer &
      * Prepare the next frame
      */
     void prepareFrame();

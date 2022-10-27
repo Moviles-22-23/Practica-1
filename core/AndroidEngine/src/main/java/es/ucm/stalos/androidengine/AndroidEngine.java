@@ -2,6 +2,8 @@ package es.ucm.stalos.androidengine;
 
 import android.view.SurfaceView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import es.ucm.stalos.engine.AbstractEngine;
 import es.ucm.stalos.engine.State;
 
@@ -10,17 +12,20 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
 
     }
 
-    public boolean init(State initState, int w, int h, SurfaceView surfaceView) {
+    public boolean init(State initState, int w, int h, AppCompatActivity activity) {
         //STATE
         _currState = initState;
+
         //GRAPHICS
-        _surfaceView = surfaceView;
-        _graphics = new AndroidGraphics(w, h, _surfaceView.getHolder().lockCanvas(), _surfaceView.getContext().getAssets());
+        _graphics = new AndroidGraphics(w, h, activity.getWindowManager(), activity.getWindow());
+
         // INPUT
         _input = new AndroidInput(this);
-        _audio = new AndroidAudio(_surfaceView.getContext().getAssets());
 
-        return ((AndroidGraphics) _graphics).init() && ((AndroidInput) _input).init() && _currState.init();
+        // AUDIO
+        _audio = new AndroidAudio(activity.getApplicationContext().getAssets());
+
+        return ((AndroidGraphics) _graphics).init((AndroidInput) _input, activity) && _currState.init();
     }
 
     @Override
@@ -39,10 +44,9 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
             _currState.update(_deltaTime);
 
             // Pintado del estado actual
-            while (!_surfaceView.getHolder().getSurface().isValid()) ;
-            ((AndroidGraphics) _graphics).setCanvas(_surfaceView.getHolder().lockCanvas());
+            _graphics.prepareFrame();
             _currState.render();
-            _surfaceView.getHolder().unlockCanvasAndPost(((AndroidGraphics) _graphics).getCanvas());
+            _graphics.restore();
 
             // Inicializacion del siguiente estado en diferido
             if (_changeState) {
@@ -83,5 +87,4 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
 
     private Thread _renderThread;
     private boolean _running;
-    private SurfaceView _surfaceView;
 }

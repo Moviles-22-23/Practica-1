@@ -174,9 +174,11 @@ public class DesktopGraphics extends AbstractGraphics {
 //-----------------------------------------------------------------//
 
     @Override
-    public void updateGraphics() {
+    public void prepareFrame() {
         while (getStrategy() == null) ;
         _graphics = getStrategy().getDrawGraphics();
+
+        super.prepareFrame();
     }
 
     @Override

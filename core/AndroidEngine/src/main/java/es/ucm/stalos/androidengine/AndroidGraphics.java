@@ -5,8 +5,15 @@ import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.Window;
+import android.view.WindowManager;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import es.ucm.stalos.engine.AbstractGraphics;
 import es.ucm.stalos.engine.Engine;
@@ -14,15 +21,28 @@ import es.ucm.stalos.engine.Font;
 import es.ucm.stalos.engine.Image;
 
 public class AndroidGraphics extends AbstractGraphics {
-    protected AndroidGraphics(int w, int h, Canvas canvas, AssetManager assetManager) {
+    protected AndroidGraphics(int w, int h, WindowManager windowManager, Window window) {
         super(w, h);
-        _canvas = canvas;
-        _assetManager = assetManager;
+        _wManager = windowManager;
+        _window = window;
+        _assetManager = _window.getContext().getAssets();
+        _paint = new Paint();
     }
 
-    public boolean init() {
-        _paint = new Paint();
-        return _paint != null;
+    public boolean init(AndroidInput input, AppCompatActivity activity) {
+        try {
+            SurfaceView surfaceView = new SurfaceView(activity.getApplicationContext());
+
+            surfaceView.setOnTouchListener(input);
+            activity.setContentView(surfaceView);
+            Point winSize = new Point();
+            _wManager.getDefaultDisplay().getSize(winSize);
+            _winSize = winSize;
+            _holder = surfaceView.getHolder();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -55,7 +75,12 @@ public class AndroidGraphics extends AbstractGraphics {
 
     @Override
     public void setColor(int color) {
-        _paint.setColor(color);
+        int r = (color & 0xff000000) >> 24;
+        int g = (color & 0x00ff0000) >> 16;
+        int b = (color & 0x0000ff00) >> 8;
+        int a = color & 0x000000ff;
+
+        _paint.setColor(Color.argb(a, r, g, b));
     }
 
     @Override
@@ -112,17 +137,20 @@ public class AndroidGraphics extends AbstractGraphics {
 
     @Override
     public int getWidth() {
-        return 0;
+        return _winSize.x;
     }
 
     @Override
     public int getHeight() {
-        return 0;
+        return _winSize.y;
     }
 
     @Override
-    public void updateGraphics() {
+    public void prepareFrame() {
+        while (!_holder.getSurface().isValid()) ;
+        _canvas = _holder.lockCanvas();
 
+        super.prepareFrame();
     }
 
     @Override
@@ -142,19 +170,22 @@ public class AndroidGraphics extends AbstractGraphics {
 
     @Override
     public void restore() {
-        _canvas.restore();
+        //_canvas.restore();
+        _holder.unlockCanvasAndPost(_canvas);
     }
 
     public Canvas getCanvas() {
         return _canvas;
     }
 
-    public void setCanvas(Canvas c) {
-        _canvas = c;
-    }
-
     // VARIABLES
+    private final WindowManager _wManager;
+    private final Window _window;
+    private final Paint _paint;
+    private final AssetManager _assetManager;
+
+    private Point _winSize;
     private Canvas _canvas;
-    private Paint _paint;
-    private AssetManager _assetManager;
+    private SurfaceHolder _holder;
+
 }
