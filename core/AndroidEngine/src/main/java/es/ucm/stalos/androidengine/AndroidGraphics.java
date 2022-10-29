@@ -31,13 +31,20 @@ public class AndroidGraphics extends AbstractGraphics {
 
     public boolean init(AndroidInput input, AppCompatActivity activity) {
         try {
-            SurfaceView surfaceView = new SurfaceView(activity.getApplicationContext());
+            // ADDITIONAL FLAGS
+            _window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            _window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-            surfaceView.setOnTouchListener(input);
+            SurfaceView surfaceView = new SurfaceView(activity.getApplicationContext());
             activity.setContentView(surfaceView);
+            // INPUT LISTENER
+            surfaceView.setOnTouchListener(input);
+
+            // WIN SIZE
             Point winSize = new Point();
             _wManager.getDefaultDisplay().getSize(winSize);
             _winSize = winSize;
+
             _holder = surfaceView.getHolder();
         } catch (Exception e) {
             return false;
@@ -63,14 +70,14 @@ public class AndroidGraphics extends AbstractGraphics {
     @Override
     public void clear(int color) {
         setColor(color);
-        _canvas.drawRect(0, 0, getWidth(), getHeight(), _paint);
+        _canvas.drawColor(color);
     }
 
     @Override
     public void drawImage(Image image, int[] pos, float[] size) {
-        int[] finalPos = finalPosition(pos[0], pos[1]);
-        //int finalSize=finalSize(finalSize())
-        _canvas.drawBitmap(((AndroidImage) image).getBitmap(), finalPos[0], finalPos[1], _paint);
+        Rect source = new Rect(0, 0, image.getWidth(), image.getHeight());
+        Rect destiny = new Rect(pos[0], pos[1], (int) (pos[0] + size[0]), (int) (pos[1] + size[1]));
+        _canvas.drawBitmap(((AndroidImage) image).getBitmap(), source, destiny, null);
     }
 
     @Override
@@ -80,59 +87,63 @@ public class AndroidGraphics extends AbstractGraphics {
         int b = (color & 0x0000ff00) >> 8;
         int a = color & 0x000000ff;
 
-        _paint.setColor(Color.argb(a, r, g, b));
+        this._paint.setColor(Color.argb(a, r, g, b));
     }
 
     @Override
     public void fillSquare(int[] pos, float side) {
-        int[] finalPos = finalPosition(pos[0], pos[1]);
-        int finalSize = finalSize(side);
-
-        _canvas.drawRect(finalPos[0], finalPos[1], finalSize, finalSize, _paint);
+        _paint.setStyle(Paint.Style.FILL);
+        float[] s = {side, side};
+        paintRect(pos, s);
     }
 
     @Override
     public void fillSquare(int[] pos, float[] size) {
-        int[] newPos = finalPosition(pos[0], pos[1]);
-        int[] newSize = finalSize(size[0], size[1]);
-
-        _canvas.drawRect(newPos[0], newPos[1], newSize[0], newSize[1], _paint);
+        _paint.setStyle(Paint.Style.FILL);
+        paintRect(pos, size);
     }
 
     @Override
     public void drawRect(int[] pos, float side) {
-        int[] finalPos = finalPosition(pos[0], pos[1]);
-        int finalSize = finalSize(side);
-
-        _canvas.drawRect(finalPos[0], finalPos[1], finalSize, finalSize, _paint);
+        _paint.setStyle(Paint.Style.STROKE);
+        float[] s = {side, side};
+        paintRect(pos, s);
     }
 
     @Override
     public void drawRect(int[] pos, float[] size) {
+        _paint.setStyle(Paint.Style.STROKE);
+        paintRect(pos, size);
+    }
 
+    private void paintRect(int[] pos, float[] size){
+        _canvas.drawRect(pos[0], pos[1], pos[0] + size[0], pos[1] + size[1], _paint);
+        _paint.reset();
     }
 
     @Override
     public void drawLine(int[] start, int[] end) {
-        int[] finalStart = finalPosition(start[0], start[1]);
-        int[] finalEnd = finalPosition(start[0], start[1]);
-
-        _canvas.drawLine(finalStart[0], finalStart[1], finalEnd[0], finalEnd[1], _paint);
+        _canvas.drawLine(start[0], start[1], end[0], end[1], _paint);
     }
 
     @Override
     public void drawText(String text, int[] pos, Font font) {
-        Typeface androidFont = ((AndroidFont) font).getAndroidFont();
-        int[] finalPos = finalPosition(pos[0], pos[1]);
-
+        Typeface currFont = ((AndroidFont) font).getAndroidFont();
+        _paint.setTypeface(currFont);
         _paint.setTextSize(font.getSize());
-        _paint.setTypeface(androidFont);
-        _canvas.drawText(text, finalPos[0], finalPos[1], _paint);
+        _paint.setTextAlign(Paint.Align.LEFT);
+        _canvas.drawText(text, pos[0], pos[1], _paint);
+        _paint.reset();
     }
 
     @Override
     public void drawCenteredString(String text, int[] pos, float[] size, Font font) {
-
+        Typeface currFont = ((AndroidFont) font).getAndroidFont();
+        _paint.setTypeface(currFont);
+        _paint.setTextSize(font.getSize());
+        _paint.setTextAlign(Paint.Align.LEFT);
+        _canvas.drawText(text, pos[0], pos[1], _paint);
+        _paint.reset();
     }
 
     @Override

@@ -36,15 +36,20 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
             throw new RuntimeException("run() should not be called directly");
         }
         //TODO: Bucle principal en android
+        _lastFrameTime = System.nanoTime();
+        _running = true;
+
         while (_running) {
             // Refresco del deltaTime
             updateDeltaTime();
+
             // Refresco del estado actual
             _currState.handleInput();
             _currState.update(_deltaTime);
 
             // Pintado del estado actual
             _graphics.prepareFrame();
+            _graphics.clear(0xFFFFFFFF);
             _currState.render();
             _graphics.restore();
 
@@ -54,8 +59,6 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
                 _currState = _newState;
                 _currState.init();
             }
-
-
         }
 
     }
@@ -78,8 +81,8 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
                     this._renderThread.join();
                     this._renderThread = null;
                     break;
-                } catch (InterruptedException ie) {
-                    // Esto no debería ocurrir nunca...
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }

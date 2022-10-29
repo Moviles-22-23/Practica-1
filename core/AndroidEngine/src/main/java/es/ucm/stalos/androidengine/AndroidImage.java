@@ -4,6 +4,7 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import es.ucm.stalos.engine.Image;
@@ -15,24 +16,34 @@ public class AndroidImage implements Image {
     }
 
     public boolean init() {
+        InputStream is = null;
         try {
-            InputStream is = _assetManager.open(_filename);
+            is = _assetManager.open(_filename);
             _bitmap = BitmapFactory.decodeStream(is);
         } catch (Exception e) {
             System.err.println("Error: --Failed loading the image " + e);
             return false;
+        }
+        finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    throw new RuntimeException("InputStream null en la carga del asset: " + _filename);
+                }
+            }
         }
         return true;
     }
 
     @Override
     public int getWidth() {
-        return 0;
+        return _bitmap.getWidth();
     }
 
     @Override
     public int getHeight() {
-        return 0;
+        return _bitmap.getHeight();
     }
 
     public Bitmap getBitmap() {

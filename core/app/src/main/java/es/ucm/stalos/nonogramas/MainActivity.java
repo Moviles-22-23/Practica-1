@@ -1,12 +1,10 @@
 package es.ucm.stalos.nonogramas;
 
 import android.os.Bundle;
-import android.view.SurfaceView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import es.ucm.stalos.androidengine.AndroidEngine;
-import es.ucm.stalos.engine.State;
 import es.ucm.stalos.logic.states.LoadState;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,14 +15,11 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         _engine = new AndroidEngine();
-        State loadAssets = new LoadState(_engine);
+        LoadState loadAssets = new LoadState(_engine);
 
         if (!_engine.init(loadAssets, 400, 600, this)) {
             System.out.println("Error al inicializar el engine");
-            return;
         }
-
-        _engine.resume();
     }
 
     @Override
@@ -40,5 +35,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected AndroidEngine _engine;
-    protected SurfaceView _surface;
 }
