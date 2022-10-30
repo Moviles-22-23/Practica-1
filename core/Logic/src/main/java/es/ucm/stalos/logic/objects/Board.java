@@ -16,13 +16,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Random;
 
+import es.ucm.stalos.engine.Font;
 import es.ucm.stalos.engine.Graphics;
-import es.ucm.stalos.logic.Assets;
 import es.ucm.stalos.logic.enums.CellType;
 
 public class Board {
     /**
-     *
+     * Constructor of the board
      * @param rows Number of rows
      * @param cols Number of columns
      * @param pos Up-Left position
@@ -35,8 +35,6 @@ public class Board {
         this._boardState = new Cell[rows][cols];
         this._hintRows = new int[rows][(int)Math.ceil(cols / 2.0f)];
         this._hintCols = new int[(int)Math.ceil(rows / 2.0f)][cols];
-        System.out.println("hintsRows(" + rows + ", " + (int)Math.ceil(cols / 2.0f) + ")");
-        System.out.println("hintsCols(" + (int)Math.ceil(rows / 2.0f) + ", " + cols + ")");
 
         this._pos = pos;
         this._size = size;
@@ -45,14 +43,22 @@ public class Board {
         float maxRowsSize = size[1] / (rows + (int)Math.ceil(rows / 2.0f));
         float maxColsSize = size[0] / (cols + (int)Math.ceil(cols / 2.0f));
         _cellSize = Math.min(maxRowsSize, maxColsSize);
-        System.out.println("CellSize: " + _cellSize);
+    }
 
+    public boolean init(Graphics graphics)
+    {
         try {
+            _rowFont = graphics.newFont("Molle-Regular.ttf", 50, true);
+            _colFont = graphics.newFont("Molle-Regular.ttf", 50, true);
+
             readSolution();
             loadLevel();
         } catch (Exception e){
             System.out.println("Error leyendo el mapa");
+            return false;
         }
+
+        return true;
     }
 
     private void loadBoardState(){
@@ -98,8 +104,7 @@ public class Board {
                 line = br.readLine();
                 // Process every character as a boolean
                 for (int j = 0; j < _cols; j++) {
-                    if (line.charAt(j) == '0') _sol[i][j] = false;
-                    else _sol[i][j] = true;
+                    _sol[i][j] = line.charAt(j) != '0';
                 }
             }
         } catch (Exception e) {
@@ -210,12 +215,12 @@ public class Board {
                 // Range of hints rows
                 else if(i >= _hintCols.length && j < _hintRows[0].length){
                     numText = Integer.toString(_hintRows[i - _hintCols.length][j]);
-                    graphics.drawCenteredString(numText, pos, size, Assets.bigJosse);
+                    graphics.drawCenteredString(numText, pos, size, _rowFont);
                 }
                 // Range of hints cols
                 else if(i < _hintCols.length && j >= _hintRows[0].length){
                     numText = Integer.toString(_hintCols[i][j - _hintRows[0].length]);
-                    graphics.drawCenteredString(numText, pos, size, Assets.bigJosse);
+                    graphics.drawCenteredString(numText, pos, size, _colFont);
                 }
                 // Range of board
                 else {
@@ -236,12 +241,12 @@ public class Board {
 
     public boolean checkOriginalSolution(){
         boolean possible = true;
-        int i = 0, j = 0;
+        int i = 0, j;
         while(possible && i < _rows){
             j = 0;
             while(possible && j < _cols){
-                if((_boardState[i][j].cellType == CellType.BLUE && _sol[i][j] == false) ||
-                        (_boardState[i][j].cellType != CellType.BLUE  && _sol[i][j] == true)){
+                if((_boardState[i][j].cellType == CellType.BLUE && !_sol[i][j]) ||
+                        (_boardState[i][j].cellType != CellType.BLUE  && _sol[i][j])){
                     System.out.println("Error in row: " + i + ", col: " + j);
                     System.out.println("That cell is: " + _boardState[i][j].cellType + ", and should be " + _sol[i][j]);
                     possible = false;
@@ -277,7 +282,7 @@ public class Board {
 
     public boolean checkRow(int row){
         boolean possible = true;
-        boolean hintStart = false;
+        boolean hintStart;
         int currCol = _cols - 1;
         int currHint = _hintRows[0].length - 1;
         int hintCounter = 0;
@@ -352,8 +357,8 @@ public class Board {
     }
 
     // Attributes
-    private int _rows;
-    private int _cols;
+    private final int _rows;
+    private final int _cols;
     boolean[][] _sol;
     int[][] _hintRows;
     int[][] _hintCols;
@@ -362,4 +367,6 @@ public class Board {
     int[] _pos = new int[2];
     float[] _size = new float[2];
     float _cellSize;
+    Font _rowFont;
+    Font _colFont;
 }

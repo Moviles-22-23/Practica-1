@@ -12,7 +12,7 @@ import es.ucm.stalos.logic.Assets;
  */
 public class LoadState extends AbstractState {
     public LoadState(Engine engine) {
-        _engine = engine;
+        super(engine);
     }
 
     @Override
@@ -33,39 +33,27 @@ public class LoadState extends AbstractState {
             Assets.lens = graphics.newImage("lents.png");
 
             //Fonts
-            Assets.bigJosse = graphics.newFont("JosefinSans-Bold.ttf", 50, true);
-            Assets.bigMolly = graphics.newFont("Molle-Regular.ttf", 50, true);
-            Assets.mediumJosse = graphics.newFont("JosefinSans-Bold.ttf", 35, true);
-            Assets.mediumMolly = graphics.newFont("Molle-Regular.ttf", 35, true);
-            Assets.littleJosse = graphics.newFont("JosefinSans-Bold.ttf", 20, true);
-            Assets.littleMolly = graphics.newFont("Molle-Regular.ttf", 20, true);
+            //Assets.mediumJosse = graphics.newFont("JosefinSans-Bold.ttf", 35, true);
+            //Assets.mediumMolly = graphics.newFont("Molle-Regular.ttf", 35, true);
+            //Assets.littleJosse = graphics.newFont("JosefinSans-Bold.ttf", 20, true);
+            //Assets.littleMolly = graphics.newFont("Molle-Regular.ttf", 20, true);
+
 
             // Audio
             Assets.testSound = audio.newSound("testSound.wav");
 
             // Start MainMenu
-            State mainMenu = new MainMenuState(_engine);
-            _engine.reqNewState(mainMenu);
+//            State mainMenu = new MainMenuState(_engine);
+//            _engine.reqNewState(mainMenu);
+            // TODO
+            State select = new SelectLevelState(_engine);
+            _engine.reqNewState(select);
+
         } catch (Exception e) {
             System.err.println(e);
             return false;
         }
 
         return true;
-    }
-
-    @Override
-    public void update(double deltaTime) {
-
-    }
-
-    @Override
-    public void render() {
-
-    }
-
-    @Override
-    public void handleInput() {
-
     }
 }

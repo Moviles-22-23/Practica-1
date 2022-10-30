@@ -13,9 +13,8 @@ import es.ucm.stalos.logic.objects.Board;
 
 public class GameState extends AbstractState {
 
-    GameState(Engine engine, int rows, int columns){
-        this._engine = engine;
-        this._graphics = engine.getGraphics();
+    public GameState(Engine engine, int rows, int columns){
+        super(engine);
         this._rows = rows;
         this._cols = columns;
     }
@@ -121,7 +120,7 @@ public class GameState extends AbstractState {
         _sizeBoard[1] = 300.0f;
         System.out.println("Rows: " + _rows + ", cols:" + _cols);
         _board = new Board(_rows, _cols, _posBoard, _sizeBoard);
-
+        _board.init(_graphics);
     }
 
     // Atributos del estado

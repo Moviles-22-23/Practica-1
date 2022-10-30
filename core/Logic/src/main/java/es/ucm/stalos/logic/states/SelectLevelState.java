@@ -1,6 +1,9 @@
 package es.ucm.stalos.logic.states;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import es.ucm.stalos.engine.AbstractState;
 import es.ucm.stalos.engine.Engine;
@@ -9,25 +12,27 @@ import es.ucm.stalos.engine.Image;
 import es.ucm.stalos.engine.Input;
 import es.ucm.stalos.engine.State;
 import es.ucm.stalos.logic.Assets;
+import es.ucm.stalos.logic.enums.GridSize;
 import es.ucm.stalos.logic.interfaces.ButtonCallback;
+import es.ucm.stalos.logic.objects.SelectLevelButton;
 
 public class SelectLevelState extends AbstractState {
 
     public SelectLevelState(Engine engine) {
-        this._engine = engine;
-        this._graphics = engine.getGraphics();
+        super(engine);
     }
 
     @Override
     public boolean init() {
         try {
             // BACK LEVEL
-            _backButtonText = "Volver";
+            _backText = "Volver";
+            _backFont = _graphics.newFont("JosefinSans-Bold.ttf", 20, true);
             _backButtonImage = Assets.backArrow;
-            _backButtonPos[0] = 0;
-            _backButtonPos[1] = 30;
-            _backButtonSize[0] = (_graphics.getLogWidth() / 20) * 8;
-            _backButtonSize[1] = (_graphics.getLogHeight() / 20) * 2;
+            _backButtonPos[0] = 15;
+            _backButtonPos[1] = 50;
+            _backButtonSize[0] = (_graphics.getLogWidth() / 14);
+            _backButtonSize[1] = (_graphics.getLogHeight() / 25);
             _backCallback = new ButtonCallback() {
                 @Override
                 public void doSomething() {
@@ -37,99 +42,40 @@ public class SelectLevelState extends AbstractState {
             };
 
             // SELECT LEVEL TEXT
-            _selectLevelTextFont = Assets.littleJosse;
-            _selectLevelTextPos[0] = _graphics.getLogWidth() / 8;
-            _selectLevelTextPos[1] = _graphics.getLogHeight() / 3;
+            _titleFont = _graphics.newFont("JosefinSans-Bold.ttf", 25, true);
+            _titlePos[0] = (_graphics.getLogWidth() / 10);
+            _titlePos[1] = _graphics.getLogHeight() / 11 * 3;
 
-            // 4 X 4 BUTTON
-            _4x4ButtonImage = Assets.cellHelp;
+            // BUTTONS
+            _selectButtons = new ArrayList<>();
             float aux = Math.min(((_graphics.getLogWidth() / 10) * 2), ((_graphics.getLogHeight() / 10) * 2));
-            _4x4ButtonSize[0] = aux;
-            _4x4ButtonSize[1] = aux;
-            _4x4ButtonPos[0] = (_graphics.getLogWidth() / 7);
-            _4x4ButtonPos[1] = (_graphics.getLogHeight() / 10) * 6;
-            _4x4Callback = new ButtonCallback() {
-                @Override
-                public void doSomething() {
-                    State gameState = new GameState(_engine, 4, 4);
-                    _engine.reqNewState(gameState);
-                }
-            };
+            float[] size = new float[]{aux, aux};
+            Font font = _graphics.newFont("Molle-Regular.ttf", 20, true);
 
-            // 5 X 5 BUTTON
-            _5x5ButtonImage = Assets.cellHelp;
-            aux = Math.min(((_graphics.getLogWidth() / 10) * 2), ((_graphics.getLogHeight() / 10) * 2));
-            _5x5ButtonSize[0] = aux;
-            _5x5ButtonSize[1] = aux;
-            _5x5ButtonPos[0] = (_graphics.getLogWidth() / 7) * 3;
-            _5x5ButtonPos[1] = (_graphics.getLogHeight() / 10) * 6;
-            _5x5Callback = new ButtonCallback() {
-                @Override
-                public void doSomething() {
-                    State gameState = new GameState(_engine, 5, 5);
-                    _engine.reqNewState(gameState);
-                }
-            };
+            int[] pos = new int[2];
+            ButtonCallback cb;
 
-            // 5 X 10 BUTTON
-            _5x10ButtonImage = Assets.cellHelp;
-            aux = Math.min(((_graphics.getLogWidth() / 10) * 2), ((_graphics.getLogHeight() / 10) * 2));
-            _5x10ButtonSize[0] = aux;
-            _5x10ButtonSize[1] = aux;
-            _5x10ButtonPos[0] = (_graphics.getLogWidth() / 7) * 5;
-            _5x10ButtonPos[1] = (_graphics.getLogHeight() / 10) * 6;
-            _5x10Callback = new ButtonCallback() {
-                @Override
-                public void doSomething() {
-                    State gameState = new GameState(_engine, 5, 10);
-                    _engine.reqNewState(gameState);
-                }
-            };
+            int j = 0;
+            for (int i = 0; i < GridSize.MAX.getValue(); i++) {
+                pos[0] = (_graphics.getLogWidth() / 10) * (1 + (3 * j));
+                pos[1] = (_graphics.getLogHeight() / 7) * (3 + (i / 3) * 2);
 
-            // 8 X 8 BUTTON
-            _8x8ButtonImage = Assets.cellHelp;
-            aux = Math.min(((_graphics.getLogWidth() / 10) * 2), ((_graphics.getLogHeight() / 10) * 2));
-            _8x8ButtonSize[0] = aux;
-            _8x8ButtonSize[1] = aux;
-            _8x8ButtonPos[0] = (_graphics.getLogWidth() / 7);
-            _8x8ButtonPos[1] = (_graphics.getLogHeight() / 10) * 8;
-            _8x8Callback = new ButtonCallback() {
-                @Override
-                public void doSomething() {
-                    State gameState = new GameState(_engine, 8, 8);
-                    _engine.reqNewState(gameState);
-                }
-            };
+                initRowCol(i);
 
-            // 5 X 10 BUTTON
-            _10x10ButtonImage = Assets.cellHelp;
-            aux = Math.min(((_graphics.getLogWidth() / 10) * 2), ((_graphics.getLogHeight() / 10) * 2));
-            _10x10ButtonSize[0] = aux;
-            _10x10ButtonSize[1] = aux;
-            _10x10ButtonPos[0] = (_graphics.getLogWidth() / 7) * 3;
-            _10x10ButtonPos[1] = (_graphics.getLogHeight() / 10) * 8;
-            _10x10Callback = new ButtonCallback() {
-                @Override
-                public void doSomething() {
-                    State gameState = new GameState(_engine, 10, 10);
-                    _engine.reqNewState(gameState);
-                }
-            };
-
-            // 10 X 15 BUTTON
-            _10x15ButtonImage = Assets.cellHelp;
-            aux = Math.min(((_graphics.getLogWidth() / 10) * 2), ((_graphics.getLogHeight() / 10) * 2));
-            _10x15ButtonSize[0] = aux;
-            _10x15ButtonSize[1] = aux;
-            _10x15ButtonPos[0] = (_graphics.getLogWidth() / 7) * 5;
-            _10x15ButtonPos[1] = (_graphics.getLogHeight() / 10) * 8;
-            _10x15Callback = new ButtonCallback() {
-                @Override
-                public void doSomething() {
-                    State gameState = new GameState(_engine, 10, 15);
-                    _engine.reqNewState(gameState);
-                }
-            };
+                cb = new ButtonCallback() {
+                    @Override
+                    public void doSomething() {
+                        State gameState = new GameState(_engine, _rows, _cols);
+                        _engine.reqNewState(gameState);
+                        playSound();
+                    }
+                };
+                SelectLevelButton _level = new SelectLevelButton(pos, size, _gridSize, font, cb);
+                _selectButtons.add(_level);
+                j++;
+                if (j == 3)
+                    j = 0;
+            }
         } catch (Exception e) {
             System.out.println("Error init Select Level");
             System.out.println(e);
@@ -139,47 +85,82 @@ public class SelectLevelState extends AbstractState {
         return true;
     }
 
-    @Override
-    public void update(double deltaTime) {
+    /**
+     * Initializes rows and cols of the selectButton.
+     * @param i Index that indicate the gridSize
+     */
+    private void initRowCol(int i) {
+        switch (i) {
+            case 0:
+                _rows = 4;
+                _cols = 4;
+                _gridSize = GridSize._4x4;
+                break;
+            case 1:
+                _rows = 5;
+                _cols = 5;
+                _gridSize = GridSize._5x5;
+                break;
+            case 2:
+                _rows = 5;
+                _cols = 10;
+                _gridSize = GridSize._5x10;
+                break;
+            case 3:
+                _rows = 8;
+                _cols = 8;
+                _gridSize = GridSize._8x8;
+                break;
+            case 4:
+                _rows = 10;
+                _cols = 10;
+                _gridSize = GridSize._10x10;
+                break;
+            case 5:
+                _rows = 10;
+                _cols = 15;
+                _gridSize = GridSize._10x15;
+                break;
+        }
+    }
 
+    // TODO: Esto es una prueba de sonido
+    private void playSound(){
+
+        _audio.play(Assets.testSound, 0);
+//        _audio.setVolume();
+        _timer = new Timer();
+        _timeDelay = 1000;
+        _timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("Audio parado...");
+                _audio.stop(Assets.testSound);
+            }
+        };
+        _timer.schedule(_timerTask, _timeDelay);
     }
 
     @Override
     public void render() {
         int color = 0x313131FF;
         _graphics.setColor(color);
-
-        _graphics.drawText(_selectLevelTextText, _selectLevelTextPos, _selectLevelTextFont);
+        _graphics.drawText(_title, _titlePos, _titleFont);
 
         // Back Button
-        color = 0XAAAAAAFF;
-        _graphics.setColor(color);
-        _graphics.fillSquare(_backButtonPos, _backButtonSize);
         color = 0X000000FF;
         _graphics.setColor(color);
-        _graphics.drawCenteredString(_backButtonText, _backButtonPos, _backButtonSize, _selectLevelTextFont);
-        _graphics.drawImage(_backButtonImage, new int[]{_backButtonPos[0], _backButtonPos[1] + (int) _backButtonSize[1] / 4},
-                new float[]{_backButtonSize[0] / 4, _backButtonSize[1] / 4});
+        _graphics.drawImage(_backButtonImage, _backButtonPos, _backButtonSize);
+        int[] pos = {
+                _backButtonPos[0] + (int) (_backButtonSize[0] * 1.25),
+                _backButtonPos[1] + (int) (_backButtonSize[1] * 2 / 3)
+        };
+        _graphics.drawText(_backText, pos, _backFont);
 
-        // 4 x 4
-        _graphics.drawImage(_4x4ButtonImage, _4x4ButtonPos, _4x4ButtonSize);
-        _graphics.drawCenteredString("4 X 4", _4x4ButtonPos, _4x4ButtonSize, _selectLevelTextFont);
-
-        _graphics.drawImage(_5x5ButtonImage, _5x5ButtonPos, _5x5ButtonSize);
-        _graphics.drawCenteredString("5 X 5", _5x5ButtonPos, _5x5ButtonSize, _selectLevelTextFont);
-
-        _graphics.drawImage(_5x10ButtonImage, _5x10ButtonPos, _5x10ButtonSize);
-        _graphics.drawCenteredString("5 X 10", _5x10ButtonPos, _5x10ButtonSize, _selectLevelTextFont);
-
-        _graphics.drawImage(_8x8ButtonImage, _8x8ButtonPos, _8x8ButtonSize);
-        _graphics.drawCenteredString("8 X 8", _8x8ButtonPos, _8x8ButtonSize, _selectLevelTextFont);
-
-        _graphics.drawImage(_10x10ButtonImage, _10x10ButtonPos, _10x10ButtonSize);
-        _graphics.drawCenteredString("10 X 10", _10x10ButtonPos, _10x10ButtonSize, _selectLevelTextFont);
-
-        _graphics.drawImage(_10x15ButtonImage, _10x15ButtonPos, _10x15ButtonSize);
-        _graphics.drawCenteredString("10 X 15", _10x15ButtonPos, _10x15ButtonSize, _selectLevelTextFont);
-
+        // SelectLevel buttons
+        for (SelectLevelButton button : _selectButtons) {
+            button.render(_graphics);
+        }
     }
 
     @Override
@@ -192,67 +173,33 @@ public class SelectLevelState extends AbstractState {
 
                 if (clickInsideSquare(clickPos, _backButtonPos, _backButtonSize))
                     _backCallback.doSomething();
-                else if (clickInsideSquare(clickPos, _4x4ButtonPos, _4x4ButtonSize))
-                    _4x4Callback.doSomething();
-                else if (clickInsideSquare(clickPos, _5x5ButtonPos, _5x5ButtonSize))
-                    _5x5Callback.doSomething();
-                else if (clickInsideSquare(clickPos, _5x10ButtonPos, _5x10ButtonSize))
-                    _5x10Callback.doSomething();
-                else if (clickInsideSquare(clickPos, _8x8ButtonPos, _8x8ButtonSize))
-                    _8x8Callback.doSomething();
-                else if (clickInsideSquare(clickPos, _10x10ButtonPos, _10x10ButtonSize))
-                    _10x10Callback.doSomething();
-                else if (clickInsideSquare(clickPos, _10x15ButtonPos, _10x15ButtonSize))
-                    _10x15Callback.doSomething();
+                else {
+                    for (SelectLevelButton button : _selectButtons) {
+                        int[] pos = button.getPos();
+                        float[] size = button.getSize();
+                        if (clickInsideSquare(clickPos, pos, size)) {
+                            button.doSomething();
+                        }
+                    }
+                }
             }
         }
     }
 
     // BACK BUTTON
-    String _backButtonText;
+    String _backText;
     Image _backButtonImage;
     int[] _backButtonPos = new int[2];
     float[] _backButtonSize = new float[2];
     ButtonCallback _backCallback;
+    Font _backFont;
 
     // SELECT LEVEL TEXT
-    String _selectLevelTextText = "Selecciona el tamaño del puzzle";
-    int[] _selectLevelTextPos = new int[2];
-    Font _selectLevelTextFont;
+    String _title = "Selecciona el tamaño del puzzle";
+    int[] _titlePos = new int[2];
+    Font _titleFont;
 
-    // 4 X 4 BUTTON
-    Image _4x4ButtonImage;
-    int[] _4x4ButtonPos = new int[2];
-    float[] _4x4ButtonSize = new float[2];
-    ButtonCallback _4x4Callback;
-
-    // 5 X 5 BUTTON
-    Image _5x5ButtonImage;
-    int[] _5x5ButtonPos = new int[2];
-    float[] _5x5ButtonSize = new float[2];
-    ButtonCallback _5x5Callback;
-
-    // 5 X 10 BUTTON
-    Image _5x10ButtonImage;
-    int[] _5x10ButtonPos = new int[2];
-    float[] _5x10ButtonSize = new float[2];
-    ButtonCallback _5x10Callback;
-
-    // 8 X 8 BUTTON
-    Image _8x8ButtonImage;
-    int[] _8x8ButtonPos = new int[2];
-    float[] _8x8ButtonSize = new float[2];
-    ButtonCallback _8x8Callback;
-
-    // 10 X 10 BUTTON
-    Image _10x10ButtonImage;
-    int[] _10x10ButtonPos = new int[2];
-    float[] _10x10ButtonSize = new float[2];
-    ButtonCallback _10x10Callback;
-
-    // 10 X 15 BUTTON
-    Image _10x15ButtonImage;
-    int[] _10x15ButtonPos = new int[2];
-    float[] _10x15ButtonSize = new float[2];
-    ButtonCallback _10x15Callback;
+    List<SelectLevelButton> _selectButtons;
+    int _rows, _cols;
+    GridSize _gridSize;
 }

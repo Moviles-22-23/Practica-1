@@ -3,6 +3,7 @@ package es.ucm.stalos.desktopengine;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferStrategy;
 
 import es.ucm.stalos.engine.AbstractGraphics;
@@ -112,32 +113,58 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public void drawText(String text, int[] pos, Font font) {
-        java.awt.Font javaFont = ((DesktopFont) font).getJavaFont();
-        float tam = finalSize(font.getSize());
-        javaFont = javaFont.deriveFont(tam);
-        _graphics.setFont(javaFont);
-        int[] newPos = finalPosition(pos[0], pos[1]); // Original
-//        int[] newPos = finalPosition(pos[0], pos[1] + tam); // Pivotado abajo izquierda
+        // Init font
+        java.awt.Font javaFont = initFont(font);
+
+        // Scale
+        int[] newPos = finalPosition(pos[0], pos[1]);
+
+        // Drawing
         _graphics.drawString(text, newPos[0], newPos[1]);
         _graphics.setPaintMode();
     }
 
-    @Override
-    public void drawCenteredString(String text, int[] pos, float[] size, Font font) {
+    private java.awt.Font initFont(Font font)
+    {
         java.awt.Font javaFont = ((DesktopFont) font).getJavaFont();
         float tam = finalSize(font.getSize());
         javaFont = javaFont.deriveFont(tam);
-        // Get the FontMetrics
-        FontMetrics metrics = _graphics.getFontMetrics(javaFont);
-        // Determine the X coordinate for the text
-        int x = pos[0] + ((int) size[0] - metrics.stringWidth(text)) / 2;
-        // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
-        int y = pos[1] + (((int) size[1] - metrics.getHeight()) / 2) + metrics.getAscent();
         // Set the font
         _graphics.setFont(javaFont);
+
+        return javaFont;
+    }
+
+//    @Override
+//    public void drawCenteredString(String text, int[] pos, float[] size, Font font) {
+//        java.awt.Font javaFont = initFont(font);
+//
+//        // Scale
+//        // Get the FontMetrics
+//        FontMetrics metrics = _graphics.getFontMetrics(javaFont);
+//        // Determine the X coordinate for the text
+//        int x = pos[0] + ((int) size[0] - metrics.stringWidth(text)) / 2;
+//        // Determine the Y coordinate for the text (note we add the ascent, as in java_2D 0 is top of the screen)
+//        int y = pos[1] + (((int) size[1] - metrics.getHeight()) / 2) + metrics.getAscent();
+//        // Draw the String
+//        int[] newPos = finalPosition(x, y);
+//
+//        // Drawing
+//        _graphics.drawString(text, newPos[0], newPos[1]);
+//        _graphics.setPaintMode();
+//    }
+
+    @Override
+    public void drawCenteredString(String text, int[] pos, float[] size, Font font) {
+        java.awt.Font javaFont = initFont(font);
+
+        // Scale
+        int x = pos[0] - (int)(size[0] / 2);
+        int y = pos[1] + (int)(size[1]);
+
         // Draw the String
         int[] newPos = finalPosition(x, y);
-
+        // Drawing
         _graphics.drawString(text, newPos[0], newPos[1]);
         _graphics.setPaintMode();
     }
@@ -175,7 +202,9 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public void prepareFrame() {
-        while (getStrategy() == null) ;
+        while (getStrategy() == null) {
+            System.out.println("NULL");
+        }
         _graphics = getStrategy().getDrawGraphics();
 
         super.prepareFrame();
