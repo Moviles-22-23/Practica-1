@@ -60,6 +60,9 @@ public class DesktopGraphics extends AbstractGraphics {
 //------------------------------------------------------------------------------------------------//
     @Override
     public void clear(int color) {
+        while (getStrategy() == null) {
+            System.out.println("NULL");
+        }
         _graphics = getStrategy().getDrawGraphics();
         setColor(color);
         _graphics.fillRect(0, 0, getWidth(), getHeight());
@@ -136,39 +139,39 @@ public class DesktopGraphics extends AbstractGraphics {
         return javaFont;
     }
 
-//    @Override
-//    public void drawCenteredString(String text, int[] pos, float[] size, Font font) {
-//        java.awt.Font javaFont = initFont(font);
-//
-//        // Scale
-//        // Get the FontMetrics
-//        FontMetrics metrics = _graphics.getFontMetrics(javaFont);
-//        // Determine the X coordinate for the text
-//        int x = pos[0] + ((int) size[0] - metrics.stringWidth(text)) / 2;
-//        // Determine the Y coordinate for the text (note we add the ascent, as in java_2D 0 is top of the screen)
-//        int y = pos[1] + (((int) size[1] - metrics.getHeight()) / 2) + metrics.getAscent();
-//        // Draw the String
-//        int[] newPos = finalPosition(x, y);
-//
-//        // Drawing
-//        _graphics.drawString(text, newPos[0], newPos[1]);
-//        _graphics.setPaintMode();
-//    }
-
     @Override
     public void drawCenteredString(String text, int[] pos, float[] size, Font font) {
         java.awt.Font javaFont = initFont(font);
 
         // Scale
-        int x = pos[0] - (int)(size[0] / 2);
-        int y = pos[1] + (int)(size[1]);
-
+        // Get the FontMetrics
+        FontMetrics metrics = _graphics.getFontMetrics(javaFont);
+        // Determine the X coordinate for the text
+        int x = pos[0] + ((int) size[0] - metrics.stringWidth(text)) / 2;
+        // Determine the Y coordinate for the text (note we add the ascent, as in java_2D 0 is top of the screen)
+        int y = pos[1] + (((int) size[1] - metrics.getHeight()) / 2) + metrics.getAscent();
         // Draw the String
         int[] newPos = finalPosition(x, y);
+
         // Drawing
         _graphics.drawString(text, newPos[0], newPos[1]);
         _graphics.setPaintMode();
     }
+
+//    @Override
+//    public void drawCenteredString(String text, int[] pos, float[] size, Font font) {
+//        java.awt.Font javaFont = initFont(font);
+//
+//        // Scale
+//        int x = pos[0] - (int)(size[0] / 2);
+//        int y = pos[1] + (int)(size[1]);
+//
+//        // Draw the String
+//        int[] newPos = finalPosition(x, y);
+//        // Drawing
+//        _graphics.drawString(text, newPos[0], newPos[1]);
+//        _graphics.setPaintMode();
+//    }
 
 //------------------------------------------------------------------------------------------------//
 

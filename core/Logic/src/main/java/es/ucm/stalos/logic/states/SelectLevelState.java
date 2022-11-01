@@ -135,7 +135,8 @@ public class SelectLevelState extends AbstractState {
                     int c = _level.getCols();
                     State gameState = new GameState(_engine, r, c);
                     _engine.reqNewState(gameState);
-                    playSound();
+                    // TODO
+                    //playSound();
                 }
             });
             _selectButtons.add(_level);

@@ -1,5 +1,8 @@
 package es.ucm.stalos.logic.objects;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import es.ucm.stalos.engine.Graphics;
 import es.ucm.stalos.logic.enums.CellType;
 
@@ -9,14 +12,20 @@ public class Cell {
         this.col = col;
         x = pos[0];
         y = pos[1];
-        this.color = 0xBBBBBBFF;
         this.size = cellSize;
         this.cellType = CellType.GREY;
+
+        // COLORS - MAP
+        _colors = new HashMap<>();
+        _colors.put(CellType.BLUE, 0x0000FFFF);
+        _colors.put(CellType.GREY, 0xBBBBBBFF);
+        _colors.put(CellType.WHITE, 0xFFFFFFFF);
+        _colors.put(CellType.RED, 0xFF0000FF);
     }
 
     public void render(Graphics graphics){
         int[] pos = new int[]{x, y};
-        graphics.setColor(color);
+        graphics.setColor(_colors.get(cellType));
         graphics.fillSquare(pos, size);
         graphics.setColor(0x000000FF);
         graphics.drawRect(pos, size);
@@ -28,15 +37,12 @@ public class Cell {
             System.out.println("Click:" + row + " , " + col);
             switch(cellType) {
                 case GREY:
-                    color = 0x0000FFFF;
                     cellType = CellType.BLUE;
                     break;
                 case BLUE:
-                    color = 0xFFFFFFFF;
                     cellType = CellType.WHITE;
                     break;
                 case WHITE:
-                    color = 0xBBBBBBFF;
                     cellType = CellType.GREY;
                     break;
             }
@@ -52,5 +58,5 @@ public class Cell {
     public int x, y;
     public int row, col;
     public float size;
-    private int color;
+    private Map<CellType, Integer> _colors;
 }

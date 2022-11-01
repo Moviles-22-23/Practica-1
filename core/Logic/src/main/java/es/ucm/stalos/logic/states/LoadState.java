@@ -43,11 +43,11 @@ public class LoadState extends AbstractState {
             Assets.testSound = audio.newSound("testSound.wav");
 
             // Start MainMenu
-//            State mainMenu = new MainMenuState(_engine);
-//            _engine.reqNewState(mainMenu);
+            State mainMenu = new MainMenuState(_engine);
+            _engine.reqNewState(mainMenu);
             // TODO
-            State select = new SelectLevelState(_engine);
-            _engine.reqNewState(select);
+//            State select = new SelectLevelState(_engine);
+//            _engine.reqNewState(select);
 
         } catch (Exception e) {
             System.err.println(e);

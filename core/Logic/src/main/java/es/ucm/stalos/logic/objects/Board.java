@@ -14,6 +14,8 @@ package es.ucm.stalos.logic.objects;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import es.ucm.stalos.engine.Font;
@@ -43,15 +45,15 @@ public class Board {
         // Cell Size must be square so we have to use the min between rows and cols
         float maxRowsSize = size[1] / (rows + (int) Math.ceil(rows / 2.0f));
         float maxColsSize = size[0] / (cols + (int) Math.ceil(cols / 2.0f));
-//        _cellSize = Math.min(maxRowsSize, maxColsSize);
-        _cellSize = 280 / Math.max(rows, cols);
+        _cellSize = Math.min(maxRowsSize, maxColsSize);
     }
 
     //-------------------------------------------INIT-------------------------------------------------//
     public boolean init(Graphics graphics) {
         try {
-            _rowFont = graphics.newFont("Molle-Regular.ttf", 50, true);
-            _colFont = graphics.newFont("Molle-Regular.ttf", 50, true);
+            _fontSize = 30;
+            _hintFont = graphics.newFont("JosefinSans-Bold.ttf", _fontSize, true);
+            ;
 
             readSolution();
             loadLevel();
@@ -178,70 +180,60 @@ public class Board {
 //----------------------------------------MAIN-LOOP-----------------------------------------------//
 
     public void render(Graphics graphics) {
+        int[] pos = new int[2];
+        float[] size = new float[2];
+
+        // Number Colors
         graphics.setColor(0x000000FF);
-        int s1 = 100, s2 = 280;
-        int[] pos = {10, 270};
-        float[] size = {s1, s2};
-        // Vertical square
-        graphics.drawRect(pos, size);
-        // Horizontal square
-        size[0] = s2;
-        size[1] = s1;
-        pos[0] += s1;
-        pos[1] -= s1;
-        graphics.drawRect(pos, size);
-        // Grid overlay
-        pos[1] += s1;
-        size[1] = s2;
+
+        float maxSide = Math.max(_boardState.length, _boardState[0].length);
+
+        // At first we draw the _hintRows and _hintCols squares
+        pos[0] = _pos[0];
+        pos[1] = _pos[1] + (int) (_size[1] * _hintCols.length / (maxSide + _hintCols.length));
+        size[0] = _hintRows[0].length * _cellSize;
+        size[1] = _hintRows.length * _cellSize;
         graphics.drawRect(pos, size);
 
-        // Grid squares
-        int aux = pos[0];
-        for(int i = 0; i < _rows; i++)
-        {
-            for(int j = 0; j < _cols; j++)
-            {
-                graphics.drawRect(pos, _cellSize);
-                pos[0] += _cellSize;
-            }
-            pos[0] = aux;
-            pos[1] += _cellSize * 2;
-        }
+        pos[0] = _pos[0] + (int) (_size[0] * _hintRows[0].length / (maxSide + _hintRows[0].length));
+        pos[1] = _pos[1];
+        size[0] = _hintCols[0].length * _cellSize;
+        size[1] = _hintCols.length * _cellSize;
+        graphics.drawRect(pos, size);
 
-//        float maxSide = Math.max(_boardState.length, _boardState[0].length);
 
         // TOTAL ROWS
-//        for(int i = 0; i < (_boardState.length + _hintCols.length); i++){
-//            // TOTAL COLS
-//            for(int j = 0; j < (_boardState[0].length + _hintRows[0].length); j++){
-//                // Carefull, position x is horizontall that corresponse with the j
-//                pos[0] = _pos[0] + (int) (j * _cellSize);
-//                pos[1] = _pos[1] + (int) (i * _cellSize);
-//                size[0] = _cellSize;
-//                size[1] = _cellSize;
-//
-//                String numText;
-//                // Range of empty space (BORRAR)
-//                if(i < _hintCols.length && j < _hintRows[0].length){
-//                    // Empty
-//                }
-//                // Range of hints rows
-//                else if(i >= _hintCols.length && j < _hintRows[0].length){
-//                    numText = Integer.toString(_hintRows[i - _hintCols.length][j]);
-//                    graphics.drawCenteredString(numText, pos, size, _rowFont);
-//                }
-//                // Range of hints cols
-//                else if(i < _hintCols.length && j >= _hintRows[0].length){
-//                    numText = Integer.toString(_hintCols[i][j - _hintRows[0].length]);
-//                    graphics.drawCenteredString(numText, pos, size, _colFont);
-//                }
-//                // Range of board
-//                else {
-//                    _boardState[i - _hintCols.length][j - _hintRows[0].length].render(graphics);
-////                    graphics.drawRect(pos, size[0]);
-//                }
-//            }
-//        }
+        for (int i = 0; i < (_boardState.length + _hintCols.length); i++) {
+            // TOTAL COLS
+            for (int j = 0; j < (_boardState[0].length + _hintRows[0].length); j++) {
+                // Carefull, position x is horizontall that corresponse with the j
+                pos[0] = _pos[0] + (int) (j * _cellSize);
+                pos[1] = _pos[1] + (int) (i * _cellSize);
+                size[0] = _cellSize;
+                size[1] = _cellSize;
+
+                String numText;
+                // Range of empty space (BORRAR)
+                if (i < _hintCols.length && j < _hintRows[0].length) {
+                    // Empty
+                }
+                // Range of hints rows
+                else if (i >= _hintCols.length && j < _hintRows[0].length) {
+                    numText = Integer.toString(_hintRows[i - _hintCols.length][j]);
+                    graphics.drawCenteredString(numText, pos, size, _hintFont);
+                }
+                // Range of hints cols
+                else if (i < _hintCols.length && j >= _hintRows[0].length) {
+                    numText = Integer.toString(_hintCols[i][j - _hintRows[0].length]);
+                    graphics.drawCenteredString(numText, pos, size, _hintFont);
+                }
+                // Range of board
+                else {
+                    _boardState[i - _hintCols.length][j - _hintRows[0].length].render(graphics);
+//                    graphics.drawRect(pos, size[0]);
+                }
+            }
+        }
     }
 
     public void handleInput(int[] clickPos) {
@@ -356,6 +348,41 @@ public class Board {
         return possible;
     }
 
+    /**
+     * Count mistakes from the board and return them as an array
+     *
+     * @return Array of mistakes: [0] = left cells, [1] = wrong cells
+     */
+    public int[] countMistakes() {
+        int[] mistakes = {0, 0};
+        _wrongCells = new ArrayList<>();
+
+        for (int i = 0; i < _rows; i++) {
+            for (int j = 0; j < _cols; j++) {
+                Cell c = _boardState[i][j];
+                if (c.cellType == CellType.GREY && _sol[i][j]) {
+                    mistakes[0]++;
+                } else if (c.cellType == CellType.BLUE && !_sol[i][j]) {
+                    mistakes[1]++;
+                    c.cellType = CellType.RED;
+                    _wrongCells.add(new int[]{i, j});
+                }
+            }
+        }
+
+        return mistakes;
+    }
+
+    public void resetWrongCells()
+    {
+        for (int [] index : _wrongCells)
+        {
+            int i = index[0];
+            int j = index[1];
+            _boardState[i][j].cellType = CellType.BLUE;
+        }
+    }
+
     //-------------------------------------------MISC-------------------------------------------------//
     // Numero de filas y columnas del tablero
     public int getNum_rows() {
@@ -373,10 +400,11 @@ public class Board {
     int[][] _hintRows;
     int[][] _hintCols;
     Cell[][] _boardState;
+    List<int[]> _wrongCells;
 
     int[] _pos = {10, 270};
     float[] _size;
     float _cellSize;
-    Font _rowFont;
-    Font _colFont;
+    Font _hintFont;
+    int _fontSize;
 }
