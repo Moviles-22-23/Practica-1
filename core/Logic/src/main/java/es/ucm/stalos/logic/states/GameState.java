@@ -4,6 +4,7 @@ import java.util.List;
 
 import es.ucm.stalos.engine.AbstractState;
 import es.ucm.stalos.engine.Engine;
+import es.ucm.stalos.engine.Font;
 import es.ucm.stalos.engine.Image;
 import es.ucm.stalos.engine.Input;
 import es.ucm.stalos.engine.State;
@@ -18,6 +19,8 @@ public class GameState extends AbstractState {
         this._rows = rows;
         this._cols = columns;
     }
+
+//-----------------------------------------OVERRIDE-----------------------------------------------//
 
     @Override
     public boolean init() {
@@ -54,24 +57,21 @@ public class GameState extends AbstractState {
             if (currEvent == Input.TouchEvent.touchDown) {
                 int[] clickPos = {currEvent.getX(), currEvent.getY()};
 
-                if(clickInsideSquare(clickPos, _posGiveUpButton, _sizeGiveUpButton)) _giveUpCallback.doSomething();
-                else if(clickInsideSquare(clickPos, _posCheckButton, _sizeCheckButton)) _checkCallback.doSomething();
+                if(clickInsideSquare(clickPos, _backButtonPos, _backButtonSize)) _backCallback.doSomething();
+                else if(clickInsideSquare(clickPos, _posCheckButton, _sizeButtonCheck)) _checkCallback.doSomething();
                 else if(clickInsideSquare(clickPos, _posBoard, _sizeBoard)) _board.handleInput(clickPos);
             }
         }
     }
 
-    public void initButtons(){
+//-------------------------------------------MISC-------------------------------------------------//
+
+    public void initButtons() throws Exception {
         // GIVE UP
-        _giveUpButtonImage = Assets.giveUpButton;
-        // Size
-        _sizeGiveUpButton[0] = _graphics.getLogWidth() * 0.4f;
-        _sizeGiveUpButton[1] = _graphics.getLogHeight() * 0.1f;
-        // Position
-        _posGiveUpButton[0] = 0;
-        _posGiveUpButton[1] = ((int)_sizeGiveUpButton[1] / 2);
-        // Callback
-        _giveUpCallback = new ButtonCallback() {
+        _backFont = _graphics.newFont("JosefinSans-Bold.ttf", 20, true);
+        _backButtonSize[0] = (_graphics.getLogWidth() / 14);
+        _backButtonSize[1] = (_graphics.getLogHeight() / 25);
+        _backCallback = new ButtonCallback() {
             @Override
             public void doSomething() {
                 State selectLevelState = new SelectLevelState(_engine);
@@ -80,18 +80,12 @@ public class GameState extends AbstractState {
         };
 
         // CHECK
-        _checkButtonImage = Assets.checkButton;
-        // Size
-        _sizeCheckButton[0] = _graphics.getLogWidth() * 0.4f;
-        _sizeCheckButton[1] = _graphics.getLogHeight() * 0.1f;
-        // Position
-        _posCheckButton[0] = 200;
-        _posCheckButton[1] = ((int)_sizeCheckButton[1] / 2);
-        // CallBack
+        _sizeButtonCheck[0] = _backButtonSize[0];
+        _sizeButtonCheck[1] = _backButtonSize[1];
         _checkCallback = new ButtonCallback() {
             @Override
             public void doSomething() {
-                System.out.println("Check Callback");
+                // TODO
                 // At first it checks the original solution
                 if(_board.checkOriginalSolution()){
                     System.out.println("Correct with original solution");
@@ -106,22 +100,35 @@ public class GameState extends AbstractState {
     }
 
     public void renderButtons(){
-        // Give Up Button
-        _graphics.drawImage(_giveUpButtonImage, _posGiveUpButton, _sizeGiveUpButton);
+        // Back Button
+        int color = 0X000000FF;
+        _graphics.setColor(color);
+        _graphics.drawImage(_backButtonImage, _backButtonPos, _backButtonSize);
+        int[] pos = {
+                _backButtonPos[0] + (int) (_backButtonSize[0] * 1.25) + 3,
+                _backButtonPos[1] + (int) (_backButtonSize[1] * 2 / 3) + 3
+        };
+        _graphics.drawText(_backText, pos, _backFont);
+
         // Check Button
-        _graphics.drawImage(_checkButtonImage, _posCheckButton, _sizeCheckButton);
+        _graphics.drawImage(_checkButtonImage, _posCheckButton, _sizeButtonCheck);
+        pos[0] += 230;
+        _graphics.drawText(_checkText, pos, _backFont);
     }
 
     public void initBoard(){
         // Create the board
-        _posBoard[0] = 50;
+        _posBoard[0] = 20;
         _posBoard[1] = 200;
-        _sizeBoard[0] = 300.0f;
-        _sizeBoard[1] = 300.0f;
-        System.out.println("Rows: " + _rows + ", cols:" + _cols);
+        _sizeBoard[0] = 380.0f;
+        _sizeBoard[1] = 380.0f;
+        // TODO
+        //System.out.println("Rows: " + _rows + ", cols:" + _cols);
         _board = new Board(_rows, _cols, _posBoard, _sizeBoard);
         _board.init(_graphics);
     }
+
+//----------------------------------------ATTRIBUTES----------------------------------------------//
 
     // Atributos del estado
     int _rows;
@@ -133,14 +140,17 @@ public class GameState extends AbstractState {
     float[] _sizeBoard = new float[2];
 
     // Give Up Button attributes
-    Image _giveUpButtonImage;
-    int[] _posGiveUpButton = new int[2];
-    float[] _sizeGiveUpButton = new float[2];
-    ButtonCallback _giveUpCallback;
+    final String _backText = "Rendirse";
+    final Image _backButtonImage = Assets.backArrow;
+    final int[] _backButtonPos = {15, 50};
+    final float[] _backButtonSize = new float[2];
+    Font _backFont;
+    ButtonCallback _backCallback;
 
     // Check Button attributes
-    Image _checkButtonImage;
-    int[] _posCheckButton = new int[2];
-    float[] _sizeCheckButton = new float[2];
+    final String _checkText = "Comprobar";
+    final Image _checkButtonImage = Assets.lens;
+    final int[] _posCheckButton = {240, 50};
+    final float[] _sizeButtonCheck = new float[2];
     ButtonCallback _checkCallback;
 }

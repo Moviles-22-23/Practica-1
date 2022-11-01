@@ -40,24 +40,24 @@ public class DesktopGraphics extends AbstractGraphics {
         return _graphics;
     }
 
-//-----------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 
     @Override
     public Image newImage(String name) throws Exception {
-        DesktopImage img = new DesktopImage("./assets/" + name);
+        DesktopImage img = new DesktopImage("./assets/images/" + name);
         if (!img.init()) throw new Exception();
         return img;
     }
 
     @Override
     public Font newFont(String filename, int size, boolean isBold) throws Exception {
-        DesktopFont newFont = new DesktopFont("./assets/" + filename, size, isBold);
+        DesktopFont newFont = new DesktopFont("./assets/fonts/" + filename, size, isBold);
         if (!newFont.init())
             throw new Exception();
         return newFont;
     }
 
-    //-----------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
     @Override
     public void clear(int color) {
         _graphics = getStrategy().getDrawGraphics();
@@ -76,7 +76,8 @@ public class DesktopGraphics extends AbstractGraphics {
         Color c = new Color(r, g, b, a);
         _graphics.setColor(c);
     }
-//-----------------------------------------------------------------//
+
+//------------------------------------------------------------------------------------------------//
 
     @Override
     public void drawImage(Image image, int[] pos, float[] size) {
@@ -168,7 +169,8 @@ public class DesktopGraphics extends AbstractGraphics {
         _graphics.drawString(text, newPos[0], newPos[1]);
         _graphics.setPaintMode();
     }
-//-----------------------------------------------------------------//
+
+//------------------------------------------------------------------------------------------------//
 
     @Override
     public void fillSquare(int[] pos, float side) {
@@ -186,7 +188,7 @@ public class DesktopGraphics extends AbstractGraphics {
         _graphics.setPaintMode();
     }
 
-//-----------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 
     @Override
     public int getWidth() {
@@ -198,7 +200,7 @@ public class DesktopGraphics extends AbstractGraphics {
         return _screen.getHeight();
     }
 
-//-----------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 
     @Override
     public void prepareFrame() {
@@ -229,6 +231,8 @@ public class DesktopGraphics extends AbstractGraphics {
     public void restore() {
         _graphics.dispose();
     }
+
+//------------------------------------------------------------------------------------------------//
 
     // VARIABLES
     private final Engine _mainEngine;

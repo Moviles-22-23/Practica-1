@@ -19,6 +19,7 @@ public class MainMenuState extends AbstractState {
         super(engine);
     }
 
+//-----------------------------------------OVERRIDE-----------------------------------------------//
     @Override
     public boolean init() {
         try {
@@ -88,6 +89,7 @@ public class MainMenuState extends AbstractState {
         }
     }
 
+//----------------------------------------ATTRIBUTES----------------------------------------------//
     // TITLE
     String _titleText;
     Font _titleFont;

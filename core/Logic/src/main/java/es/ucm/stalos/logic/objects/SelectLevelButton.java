@@ -1,5 +1,7 @@
 package es.ucm.stalos.logic.objects;
 
+import java.awt.Button;
+
 import javax.security.auth.callback.Callback;
 
 import es.ucm.stalos.engine.Font;
@@ -10,7 +12,7 @@ import es.ucm.stalos.logic.interfaces.ButtonCallback;
 import es.ucm.stalos.logic.states.GameState;
 
 public class SelectLevelButton {
-    public SelectLevelButton(int[] pos, float[] size, GridSize gridType, Font font, ButtonCallback cb) {
+    public SelectLevelButton(int[] pos, float[] size, GridSize gridType, Font font) {
         _buttonPos[0] = pos[0];
         _buttonPos[1] = pos[1];
 
@@ -19,42 +21,62 @@ public class SelectLevelButton {
 
         _textPos[0] = _buttonPos[0];
         _textPos[1] = _buttonPos[1] + (int)_buttonSize[1] / 5 * 3;
+        initType(gridType);
+
+        _font = font;
+    }
+
+    private void initType(GridSize gridType)
+    {
         switch (gridType) {
             case _4x4:
+                _rows = 4;
+                _cols = 4;
                 _textPos[0] += (int)_buttonSize[0] / 13 * 3;
                 _text = 4 + "x" + 4;
                 break;
             case _5x5:
+                _rows = 5;
+                _cols = 5;
                 _textPos[0] += (int)_buttonSize[0] / 15 * 4;
                 _text = 5 + "x" + 5;
                 break;
             case _5x10:
+                _rows = 5;
+                _cols = 10;
                 _textPos[0] += (int)_buttonSize[0] / 5;
                 _text = 5 + "x" + 10;
                 break;
             case _8x8:
+                _rows = 8;
+                _cols = 8;
                 _textPos[0] += (int)_buttonSize[0] / 15 * 4;
                 _text = 8 + "x" + 8;
                 break;
             case _10x10:
+                _rows = 10;
+                _cols = 10;
                 _textPos[0] += (int)_buttonSize[0] / 17 * 3;
                 _text = 10 + "x" + 10;
                 break;
             case _10x15:
+                _rows = 10;
+                _cols = 15;
                 _textPos[0] += (int)_buttonSize[0] / 17 * 3;
                 _text = 10 + "x" + 15;
                 break;
         }
-
-        _font = font;
-
-        _cb = cb;
     }
 
     public void render(Graphics gr) {
         gr.drawRect(_buttonPos, _buttonSize);
 
         gr.drawText(_text, _textPos, _font);
+    }
+
+    public void setCallback(ButtonCallback cb)
+    {
+        _cb = cb;
     }
 
     public void doSomething() {
@@ -69,10 +91,15 @@ public class SelectLevelButton {
         return _buttonSize;
     }
 
+    public int getRows() {return _rows;}
+    public int getCols() {return _cols;}
+
     private final int[] _buttonPos = new int[2];
     private final int[] _textPos = new int[2];
     private final float[] _buttonSize = new float[2];
     private final Font _font;
+    private int _rows;
+    private int _cols;
     private String _text;
-    private final ButtonCallback _cb;
+    private ButtonCallback _cb;
 }

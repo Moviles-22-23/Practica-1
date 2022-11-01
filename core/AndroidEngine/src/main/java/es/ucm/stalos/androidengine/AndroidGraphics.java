@@ -1,6 +1,5 @@
 package es.ucm.stalos.androidengine;
 
-import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
