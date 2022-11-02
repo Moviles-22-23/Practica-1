@@ -10,9 +10,12 @@ public class Cell {
     Cell(int row, int col, int[] pos, float cellSize) {
         this.row = row;
         this.col = col;
-        x = pos[0];
-        y = pos[1];
+        this.x = pos[0];
+        this.y = pos[1];
+        this.fx = (int)(pos[0] + whiteMargin);
+        this.fy = (int)(pos[1] + whiteMargin);
         this.size = cellSize;
+        this.fsize = cellSize - whiteMargin * 2;
         this.cellType = CellType.GREY;
 
         // COLORS - MAP
@@ -25,10 +28,14 @@ public class Cell {
 
     public void render(Graphics graphics){
         int[] pos = new int[]{x, y};
-        graphics.setColor(_colors.get(cellType));
+        // Cuadrado blanco
+        graphics.setColor(0xFFFFFFFF);
         graphics.fillSquare(pos, size);
-        graphics.setColor(0x000000FF);
-        graphics.drawRect(pos, size);
+
+        int[] fillPos = new int[]{fx, fy};
+        graphics.setColor(_colors.get(cellType));
+        graphics.fillSquare(fillPos, fsize);
+
         if(cellType == CellType.WHITE) graphics.drawLine(pos, new int[]{pos[0] + (int)size, pos[1] + (int)size});
     }
 
@@ -56,7 +63,10 @@ public class Cell {
 
     public CellType cellType;
     public int x, y;
+    public int fx, fy;
     public int row, col;
     public float size;
+    public float fsize;
+    public float whiteMargin = 2;
     private Map<CellType, Integer> _colors;
 }

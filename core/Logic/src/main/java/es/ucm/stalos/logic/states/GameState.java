@@ -212,8 +212,8 @@ public class GameState extends AbstractState {
         // Create the board
         _posBoard[0] = 20;
         _posBoard[1] = 200;
-        _sizeBoard[0] = 380.0f;
-        _sizeBoard[1] = 380.0f;
+        _sizeBoard[0] = 360.0f;
+        _sizeBoard[1] = 360.0f;
 
         _board = new Board(_rows, _cols, _posBoard, _sizeBoard);
         _board.init(_graphics);

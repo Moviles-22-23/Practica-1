@@ -38,14 +38,14 @@ public class Board {
         this._boardState = new Cell[rows][cols];
         this._hintRows = new int[rows][(int) Math.ceil(cols / 2.0f)];
         this._hintCols = new int[(int) Math.ceil(rows / 2.0f)][cols];
-
         this._pos = pos;
         this._size = size;
 
         // Cell Size must be square so we have to use the min between rows and cols
-        float maxRowsSize = size[1] / (rows + (int) Math.ceil(rows / 2.0f));
-        float maxColsSize = size[0] / (cols + (int) Math.ceil(cols / 2.0f));
+        float maxRowsSize = size[1] * 2 / (rows * 2 + (int) Math.ceil(rows / 2.0f));
+        float maxColsSize = size[0] * 2 / (cols * 2 + (int) Math.ceil(cols / 2.0f));
         _cellSize = Math.min(maxRowsSize, maxColsSize);
+        _hintSize = _cellSize / 2;
     }
 
     //-------------------------------------------INIT-------------------------------------------------//
@@ -161,46 +161,35 @@ public class Board {
     }
 
     private void loadBoardState() {
+        int[] cellsPos = new int[2];
+        cellsPos[0] = _pos[0] + (int) (_hintSize * _hintRows[0].length);
+        cellsPos[1] = _pos[1] + (int) (_hintSize * _hintCols.length);
+
+        int aux = cellsPos[0];
+
         int[] pos = new int[2];
-        pos[0] = _pos[0] + (int) (_size[0] * _hintRows[0].length / (_hintRows[0].length + _boardState[0].length));
-        pos[1] = _pos[1] + (int) (_size[1] * _hintCols.length / (_hintCols.length + _boardState[0].length));
-
-        int aux = pos[0];
-
         for (int i = 0; i < _rows; i++) {
-            pos[0] = aux;
+            pos[1] = cellsPos[1] + (int) (i * _cellSize);
             for (int j = 0; j < _cols; j++) {
+                pos[0] = cellsPos[0] + (int) (j * _cellSize);
                 _boardState[i][j] = new Cell(i, j, pos, _cellSize);
-                pos[0] += _cellSize;
             }
-            pos[1] += _cellSize;
         }
     }
 
 //----------------------------------------MAIN-LOOP-----------------------------------------------//
 
     public void render(Graphics graphics) {
+        // Mostramos el canvas del tablero TODO borrar
+        graphics.setColor(0xFF0000FF);
+        graphics.drawRect(_pos, _size);
+
+        // Posición y tamaño auxiliares
         int[] pos = new int[2];
         float[] size = new float[2];
 
         // Number Colors
         graphics.setColor(0x000000FF);
-
-        float maxSide = Math.max(_boardState.length, _boardState[0].length);
-
-        // At first we draw the _hintRows and _hintCols squares
-        pos[0] = _pos[0];
-        pos[1] = _pos[1] + (int) (_size[1] * _hintCols.length / (maxSide + _hintCols.length));
-        size[0] = _hintRows[0].length * _cellSize;
-        size[1] = _hintRows.length * _cellSize;
-        graphics.drawRect(pos, size);
-
-        pos[0] = _pos[0] + (int) (_size[0] * _hintRows[0].length / (maxSide + _hintRows[0].length));
-        pos[1] = _pos[1];
-        size[0] = _hintCols[0].length * _cellSize;
-        size[1] = _hintCols.length * _cellSize;
-        graphics.drawRect(pos, size);
-
 
         // TOTAL ROWS
         for (int i = 0; i < (_boardState.length + _hintCols.length); i++) {
@@ -215,17 +204,17 @@ public class Board {
                 String numText;
                 // Range of empty space (BORRAR)
                 if (i < _hintCols.length && j < _hintRows[0].length) {
-                    // Empty
+                    // Empty o poner aqui el dibujo peque o algo
                 }
                 // Range of hints rows
                 else if (i >= _hintCols.length && j < _hintRows[0].length) {
                     numText = Integer.toString(_hintRows[i - _hintCols.length][j]);
-                    graphics.drawCenteredString(numText, pos, size, _hintFont);
+//                    graphics.drawCenteredString(numText, pos, size, _hintFont);
                 }
                 // Range of hints cols
                 else if (i < _hintCols.length && j >= _hintRows[0].length) {
                     numText = Integer.toString(_hintCols[i][j - _hintRows[0].length]);
-                    graphics.drawCenteredString(numText, pos, size, _hintFont);
+//                    graphics.drawCenteredString(numText, pos, size, _hintFont);
                 }
                 // Range of board
                 else {
@@ -234,6 +223,23 @@ public class Board {
                 }
             }
         }
+
+//        float maxSide = Math.max(_boardState.length, _boardState[0].length);
+        graphics.setColor(0x000000FF);
+
+        // HintsRows Rect
+        pos[0] = _pos[0];
+        pos[1] = _pos[1] + (int)(_hintSize * _hintCols.length);
+        size[0] = _hintRows[0].length * _hintSize;
+        size[1] = _hintRows.length * _cellSize;
+        graphics.drawRect(pos, size);
+
+        // HintCols Rect
+        pos[0] = _pos[0] + (int)(_hintSize * _hintRows[0].length);
+        pos[1] = _pos[1];
+        size[0] = _hintCols[0].length * _cellSize;
+        size[1] = _hintCols.length * _hintSize;
+        graphics.drawRect(pos, size);
     }
 
     public void handleInput(int[] clickPos) {
@@ -405,6 +411,7 @@ public class Board {
     int[] _pos = {10, 270};
     float[] _size;
     float _cellSize;
+    float _hintSize;
     Font _hintFont;
     int _fontSize;
 }
