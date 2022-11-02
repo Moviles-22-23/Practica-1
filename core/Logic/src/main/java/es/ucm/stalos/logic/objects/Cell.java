@@ -35,8 +35,13 @@ public class Cell {
         int[] fillPos = new int[]{fx, fy};
         graphics.setColor(_colors.get(cellType));
         graphics.fillSquare(fillPos, fsize);
+        int[] fillPos2 = new int[]{fx + (int)fsize, fy + (int)fsize};
 
-        if(cellType == CellType.WHITE) graphics.drawLine(pos, new int[]{pos[0] + (int)size, pos[1] + (int)size});
+        if(cellType == CellType.WHITE) {
+            graphics.setColor(0x000000FF);
+            graphics.drawRect(fillPos, fsize);
+            graphics.drawLine(fillPos, fillPos2);
+        }
     }
 
     public void handleInput(int[] clickPos){

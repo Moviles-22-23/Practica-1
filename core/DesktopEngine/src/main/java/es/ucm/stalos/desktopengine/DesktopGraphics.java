@@ -109,9 +109,9 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public void drawLine(int[] start, int[] end) {
-        int[] newPos = finalPosition(start[0], start[1]);
-        int[] newSize = finalSize(end[0], end[1]);
-        _graphics.drawLine(newPos[0], newPos[1], newSize[0], newSize[1]);
+        int[] point1 = finalPosition(start[0], start[1]);
+        int[] point2 = finalPosition(end[0], end[1]);
+        _graphics.drawLine(point1[0], point1[1], point2[0], point2[1]);
         _graphics.setPaintMode();
     }
 
