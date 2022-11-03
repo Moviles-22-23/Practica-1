@@ -3,6 +3,7 @@ package es.ucm.stalos.desktopengine;
 import java.awt.image.BufferStrategy;
 
 import es.ucm.stalos.engine.AbstractEngine;
+import es.ucm.stalos.engine.IFile;
 import es.ucm.stalos.engine.State;
 
 public class DesktopEngine extends AbstractEngine implements Runnable {
@@ -96,4 +97,12 @@ public class DesktopEngine extends AbstractEngine implements Runnable {
 
     private Thread _renderThread;
     private boolean _running;
+
+    @Override
+    public IFile newFile(String _fileName) throws Exception {
+        DesktopFile file = new DesktopFile("./assets/" + _fileName);
+        if (!file.init()) throw new Exception();
+
+        return file;
+    }
 }

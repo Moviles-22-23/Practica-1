@@ -124,11 +124,13 @@ public class GameState extends AbstractState {
                 // At first it checks the original solution
                 if (_board.checkOriginalSolution()) {
                     _situation = StateCondition.Win;
+                    _board.setWin(true);
                 }
                 // Then check for another one
                 else if (_board.checkAnotherSolution()) {
                     _situation = StateCondition.Win;
                     _winText2 = "Otra solución";
+                    _board.setWin(true);
                 } else {
                     _situation = StateCondition.Checking;
                     showText();
@@ -216,7 +218,7 @@ public class GameState extends AbstractState {
         _sizeBoard[1] = 360.0f;
 
         _board = new Board(_rows, _cols, _posBoard, _sizeBoard);
-        _board.init(_graphics);
+        _board.init(_engine);
     }
 
     private void showText() {

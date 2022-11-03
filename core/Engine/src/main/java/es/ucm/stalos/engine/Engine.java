@@ -22,4 +22,9 @@ public interface Engine {
      * @return Instace of audio manager
      */
     Audio getAudio();
+
+    /**
+     * Create and return a new file
+     */
+    IFile newFile(String _fileName) throws Exception;
 }

@@ -53,7 +53,7 @@ public class AndroidGraphics extends AbstractGraphics {
 
     @Override
     public Image newImage(String name) throws Exception {
-        AndroidImage img = new AndroidImage(name, _assetManager);
+        AndroidImage img = new AndroidImage("images/" + name, _assetManager);
         if (!img.init()) throw new Exception();
 
         return img;
@@ -61,7 +61,7 @@ public class AndroidGraphics extends AbstractGraphics {
 
     @Override
     public Font newFont(String filename, int size, boolean isBold) throws Exception {
-        AndroidFont font = new AndroidFont(filename, size, isBold, _assetManager);
+        AndroidFont font = new AndroidFont("fonts/" + filename, size, isBold, _assetManager);
         if (!font.init()) throw new Exception();
         return font;
     }

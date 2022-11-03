@@ -18,8 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import es.ucm.stalos.engine.Engine;
 import es.ucm.stalos.engine.Font;
 import es.ucm.stalos.engine.Graphics;
+import es.ucm.stalos.engine.IFile;
 import es.ucm.stalos.logic.enums.CellType;
 
 public class Board {
@@ -49,11 +51,11 @@ public class Board {
     }
 
     //-------------------------------------------INIT-------------------------------------------------//
-    public boolean init(Graphics graphics) {
+    public boolean init(Engine engine) {
         try {
+            _engine = engine;
             _fontSize = 30;
-            _hintFont = graphics.newFont("JosefinSans-Bold.ttf", _fontSize, true);
-            ;
+            _hintFont = engine.getGraphics().newFont("JosefinSans-Bold.ttf", _fontSize, true);
 
             readSolution();
             loadLevel();
@@ -67,11 +69,13 @@ public class Board {
 
     private void readSolution() throws FileNotFoundException {
         try {
-            String filePath = "./assets/levels/levelPack" + String.valueOf(_rows) + "x" + String.valueOf(_cols) + ".txt";
-            BufferedReader br = new BufferedReader(new FileReader(filePath));
-
+            // LevelPack Name
+            String name = "levels/levelPack" + String.valueOf(_rows) + "x" + String.valueOf(_cols) + ".txt";
+            // IFile from the current platform
+            IFile file = _engine.newFile(name);
+            BufferedReader br = file.getBufferReader();
+            //
             String line;
-
             line = br.readLine();
             int numLevels = Integer.parseInt(line);
             Random rn = new Random();
@@ -95,6 +99,7 @@ public class Board {
                 }
             }
         } catch (Exception e) {
+            System.out.println("ERROR ANDROID: " + e.getMessage());
             System.out.println("Error reading file");
         }
     }
@@ -184,62 +189,74 @@ public class Board {
         graphics.setColor(0xFF0000FF);
         graphics.drawRect(_pos, _size);
 
-        // Posición y tamaño auxiliares
-        int[] pos = new int[2];
-        float[] size = new float[2];
+        if(!_isWin) {
+            // Posición y tamaño auxiliares
+            int[] pos = new int[2];
+            float[] size = new float[2];
 
-        // Number Colors
-        graphics.setColor(0x000000FF);
+            // Number Colors
+            graphics.setColor(0x000000FF);
 
-        // TOTAL ROWS
-        for (int i = 0; i < (_boardState.length + _hintCols.length); i++) {
-            // TOTAL COLS
-            for (int j = 0; j < (_boardState[0].length + _hintRows[0].length); j++) {
-                // Carefull, position x is horizontall that corresponse with the j
-                pos[0] = _pos[0] + (int) (j * _cellSize);
-                pos[1] = _pos[1] + (int) (i * _cellSize);
-                size[0] = _cellSize;
-                size[1] = _cellSize;
+            // TOTAL ROWS
+            for (int i = 0; i < (_boardState.length + _hintCols.length); i++) {
+                // TOTAL COLS
+                for (int j = 0; j < (_boardState[0].length + _hintRows[0].length); j++) {
+                    // Carefull, position x is horizontall that corresponse with the j
+                    pos[0] = _pos[0] + (int) (j * _cellSize);
+                    pos[1] = _pos[1] + (int) (i * _cellSize);
+                    size[0] = _cellSize;
+                    size[1] = _cellSize;
 
-                String numText;
-                // Range of empty space (BORRAR)
-                if (i < _hintCols.length && j < _hintRows[0].length) {
-                    // Empty o poner aqui el dibujo peque o algo
-                }
-                // Range of hints rows
-                else if (i >= _hintCols.length && j < _hintRows[0].length) {
-                    numText = Integer.toString(_hintRows[i - _hintCols.length][j]);
+                    String numText;
+                    // Range of empty space (BORRAR)
+                    if (i < _hintCols.length && j < _hintRows[0].length) {
+                        // Empty o poner aqui el dibujo peque o algo
+                    }
+                    // Range of hints rows
+                    else if (i >= _hintCols.length && j < _hintRows[0].length) {
+                        numText = Integer.toString(_hintRows[i - _hintCols.length][j]);
 //                    graphics.drawCenteredString(numText, pos, size, _hintFont);
-                }
-                // Range of hints cols
-                else if (i < _hintCols.length && j >= _hintRows[0].length) {
-                    numText = Integer.toString(_hintCols[i][j - _hintRows[0].length]);
+                    }
+                    // Range of hints cols
+                    else if (i < _hintCols.length && j >= _hintRows[0].length) {
+                        numText = Integer.toString(_hintCols[i][j - _hintRows[0].length]);
 //                    graphics.drawCenteredString(numText, pos, size, _hintFont);
-                }
-                // Range of board
-                else {
-                    _boardState[i - _hintCols.length][j - _hintRows[0].length].render(graphics);
+                    }
+                    // Range of board
+                    else {
+                        _boardState[i - _hintCols.length][j - _hintRows[0].length].render(graphics);
 //                    graphics.drawRect(pos, size[0]);
+                    }
+                }
+            }
+
+//        float maxSide = Math.max(_boardState.length, _boardState[0].length);
+            graphics.setColor(0x000000FF);
+
+            // HintsRows Rect
+            pos[0] = _pos[0];
+            pos[1] = _pos[1] + (int) (_hintSize * _hintCols.length);
+            size[0] = _hintRows[0].length * _hintSize;
+            size[1] = _hintRows.length * _cellSize;
+            graphics.drawRect(pos, size);
+
+            // HintCols Rect
+            pos[0] = _pos[0] + (int) (_hintSize * _hintRows[0].length);
+            pos[1] = _pos[1];
+            size[0] = _hintCols[0].length * _cellSize;
+            size[1] = _hintCols.length * _hintSize;
+            graphics.drawRect(pos, size);
+        }
+        else{
+            // Aqui dibuja solo la solucion
+            for (int i = 0; i < _rows; i++) {
+                for (int j = 0; j < _cols; j++) {
+                    int[] solPos = {_pos[0] + (int)(_size[0] * i / _rows), _pos[1] + (int)(_size[1] * j / _cols)};
+                    graphics.setColor(0x0000FFFF);
+                    if(_sol[i][j]) graphics.fillSquare(solPos, _cellSize);
                 }
             }
         }
-
-//        float maxSide = Math.max(_boardState.length, _boardState[0].length);
-        graphics.setColor(0x000000FF);
-
-        // HintsRows Rect
-        pos[0] = _pos[0];
-        pos[1] = _pos[1] + (int)(_hintSize * _hintCols.length);
-        size[0] = _hintRows[0].length * _hintSize;
-        size[1] = _hintRows.length * _cellSize;
-        graphics.drawRect(pos, size);
-
-        // HintCols Rect
-        pos[0] = _pos[0] + (int)(_hintSize * _hintRows[0].length);
-        pos[1] = _pos[1];
-        size[0] = _hintCols[0].length * _cellSize;
-        size[1] = _hintCols.length * _hintSize;
-        graphics.drawRect(pos, size);
     }
 
     public void handleInput(int[] clickPos) {
@@ -399,7 +416,11 @@ public class Board {
         return _cols;
     }
 
+    public void setWin(boolean state) { _isWin = state; }
+
     //----------------------------------------ATTRIBUTES----------------------------------------------//
+    private Engine _engine;
+
     private final int _rows;
     private final int _cols;
     boolean[][] _sol;
@@ -407,6 +428,7 @@ public class Board {
     int[][] _hintCols;
     Cell[][] _boardState;
     List<int[]> _wrongCells;
+    boolean _isWin = false;
 
     int[] _pos = {10, 270};
     float[] _size;
