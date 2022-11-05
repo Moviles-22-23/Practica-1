@@ -14,7 +14,7 @@ import es.ucm.stalos.engine.Image;
 import es.ucm.stalos.engine.Input;
 import es.ucm.stalos.engine.State;
 import es.ucm.stalos.logic.Assets;
-import es.ucm.stalos.logic.enums.GridSize;
+import es.ucm.stalos.logic.enums.GridType;
 import es.ucm.stalos.logic.interfaces.ButtonCallback;
 import es.ucm.stalos.logic.objects.SelectLevelButton;
 
@@ -31,8 +31,8 @@ public class SelectLevelState extends AbstractState {
         try {
             // BACK LEVEL
             _backFont = _graphics.newFont("JosefinSans-Bold.ttf", 20, true);
-            _backButtonSize[0] = (_graphics.getLogWidth() / 14);
-            _backButtonSize[1] = (_graphics.getLogHeight() / 25);
+            _backImageSize[0] = (_graphics.getLogWidth() / 14);
+            _backImageSize[1] = (_graphics.getLogHeight() / 25);
             _backCallback = new ButtonCallback() {
                 @Override
                 public void doSomething() {
@@ -40,6 +40,11 @@ public class SelectLevelState extends AbstractState {
                     _engine.reqNewState(mainMenuState);
                 }
             };
+            _backTextPos[0] = _backImagePos[0] + (int) (_backImageSize[0] * 1.25) + 3;
+            _backTextPos[1] = _backImagePos[1] + (int) (_backImageSize[1] * 2 / 3) + 3;
+
+            _backButtonSize[0] = 100;
+            _backButtonSize[1] = _backImageSize[1];
 
             // SELECT LEVEL TEXT
             _titleFont = _graphics.newFont("JosefinSans-Bold.ttf", 25, true);
@@ -67,12 +72,8 @@ public class SelectLevelState extends AbstractState {
         // Back Button
         color = 0X000000FF;
         _graphics.setColor(color);
-        _graphics.drawImage(_backButtonImage, _backButtonPos, _backButtonSize);
-        int[] pos = {
-                _backButtonPos[0] + (int) (_backButtonSize[0] * 1.25) + 3,
-                _backButtonPos[1] + (int) (_backButtonSize[1] * 2 / 3) + 3
-        };
-        _graphics.drawText(_backText, pos, _backFont);
+        _graphics.drawImage(_backButtonImage, _backImagePos, _backImageSize);
+        _graphics.drawText(_backText, _backTextPos, _backFont);
 
         // SelectLevel buttons
         for (SelectLevelButton button : _selectButtons) {
@@ -88,7 +89,7 @@ public class SelectLevelState extends AbstractState {
             if (currEvent == Input.TouchEvent.touchDown) {
                 int[] clickPos = {currEvent.getX(), currEvent.getY()};
 
-                if (clickInsideSquare(clickPos, _backButtonPos, _backButtonSize))
+                if (clickInsideSquare(clickPos, _backImagePos, _backButtonSize))
                     _backCallback.doSomething();
                 else {
                     for (SelectLevelButton button : _selectButtons) {
@@ -118,16 +119,15 @@ public class SelectLevelState extends AbstractState {
         Font font = _graphics.newFont("Molle-Regular.ttf", 20, true);
 
         int[] pos = new int[2];
-        ButtonCallback cb;
 
         initGridTypesMap();
 
         int j = 0;
-        for (int i = 0; i < GridSize.MAX.getValue(); i++) {
+        for (int i = 0; i < GridType.MAX.getValue(); i++) {
             pos[0] = (_graphics.getLogWidth() / 10) * (1 + (3 * j));
             pos[1] = (_graphics.getLogHeight() / 7) * (3 + (i / 3) * 2);
 
-            final SelectLevelButton _level = new SelectLevelButton(pos, size, _gridMap.get(i), font);
+            final SelectLevelButton _level = new SelectLevelButton(pos, size, _gridTypes.get(i), font);
             _level.setCallback(new ButtonCallback() {
                 @Override
                 public void doSomething() {
@@ -135,8 +135,6 @@ public class SelectLevelState extends AbstractState {
                     int c = _level.getCols();
                     State gameState = new GameState(_engine, r, c);
                     _engine.reqNewState(gameState);
-                    // TODO
-                    //playSound();
                 }
             });
             _selectButtons.add(_level);
@@ -150,13 +148,13 @@ public class SelectLevelState extends AbstractState {
      * Initializes rows and cols types of the selectButton.
      */
     private void initGridTypesMap() {
-        _gridMap = new HashMap<>();
-        _gridMap.put(0, GridSize._4x4);
-        _gridMap.put(1, GridSize._5x5);
-        _gridMap.put(2, GridSize._5x10);
-        _gridMap.put(3, GridSize._8x8);
-        _gridMap.put(4, GridSize._10x10);
-        _gridMap.put(5, GridSize._10x15);
+        _gridTypes = new HashMap<>();
+        _gridTypes.put(0, GridType._4x4);
+        _gridTypes.put(1, GridType._5x5);
+        _gridTypes.put(2, GridType._5x10);
+        _gridTypes.put(3, GridType._8x8);
+        _gridTypes.put(4, GridType._10x10);
+        _gridTypes.put(5, GridType._10x15);
     }
 
     // TODO: Esto es una prueba de sonido
@@ -179,19 +177,40 @@ public class SelectLevelState extends AbstractState {
 //----------------------------------------ATTRIBUTES----------------------------------------------//
 
     // BACK BUTTON
-    final String _backText = "Volver";
-    final Image _backButtonImage = Assets.backArrow;
-    final int[] _backButtonPos = {15, 50};
-    final float[] _backButtonSize = new float[2];
-    Font _backFont;
-    ButtonCallback _backCallback;
+    private final String _backText = "Volver";
+    private final Image _backButtonImage = Assets.backArrow;
+    /**
+     * BackButtonIcon's position
+     */
+    private final int[] _backImagePos = {15, 50};
+    /**
+     * BackText's position
+     */
+    private final int[] _backTextPos = new int[2];
+    /**
+     * BackButtonIcon's size
+     */
+    private final float[] _backImageSize = new float[2];
+    /**
+     * BackButtonIcon + text's size
+     */
+    private final float[] _backButtonSize = new float[2];
+    private Font _backFont;
+    private ButtonCallback _backCallback;
 
     // SELECT LEVEL TEXT
-    final String _title = "Selecciona el tamaño del puzzle";
-    int[] _titlePos = new int[2];
-    Font _titleFont;
+    private final String _title = "Selecciona el tamaño del puzzle";
+    private final int[] _titlePos = new int[2];
+    private Font _titleFont;
 
     // SELECT LEVEL BUTTONS
+    /**
+     * List of all select level buttons
+     */
     List<SelectLevelButton> _selectButtons;
-    Map<Integer, GridSize> _gridMap;
+    /**
+     * Dictionary of information about
+     * different grid level types
+     */
+    Map<Integer, GridType> _gridTypes;
 }

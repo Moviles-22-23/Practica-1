@@ -158,21 +158,6 @@ public class DesktopGraphics extends AbstractGraphics {
         _graphics.setPaintMode();
     }
 
-//    @Override
-//    public void drawCenteredString(String text, int[] pos, float[] size, Font font) {
-//        java.awt.Font javaFont = initFont(font);
-//
-//        // Scale
-//        int x = pos[0] - (int)(size[0] / 2);
-//        int y = pos[1] + (int)(size[1]);
-//
-//        // Draw the String
-//        int[] newPos = finalPosition(x, y);
-//        // Drawing
-//        _graphics.drawString(text, newPos[0], newPos[1]);
-//        _graphics.setPaintMode();
-//    }
-
 //------------------------------------------------------------------------------------------------//
 
     @Override
@@ -208,7 +193,7 @@ public class DesktopGraphics extends AbstractGraphics {
     @Override
     public void prepareFrame() {
         while (getStrategy() == null) {
-            System.out.println("NULL");
+            System.out.println("PREPARE FRAME: NULL");
         }
         _graphics = getStrategy().getDrawGraphics();
 

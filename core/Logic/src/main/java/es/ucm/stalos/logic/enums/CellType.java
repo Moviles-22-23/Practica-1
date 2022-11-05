@@ -1,5 +1,8 @@
 package es.ucm.stalos.logic.enums;
 
+/**
+ * Information about different cell types of the game
+ */
 public enum CellType {
     GREY(0),
     BLUE(1),

@@ -51,6 +51,8 @@ public class AndroidGraphics extends AbstractGraphics {
         return true;
     }
 
+//-----------------------------------------------------------------//
+
     @Override
     public Image newImage(String name) throws Exception {
         AndroidImage img = new AndroidImage("images/" + name, _assetManager);
@@ -66,17 +68,12 @@ public class AndroidGraphics extends AbstractGraphics {
         return font;
     }
 
+//-----------------------------------------------------------------//
+
     @Override
     public void clear(int color) {
         setColor(color);
         _canvas.drawColor(color);
-    }
-
-    @Override
-    public void drawImage(Image image, int[] pos, float[] size) {
-        Rect source = new Rect(0, 0, image.getWidth(), image.getHeight());
-        Rect destiny = new Rect(pos[0], pos[1], (int) (pos[0] + size[0]), (int) (pos[1] + size[1]));
-        _canvas.drawBitmap(((AndroidImage) image).getBitmap(), source, destiny, null);
     }
 
     @Override
@@ -89,40 +86,13 @@ public class AndroidGraphics extends AbstractGraphics {
         this._paint.setColor(Color.argb(a, r, g, b));
     }
 
-    @Override
-    public void fillSquare(int[] pos, float side) {
-        _paint.setStyle(Paint.Style.FILL);
-        float[] s = {side, side};
-        paintRect(pos, s);
-    }
+//-----------------------------------------------------------------//
 
     @Override
-    public void fillSquare(int[] pos, float[] size) {
-        _paint.setStyle(Paint.Style.FILL);
-        paintRect(pos, size);
-    }
-
-    @Override
-    public void drawRect(int[] pos, float side) {
-        _paint.setStyle(Paint.Style.STROKE);
-        float[] s = {side, side};
-        paintRect(pos, s);
-    }
-
-    @Override
-    public void drawRect(int[] pos, float[] size) {
-        _paint.setStyle(Paint.Style.STROKE);
-        paintRect(pos, size);
-    }
-
-    private void paintRect(int[] pos, float[] size){
-        _canvas.drawRect(pos[0], pos[1], pos[0] + size[0], pos[1] + size[1], _paint);
-        _paint.reset();
-    }
-
-    @Override
-    public void drawLine(int[] start, int[] end) {
-        _canvas.drawLine(start[0], start[1], end[0], end[1], _paint);
+    public void drawImage(Image image, int[] pos, float[] size) {
+        Rect source = new Rect(0, 0, image.getWidth(), image.getHeight());
+        Rect destiny = new Rect(pos[0], pos[1], (int) (pos[0] + size[0]), (int) (pos[1] + size[1]));
+        _canvas.drawBitmap(((AndroidImage) image).getBitmap(), source, destiny, null);
     }
 
     @Override
@@ -146,6 +116,47 @@ public class AndroidGraphics extends AbstractGraphics {
     }
 
     @Override
+    public void drawRect(int[] pos, float side) {
+        _paint.setStyle(Paint.Style.STROKE);
+        float[] s = {side, side};
+        paintRect(pos, s);
+    }
+
+    @Override
+    public void drawRect(int[] pos, float[] size) {
+        _paint.setStyle(Paint.Style.STROKE);
+        paintRect(pos, size);
+    }
+
+    @Override
+    public void drawLine(int[] start, int[] end) {
+        _canvas.drawLine(start[0], start[1], end[0], end[1], _paint);
+    }
+
+    @Override
+    public void fillSquare(int[] pos, float side) {
+        _paint.setStyle(Paint.Style.FILL);
+        float[] s = {side, side};
+        paintRect(pos, s);
+    }
+
+    @Override
+    public void fillSquare(int[] pos, float[] size) {
+        _paint.setStyle(Paint.Style.FILL);
+        paintRect(pos, size);
+    }
+
+    /**
+     * Support function to drawRect(...)
+     */
+    private void paintRect(int[] pos, float[] size){
+        _paint.setStrokeWidth(_rectThick);
+        _canvas.drawRect(pos[0], pos[1], pos[0] + size[0], pos[1] + size[1], _paint);
+        _paint.reset();
+    }
+//----------------------------------------------------------------//
+
+    @Override
     public int getWidth() {
         return _winSize.x;
     }
@@ -155,11 +166,16 @@ public class AndroidGraphics extends AbstractGraphics {
         return _winSize.y;
     }
 
+//----------------------------------------------------------------//
+
     @Override
     public void prepareFrame() {
-        while (!_holder.getSurface().isValid()) ;
-        _canvas = _holder.lockCanvas();
+        while (!_holder.getSurface().isValid())
+        {
+            System.out.println("PREPARE FRAME: NULL");
+        }
 
+        _canvas = _holder.lockCanvas();
         super.prepareFrame();
     }
 
@@ -184,10 +200,13 @@ public class AndroidGraphics extends AbstractGraphics {
         _holder.unlockCanvasAndPost(_canvas);
     }
 
+//----------------------------------------------------------------//
+
     public Canvas getCanvas() {
         return _canvas;
     }
 
+//----------------------------------------------------------------//
     // VARIABLES
     private final WindowManager _wManager;
     private final Window _window;
@@ -198,4 +217,8 @@ public class AndroidGraphics extends AbstractGraphics {
     private Canvas _canvas;
     private SurfaceHolder _holder;
 
+    /**
+     * Thickness of the rect lines
+     */
+    private final float _rectThick = 2.5f;
 }

@@ -11,7 +11,7 @@ import es.ucm.stalos.engine.Image;
 import es.ucm.stalos.engine.Input;
 import es.ucm.stalos.engine.State;
 import es.ucm.stalos.logic.Assets;
-import es.ucm.stalos.logic.enums.StateCondition;
+import es.ucm.stalos.logic.enums.PlayingState;
 import es.ucm.stalos.logic.interfaces.ButtonCallback;
 import es.ucm.stalos.logic.objects.Board;
 
@@ -65,19 +65,25 @@ public class GameState extends AbstractState {
             if (currEvent == Input.TouchEvent.touchDown) {
                 int[] clickPos = {currEvent.getX(), currEvent.getY()};
 
-                if (_situation == StateCondition.Playing && clickInsideSquare(clickPos, _giveupButtonPos, _giveupButtonSize))
+                /// GIVE-UP BUTTON
+                if (_playState == PlayingState.Gaming && clickInsideSquare(clickPos, _giveupImagePos, _giveupButtonSize))
                     _giveupCallback.doSomething();
-                else if (_situation == StateCondition.Playing && clickInsideSquare(clickPos, _posCheckButton, _sizeButtonCheck))
+                // CHECK BUTTON
+                else if (_playState == PlayingState.Gaming && clickInsideSquare(clickPos, _checkImagePos, _checkButtonSize))
                     _checkCallback.doSomething();
-                else if (_situation != StateCondition.Win && clickInsideSquare(clickPos, _posBoard, _sizeBoard)) {
-                    if (_situation == StateCondition.Checking && _timer != null && _timerTask != null) {
+                // BOARD INPUT
+                else if (_playState != PlayingState.Win && clickInsideSquare(clickPos, _posBoard, _sizeBoard)) {
+                    //
+                    if (_playState == PlayingState.Checking && _timer != null && _timerTask != null) {
                         _timerTask.run();
                         _timer.cancel();
                         _timerTask = null;
                         _timer = null;
                     }
                     _board.handleInput(clickPos);
-                } else if (_situation == StateCondition.Win && clickInsideSquare(clickPos, _backButtonPos, _backButtonSize))
+                }
+                // BACK BUTTON WIN
+                else if (_playState == PlayingState.Win && clickInsideSquare(clickPos, _backButtonPos, _backButtonSize))
                     _backCallback.doSomething();
             }
         }
@@ -88,8 +94,8 @@ public class GameState extends AbstractState {
     private void initButtons() throws Exception {
         // GIVE UP
         _giveupFont = _graphics.newFont("JosefinSans-Bold.ttf", 20, true);
-        _giveupButtonSize[0] = (_graphics.getLogWidth() / 14);
-        _giveupButtonSize[1] = (_graphics.getLogHeight() / 25);
+        _giveupImageSize[0] = (_graphics.getLogWidth() / 14);
+        _giveupImageSize[1] = (_graphics.getLogHeight() / 25);
         _giveupCallback = new ButtonCallback() {
             @Override
             public void doSomething() {
@@ -97,13 +103,16 @@ public class GameState extends AbstractState {
                 _engine.reqNewState(selectLevelState);
             }
         };
+        _giveupTextPos[0] = _giveupImagePos[0] + (int) (_giveupImageSize[0] * 1.25) + 3;
+        _giveupTextPos[1] = _giveupImagePos[1] + (int) (_giveupImageSize[1] * 2 / 3) + 3;
+
+        _giveupButtonSize[0] = 110;
+        _giveupButtonSize[1] = _giveupImageSize[1];
 
         // BACK BUTTON
-        // BACK LEVEL
         _backFont = _graphics.newFont("JosefinSans-Bold.ttf", 20, true);
         _backButtonPos[0] = (int) (_graphics.getLogWidth() * 0.44);
         _backButtonPos[1] = (int) (_graphics.getLogHeight() * 0.93);
-//        _backButtonPos[1] = (int) (_graphics.getLogHeight() * 0.95);
 
         _backButtonSize[0] = (int) (_graphics.getLogWidth() * 0.14);
         _backButtonSize[1] = (int) (_graphics.getLogHeight() * 0.05);
@@ -116,23 +125,30 @@ public class GameState extends AbstractState {
         };
 
         // CHECK
-        _sizeButtonCheck[0] = _giveupButtonSize[0];
-        _sizeButtonCheck[1] = _giveupButtonSize[1];
+        _checkImageSize[0] = _giveupImageSize[0];
+        _checkImageSize[1] = _giveupImageSize[1];
+
+        _checkTextPos[0] = _checkImagePos[0] + 32;
+        _checkTextPos[1] = _giveupTextPos[1];
+
+        _checkButtonSize[0] = 130;
+        _checkButtonSize[1] = _checkImageSize[1];
+
         _checkCallback = new ButtonCallback() {
             @Override
             public void doSomething() {
                 // At first it checks the original solution
                 if (_board.checkOriginalSolution()) {
-                    _situation = StateCondition.Win;
+                    _playState = PlayingState.Win;
                     _board.setWin(true);
                 }
                 // Then check for another one
                 else if (_board.checkAnotherSolution()) {
-                    _situation = StateCondition.Win;
+                    _playState = PlayingState.Win;
                     _winText2 = "Otra solución";
                     _board.setWin(true);
                 } else {
-                    _situation = StateCondition.Checking;
+                    _playState = PlayingState.Checking;
                     showText();
                 }
             }
@@ -142,10 +158,8 @@ public class GameState extends AbstractState {
     private void initTexts() throws Exception {
         // TEXT HINTS
         _fontHint = _graphics.newFont("JosefinSans-Bold.ttf", 17, true);
-        _hintPos1[0] = (int) (_graphics.getLogWidth() * 0.3);
         _hintPos1[1] = (int) (_graphics.getLogHeight() * 0.2);
 
-        _hintPos2[0] = (int) (_graphics.getLogWidth() * 0.3);
         _hintPos2[1] = (int) (_graphics.getLogHeight() * 0.25);
 
         // WIN TEXT
@@ -159,38 +173,38 @@ public class GameState extends AbstractState {
 
     public void renderButtons() {
         int color;
-        int [] pos = new int[2];
-        switch (_situation) {
-            case Playing:
-                // Back Button
+        switch (_playState) {
+            case Gaming:
+                // GiveUp Button
                 color = 0X000000FF;
                 _graphics.setColor(color);
-                _graphics.drawImage(_giveupButtonImage, _giveupButtonPos, _giveupButtonSize);
-                pos[0] = _giveupButtonPos[0] + (int) (_giveupButtonSize[0] * 1.25) + 3;
-                pos[1] = _giveupButtonPos[1] + (int) (_giveupButtonSize[1] * 2 / 3) + 3;
-                _graphics.drawText(_giveupText, pos, _giveupFont);
+                _graphics.drawImage(_giveupButtonImage, _giveupImagePos, _giveupImageSize);
+                _graphics.drawText(_giveupText, _giveupTextPos, _giveupFont);
+                //_graphics.drawRect(_giveupImagePos, _giveupButtonSize);
 
                 // Check Button
-                _graphics.drawImage(_checkButtonImage, _posCheckButton, _sizeButtonCheck);
-                pos[0] += 230;
-                _graphics.drawText(_checkText, pos, _giveupFont);
+                _graphics.drawImage(_checkButtonImage, _checkImagePos, _checkImageSize);
+                _graphics.drawText(_checkText, _checkTextPos, _giveupFont);
+                //_graphics.drawRect(_checkImagePos, _checkButtonSize);
+
                 break;
-            case Win:
+            case Win: {
                 // Back Button
                 color = 0X000000FF;
                 _graphics.setColor(color);
-
+                int[] pos = new int[2];
                 pos[0] = _backButtonPos[0];
-                pos[1] = _backButtonPos[1] + (int)(_backButtonSize[1] * 0.65);
+                pos[1] = _backButtonPos[1] + (int) (_backButtonSize[1] * 0.65);
                 _graphics.drawText(_backText, pos, _backFont);
-                _graphics.drawRect(_backButtonPos, _backButtonSize);
+                //_graphics.drawRect(_backButtonPos, _backButtonSize);
                 break;
+            }
         }
     }
 
     public void renderText() {
         int color;
-        switch (_situation) {
+        switch (_playState) {
             case Checking:
                 // TEXT HINTS
                 color = 0XFF0000FF;
@@ -222,13 +236,24 @@ public class GameState extends AbstractState {
     }
 
     private void showText() {
-        _situation = StateCondition.Checking;
+        _playState = PlayingState.Checking;
         // ATTRIBUTES
         int[] mistakes = _board.countMistakes();
         _textHints1 = "Te falta " + mistakes[0] + " casillas";
         _textHints2 = "Tienes mal " + mistakes[1] + " casillas";
 
-        // TODO: Hacer calculos para centrarlo
+        int digits = String.valueOf(mistakes[0]).length();
+        if(digits == 1)
+            _hintPos1[0] = (int) (_graphics.getLogWidth() * 0.35);
+        else if(digits == 2)
+            _hintPos1[0] = (int) (_graphics.getLogWidth() * 0.35);
+
+        digits = String.valueOf(mistakes[1]).length();
+        if(digits == 1)
+            _hintPos2[0] = (int) (_graphics.getLogWidth() * 0.33);
+        else if(digits == 2)
+            _hintPos2[0] = (int) (_graphics.getLogWidth() * 0.33);
+
         // TIMER
         _timer = new Timer();
         _timeDelay = 3000;
@@ -236,11 +261,12 @@ public class GameState extends AbstractState {
             @Override
             public void run() {
                 _board.resetWrongCells();
-                _situation = StateCondition.Playing;
+                _playState = PlayingState.Gaming;
             }
         };
         _timer.schedule(_timerTask, _timeDelay);
     }
+
 //----------------------------------------ATTRIBUTES----------------------------------------------//
 
     // Atributos del estado
@@ -252,26 +278,54 @@ public class GameState extends AbstractState {
     int[] _posBoard = new int[2];
     float[] _sizeBoard = new float[2];
 
-    // Give Up Button attributes
+    // Give Up Button
     final String _giveupText = "Rendirse";
     final Image _giveupButtonImage = Assets.backArrow;
-    final int[] _giveupButtonPos = {15, 50};
+    /**
+     * GiveUpButtonIcon's position
+     */
+    final int[] _giveupImagePos = {15, 50};
+    /**
+     * GiveUpText's position
+     */
+    final int[] _giveupTextPos = new int[2];
+    /**
+     * GiveUpButtonIcon's size
+     */
+    final float[] _giveupImageSize = new float[2];
+    /**
+     * GiveUpButtonIcon + text's size
+     */
     final float[] _giveupButtonSize = new float[2];
     Font _giveupFont;
     ButtonCallback _giveupCallback;
 
-    // Volver
+    // Back Button
     final String _backText = "Volver";
     final int[] _backButtonPos = new int[2];
     final float[] _backButtonSize = new float[2];
     Font _backFont;
     ButtonCallback _backCallback;
 
-    // Check Button attributes
+    // Check Button
     final String _checkText = "Comprobar";
     final Image _checkButtonImage = Assets.lens;
-    final int[] _posCheckButton = {240, 50};
-    final float[] _sizeButtonCheck = new float[2];
+    /**
+     * CheckButtonIcon's position
+     */
+    final int[] _checkImagePos = {240, 50};
+    /**
+     * CheckText's position
+     */
+    final int[] _checkTextPos = new int[2];
+    /**
+     * CheckButtonIcon's size
+     */
+    final float[] _checkImageSize = new float[2];
+    /**
+     * CheckButtonIcon + text's size
+     */
+    final float[] _checkButtonSize = new float[2];
     ButtonCallback _checkCallback;
 
     // Text hints
@@ -280,7 +334,7 @@ public class GameState extends AbstractState {
     Font _fontHint;
     final int[] _hintPos1 = new int[2];
     final int[] _hintPos2 = new int[2];
-    StateCondition _situation = StateCondition.Playing;
+    PlayingState _playState = PlayingState.Gaming;
 
     // WIN TEXT
     String _winText1 = "ENHORABUENA!";

@@ -1,18 +1,12 @@
 package es.ucm.stalos.logic.objects;
 
-import java.awt.Button;
-
-import javax.security.auth.callback.Callback;
-
 import es.ucm.stalos.engine.Font;
 import es.ucm.stalos.engine.Graphics;
-import es.ucm.stalos.engine.State;
-import es.ucm.stalos.logic.enums.GridSize;
+import es.ucm.stalos.logic.enums.GridType;
 import es.ucm.stalos.logic.interfaces.ButtonCallback;
-import es.ucm.stalos.logic.states.GameState;
 
 public class SelectLevelButton {
-    public SelectLevelButton(int[] pos, float[] size, GridSize gridType, Font font) {
+    public SelectLevelButton(int[] pos, float[] size, GridType gridType, Font font) {
         _buttonPos[0] = pos[0];
         _buttonPos[1] = pos[1];
 
@@ -26,7 +20,7 @@ public class SelectLevelButton {
         _font = font;
     }
 
-    private void initType(GridSize gridType)
+    private void initType(GridType gridType)
     {
         switch (gridType) {
             case _4x4:

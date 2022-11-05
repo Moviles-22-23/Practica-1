@@ -1,6 +1,9 @@
 package es.ucm.stalos.logic.enums;
 
-public enum GridSize {
+/**
+ * Information about different grid level types
+ */
+public enum GridType {
     _4x4(0),
     _5x5(1),
     _5x10(2),
@@ -9,7 +12,7 @@ public enum GridSize {
     _10x15(5),
     MAX(6);
 
-    GridSize(int i) { this.value = i; }
+    GridType(int i) { this.value = i; }
 
     public int getValue () { return value; }
 

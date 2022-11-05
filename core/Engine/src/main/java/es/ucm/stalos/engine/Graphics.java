@@ -50,20 +50,25 @@ public interface Graphics {
      * Draw a String centered in the middle of a Rectangle.
      *
      * @param text The String to draw.
-     * @param pos The Up-Left corner
-     * @param size The Down-Right corner
-     * @param font
+     * @param pos Upper-Left corner
+     * @param size [Width, Height]
+     * @param font Font of the current text
      */
     public void drawCenteredString(String text, int[] pos, float[] size, Font font);
 
     /**
      * Draw an empty square
-     * @param pos Position to draw
+     * @param pos Upper-Left corner
      * @param side Side Length
      */
     void drawRect(int[] pos, float side);
-    void drawRect(int[] pos, float[] size);
 
+    /**
+     * Draw an empty square
+     * @param pos Upper-left corner
+     * @param size [Width, Height]
+     */
+    void drawRect(int[] pos, float[] size);
 
     /**
      * Draw a line
@@ -72,10 +77,16 @@ public interface Graphics {
 
     /**
      * Draw a filled square
-     * @param pos Position to draw
+     * @param pos Upper-Left corner
      * @param side Side Length
      */
     void fillSquare(int[] pos, float side);
+
+    /**
+     * Draw a filled square
+     * @param pos Upper-Left corner
+     * @param size [Width, Height]
+     */
     void fillSquare(int[] pos, float[] size);
 
 
@@ -99,15 +110,26 @@ public interface Graphics {
     int getLogHeight();
 
 //----------------------------------------------------------------//
-    // TODO
     /**
      * Updates the buffer &
      * Prepare the next frame
      */
     void prepareFrame();
 
+    /**
+     * Function to translate all the canvas
+     * elements at the same time
+     * @param x X-axis offset
+     * @param y Y-axis offset
+     */
     void translate(int x, int y);
 
+    /**
+     * Function to scale all the canvas
+     * elements at the same time
+     * @param x X-axis offset
+     * @param y Y-axis offset
+     */
     void scale(float x, float y);
 
     void save();
