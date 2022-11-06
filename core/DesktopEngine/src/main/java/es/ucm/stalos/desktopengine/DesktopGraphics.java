@@ -115,6 +115,17 @@ public class DesktopGraphics extends AbstractGraphics {
         _graphics.setPaintMode();
     }
 
+    private java.awt.Font initFont(Font font)
+    {
+        java.awt.Font javaFont = ((DesktopFont) font).getJavaFont();
+        float tam = finalSize(font.getSize());
+        javaFont = javaFont.deriveFont(tam);
+        // Set the font
+        _graphics.setFont(javaFont);
+
+        return javaFont;
+    }
+
     @Override
     public void drawText(String text, int[] pos, Font font) {
         // Init font
@@ -128,33 +139,24 @@ public class DesktopGraphics extends AbstractGraphics {
         _graphics.setPaintMode();
     }
 
-    private java.awt.Font initFont(Font font)
-    {
-        java.awt.Font javaFont = ((DesktopFont) font).getJavaFont();
-        float tam = finalSize(font.getSize());
-        javaFont = javaFont.deriveFont(tam);
-        // Set the font
-        _graphics.setFont(javaFont);
-
-        return javaFont;
-    }
-
     @Override
     public void drawCenteredString(String text, int[] pos, float[] size, Font font) {
         java.awt.Font javaFont = initFont(font);
+        
+        // Calculates de logic pos and size
+        int[] logicPos = finalPosition(pos[0], pos[1]);
+        int[] logicSize = finalSize(size[0], size[1]);
 
-        // Scale
         // Get the FontMetrics
         FontMetrics metrics = _graphics.getFontMetrics(javaFont);
+
         // Determine the X coordinate for the text
-        int x = pos[0] + ((int) size[0] - metrics.stringWidth(text)) / 2;
+        int x = logicPos[0] + ((int) logicSize[0] - metrics.stringWidth(text)) / 2;
         // Determine the Y coordinate for the text (note we add the ascent, as in java_2D 0 is top of the screen)
-        int y = pos[1] + (((int) size[1] - metrics.getHeight()) / 2) + metrics.getAscent();
-        // Draw the String
-        int[] newPos = finalPosition(x, y);
+        int y = logicPos[1] + (((int) logicSize[1] - metrics.getHeight()) / 2) + metrics.getAscent();
 
         // Drawing
-        _graphics.drawString(text, newPos[0], newPos[1]);
+        _graphics.drawString(text, x, y);
         _graphics.setPaintMode();
     }
 

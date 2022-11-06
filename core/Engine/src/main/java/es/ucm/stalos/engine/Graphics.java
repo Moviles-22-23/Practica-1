@@ -54,7 +54,7 @@ public interface Graphics {
      * @param size [Width, Height]
      * @param font Font of the current text
      */
-    public void drawCenteredString(String text, int[] pos, float[] size, Font font);
+    void drawCenteredString(String text, int[] pos, float[] size, Font font);
 
     /**
      * Draw an empty square

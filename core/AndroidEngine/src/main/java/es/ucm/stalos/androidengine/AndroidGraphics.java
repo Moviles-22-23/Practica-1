@@ -110,7 +110,7 @@ public class AndroidGraphics extends AbstractGraphics {
         Typeface currFont = ((AndroidFont) font).getAndroidFont();
         _paint.setTypeface(currFont);
         _paint.setTextSize(font.getSize());
-        _paint.setTextAlign(Paint.Align.LEFT);
+        _paint.setTextAlign(Paint.Align.CENTER);
         _canvas.drawText(text, pos[0], pos[1], _paint);
         _paint.reset();
     }

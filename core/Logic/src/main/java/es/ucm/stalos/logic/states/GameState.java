@@ -17,10 +17,12 @@ import es.ucm.stalos.logic.objects.Board;
 
 public class GameState extends AbstractState {
 
-    public GameState(Engine engine, int rows, int columns) {
+    public GameState(Engine engine, int rows, int columns, boolean isRandom) {
         super(engine);
         this._rows = rows;
         this._cols = columns;
+        this._isRandom = isRandom;
+        System.out.println("GAME MODE RANDOM: " + _isRandom);
     }
 
 //-----------------------------------------OVERRIDE-----------------------------------------------//
@@ -103,7 +105,7 @@ public class GameState extends AbstractState {
         _giveupCallback = new ButtonCallback() {
             @Override
             public void doSomething() {
-                State selectLevelState = new SelectLevelState(_engine);
+                State selectLevelState = new SelectLevelState(_engine, _isRandom);
                 _engine.reqNewState(selectLevelState);
                 _audio.stop(Assets.mainTheme);
                 _audio.stop(Assets.clickSound);
@@ -127,7 +129,7 @@ public class GameState extends AbstractState {
         _backCallback = new ButtonCallback() {
             @Override
             public void doSomething() {
-                State selectLevel = new SelectLevelState(_engine);
+                State selectLevel = new SelectLevelState(_engine, _isRandom);
                 _engine.reqNewState(selectLevel);
                 _audio.stop(Assets.mainTheme);
                 _audio.stop(Assets.clickSound);
@@ -152,6 +154,7 @@ public class GameState extends AbstractState {
                 // At first it checks the original solution
                 if (_board.checkOriginalSolution()) {
                     _playState = PlayingState.Win;
+                    _board.setPos(new int[]{ _posBoard[0], _posBoard[1] - 50 });
                     _board.setWin(true);
                     _audio.stop(Assets.winSound);
                     _audio.play(Assets.winSound, 1);
@@ -161,6 +164,7 @@ public class GameState extends AbstractState {
                 else if (_board.checkAnotherSolution()) {
                     _playState = PlayingState.Win;
                     _winText2 = "Otra solución";
+                    _board.setPos(new int[]{ _posBoard[0], _posBoard[1] - 50 });
                     _board.setWin(true);
                     _audio.stop(Assets.winSound);
                     _audio.play(Assets.winSound, 1);
@@ -177,9 +181,8 @@ public class GameState extends AbstractState {
 
     private void initTexts() throws Exception {
         // TEXT HINTS
-        _fontHint = _graphics.newFont("JosefinSans-Bold.ttf", 17, true);
+        _fontHint = _graphics.newFont("JosefinSans-Bold.ttf", 1, true);
         _hintPos1[1] = (int) (_graphics.getLogHeight() * 0.2);
-
         _hintPos2[1] = (int) (_graphics.getLogHeight() * 0.25);
 
         // WIN TEXT
@@ -200,12 +203,10 @@ public class GameState extends AbstractState {
                 _graphics.setColor(color);
                 _graphics.drawImage(_giveupButtonImage, _giveupImagePos, _giveupImageSize);
                 _graphics.drawText(_giveupText, _giveupTextPos, _giveupFont);
-                //_graphics.drawRect(_giveupImagePos, _giveupButtonSize);
 
                 // Check Button
                 _graphics.drawImage(_checkButtonImage, _checkImagePos, _checkImageSize);
                 _graphics.drawText(_checkText, _checkTextPos, _giveupFont);
-                //_graphics.drawRect(_checkImagePos, _checkButtonSize);
 
                 break;
             case Win: {
@@ -216,7 +217,6 @@ public class GameState extends AbstractState {
                 pos[0] = _backButtonPos[0];
                 pos[1] = _backButtonPos[1] + (int) (_backButtonSize[1] * 0.65);
                 _graphics.drawText(_backText, pos, _backFont);
-                //_graphics.drawRect(_backButtonPos, _backButtonSize);
                 break;
             }
         }
@@ -251,7 +251,7 @@ public class GameState extends AbstractState {
         _sizeBoard[0] = 360.0f;
         _sizeBoard[1] = 360.0f;
 
-        _board = new Board(_rows, _cols, _posBoard, _sizeBoard);
+        _board = new Board(_rows, _cols, _posBoard, _sizeBoard, _isRandom);
         _board.init(_engine);
     }
 
@@ -288,6 +288,9 @@ public class GameState extends AbstractState {
     }
 
 //----------------------------------------ATTRIBUTES----------------------------------------------//
+
+    // Game Mode
+    boolean _isRandom;
 
     // Atributos del estado
     int _rows;

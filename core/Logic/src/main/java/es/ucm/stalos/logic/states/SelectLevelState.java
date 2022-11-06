@@ -20,8 +20,10 @@ import es.ucm.stalos.logic.objects.SelectLevelButton;
 
 public class SelectLevelState extends AbstractState {
 
-    public SelectLevelState(Engine engine) {
+    public SelectLevelState(Engine engine, boolean isRandom) {
         super(engine);
+        this._isRandom = isRandom;
+        System.out.println("GAME MODE RANDOM: " + _isRandom);
     }
 
 //-----------------------------------------OVERRIDE-----------------------------------------------//
@@ -51,8 +53,15 @@ public class SelectLevelState extends AbstractState {
 
             // SELECT LEVEL TEXT
             _titleFont = _graphics.newFont("JosefinSans-Bold.ttf", 25, true);
-            _titlePos[0] = (_graphics.getLogWidth() / 10);
-            _titlePos[1] = _graphics.getLogHeight() / 11 * 3;
+            _titlePos[0] = (int) (_graphics.getLogWidth() * 0.1f);
+            _titlePos[1] = (int) (_graphics.getLogHeight() * 0.28f);
+
+            // MODE TEXT
+            if(_isRandom) _modeTitle = "JUEGO ALEATORIO";
+            else _modeTitle = "JUEGO CLASICO";
+            _modeTitleFont = _graphics.newFont("JosefinSans-Bold.ttf", 25, true);
+            _modeTitlePos[0] = (int) (_graphics.getLogWidth() * 0.1f);
+            _modeTitlePos[1] = (int) (_graphics.getLogHeight() * 0.20f);
 
             // BUTTONS
             initSelectLevelButtons();
@@ -71,6 +80,7 @@ public class SelectLevelState extends AbstractState {
         int color = 0x313131FF;
         _graphics.setColor(color);
         _graphics.drawText(_title, _titlePos, _titleFont);
+        _graphics.drawText(_modeTitle, _modeTitlePos, _modeTitleFont);
 
         // Back Button
         color = 0X000000FF;
@@ -137,7 +147,7 @@ public class SelectLevelState extends AbstractState {
                 public void doSomething() {
                     int r = _level.getRows();
                     int c = _level.getCols();
-                    State gameState = new GameState(_engine, r, c);
+                    State gameState = new GameState(_engine, r, c, _isRandom);
                     _engine.reqNewState(gameState);
                     _audio.stop(Assets.clickSound);
                     _audio.play(Assets.clickSound, 1);
@@ -184,6 +194,9 @@ public class SelectLevelState extends AbstractState {
 
 //----------------------------------------ATTRIBUTES----------------------------------------------//
 
+    // GAME MODE
+    boolean _isRandom;
+
     // BACK BUTTON
     private final String _backText = "Volver";
     private final Image _backButtonImage = Assets.backArrow;
@@ -210,6 +223,11 @@ public class SelectLevelState extends AbstractState {
     private final String _title = "Selecciona el tamaño del puzzle";
     private final int[] _titlePos = new int[2];
     private Font _titleFont;
+
+    // GAME MODE TEXT
+    private String _modeTitle = "Juego clasico";
+    private final int[] _modeTitlePos = new int[2];
+    private Font _modeTitleFont;
 
     // SELECT LEVEL BUTTONS
     /**

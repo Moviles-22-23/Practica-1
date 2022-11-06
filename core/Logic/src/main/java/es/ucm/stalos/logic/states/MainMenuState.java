@@ -1,13 +1,10 @@
 package es.ucm.stalos.logic.states;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import es.ucm.stalos.engine.AbstractState;
 import es.ucm.stalos.engine.Engine;
 import es.ucm.stalos.engine.Font;
-import es.ucm.stalos.engine.Graphics;
 import es.ucm.stalos.engine.Input.TouchEvent;
 import es.ucm.stalos.engine.State;
 import es.ucm.stalos.logic.Assets;
@@ -26,35 +23,44 @@ public class MainMenuState extends AbstractState {
             // TITLE
             _titleText = "Nonogramas";
             _titleFont = _graphics.newFont("Molle-Regular.ttf", 50, true);
-            _titleSize[0] = (_graphics.getLogWidth() / 10) * 7;
-            _titleSize[1] = _graphics.getLogHeight() / 10;
+            _titleSize[0] = _graphics.getLogWidth() * 0.7f;
+            _titleSize[1] = _graphics.getLogHeight() * 0.1f;
 
-            _titlePos[0] = (_graphics.getLogWidth() / 2) - (int) (_titleSize[0] / 2);
-            _titlePos[1] = (_graphics.getLogHeight() / 10) + (int) _titleSize[1];
+            _titlePos[0] = (int) ((_graphics.getLogWidth() - _titleSize[0]) * 0.5f);
+            _titlePos[1] = (int) ((_graphics.getLogHeight() - _titleSize[1]) * 0.2f);
 
-            // PLAYBUTTON
-            _playButtonText = "Jugar";
-            _playButtonFont = _graphics.newFont("JosefinSans-Bold.ttf", 50, true);
-            // Size
-            _playButtonSize[0] = (_graphics.getLogWidth() / 7) * 2;
-            _playButtonSize[1] = (_graphics.getLogHeight() / 10);
-            // Position
-            _playButtonPos[0] = (_graphics.getLogWidth() / 2) - ((int) _playButtonSize[0] / 2);
-            _playButtonPos[1] = (_graphics.getLogHeight() / 9) * 4;
-
+            // BUTTONS
+            _buttonsFont = _graphics.newFont("JosefinSans-Bold.ttf", 50, true);
             // Callback
             _playCallback = new ButtonCallback() {
                 @Override
                 public void doSomething() {
                     // Levels
-                    Assets.testLevel = "testLevel.txt";
-                    State selectLevelState = new SelectLevelState(_engine);
+                    State selectLevelState = new SelectLevelState(_engine, _isRandom);
                     _engine.reqNewState(selectLevelState);
                     _audio.stop(Assets.clickSound);
                     _audio.play(Assets.clickSound, 1);
                     _audio.stop(Assets.clickSound);
                 }
             };
+
+            // PLAY BUTTON
+            _playButtonText = "Jugar";
+            // Size
+            _playButtonSize[0] = _graphics.getLogWidth() * 0.3f;
+            _playButtonSize[1] = _graphics.getLogHeight() * 0.1f;
+            // Position
+            _playButtonPos[0] = (int) ((_graphics.getLogWidth() - _playButtonSize[0]) * 0.5f);
+            _playButtonPos[1] = (int) ((_graphics.getLogHeight() - _playButtonSize[1]) * 0.40f);
+
+            // PLAY RANDOM BUTTON
+            _playRandomButtonText = "Jugar Aleatorio";
+            // Size
+            _playRandomButtonSize[0] = _graphics.getLogWidth() * 0.8f;
+            _playRandomButtonSize[1] = _graphics.getLogHeight() * 0.1f;
+            // Position
+            _playRandomButtonPos[0] = (int) ((_graphics.getLogWidth() - _playRandomButtonSize[0]) * 0.5f);
+            _playRandomButtonPos[1] = (int) ((_graphics.getLogHeight() - _playRandomButtonSize[1]) * 0.60f);
 
             // Audio
             _audio.play(Assets.menuTheme, -1);
@@ -68,17 +74,21 @@ public class MainMenuState extends AbstractState {
 
     @Override
     public void render() {
-        Graphics g = _engine.getGraphics();
+        _graphics.setColor(_blackColor);
 
-        // TITLE
-        int color = 0X000000FF;
-        g.setColor(color);
-        g.drawText(_titleText, _titlePos, _titleFont);
+        // Title
+        _graphics.drawCenteredString(_titleText, _titlePos, _titleSize, _titleFont);
 
         // Play Button
-        g.setColor(color);
-        int[] pos = {_playButtonPos[0], _playButtonPos[1] + (int) _playButtonSize[1]};
-        g.drawText(_playButtonText, pos, _playButtonFont);
+        _graphics.drawCenteredString(_playButtonText, _playButtonPos, _playButtonSize, _buttonsFont);
+
+        // Play Random Button
+        _graphics.drawCenteredString(_playRandomButtonText, _playRandomButtonPos, _playRandomButtonSize, _buttonsFont);
+
+        // TODO: borrar
+        _graphics.setColor(0xFF0000FF);
+        _graphics.drawRect(_playButtonPos, _playButtonSize);
+        _graphics.drawRect(_playRandomButtonPos, _playRandomButtonSize);
     }
 
     @Override
@@ -88,7 +98,15 @@ public class MainMenuState extends AbstractState {
             TouchEvent currEvent = events.get(i);
             if (currEvent == TouchEvent.touchDown) {
                 int[] clickPos = {currEvent.getX(), currEvent.getY()};
-                if (clickInsideSquare(clickPos, _playButtonPos, _playButtonSize)) {
+
+                // Play Button
+                if (clickInsideSquare(clickPos, _playButtonPos, _playButtonSize)){
+                    _isRandom = false;
+                    _playCallback.doSomething();
+                }
+                // Play Random Button
+                else if (clickInsideSquare(clickPos, _playRandomButtonPos, _playRandomButtonSize)) {
+                    _isRandom = true;
                     _playCallback.doSomething();
                 }
             }
@@ -96,16 +114,28 @@ public class MainMenuState extends AbstractState {
     }
 
     //----------------------------------------ATTRIBUTES----------------------------------------------//
-    // TITLE
+
+    // Title
     String _titleText;
     Font _titleFont;
     int[] _titlePos = new int[2];
     float[] _titleSize = new float[2];
 
-    // PLAY_BUTTON
+    // Buttons
+    boolean _isRandom = false;
+    Font _buttonsFont;
+    ButtonCallback _playCallback;
+
+    // Play Button
     String _playButtonText;
-    Font _playButtonFont;
     int[] _playButtonPos = new int[2];
     float[] _playButtonSize = new float[2];
-    ButtonCallback _playCallback;
+
+    // Play Random Button
+    String _playRandomButtonText;
+    int[] _playRandomButtonPos = new int[2];
+    float[] _playRandomButtonSize = new float[2];
+
+    // Colors
+    int _blackColor = 0x000000FF;
 }
