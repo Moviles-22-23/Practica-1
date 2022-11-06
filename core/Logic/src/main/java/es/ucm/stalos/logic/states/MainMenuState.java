@@ -38,9 +38,8 @@ public class MainMenuState extends AbstractState {
                     // Levels
                     State selectLevelState = new SelectLevelState(_engine, _isRandom);
                     _engine.reqNewState(selectLevelState);
-                    _audio.stop(Assets.clickSound);
                     _audio.play(Assets.clickSound, 1);
-                    _audio.stop(Assets.clickSound);
+                    _audio.pause(Assets.menuTheme);
                 }
             };
 
@@ -63,7 +62,7 @@ public class MainMenuState extends AbstractState {
             _playRandomButtonPos[1] = (int) ((_graphics.getLogHeight() - _playRandomButtonSize[1]) * 0.60f);
 
             // Audio
-            _audio.play(Assets.menuTheme, -1);
+            _audio.playMusic(Assets.menuTheme);
 
         } catch (Exception e) {
             System.out.println(e);

@@ -40,9 +40,7 @@ public class SelectLevelState extends AbstractState {
                 public void doSomething() {
                     State mainMenuState = new MainMenuState(_engine);
                     _engine.reqNewState(mainMenuState);
-                    _audio.stop(Assets.clickSound);
                     _audio.play(Assets.clickSound, 1);
-                    _audio.stop(Assets.clickSound);
                 }
             };
             _backTextPos[0] = _backImagePos[0] + (int) (_backImageSize[0] * 1.25) + 3;
@@ -65,6 +63,9 @@ public class SelectLevelState extends AbstractState {
 
             // BUTTONS
             initSelectLevelButtons();
+
+            // AUDIO
+            _audio.resume(Assets.menuTheme);
 
         } catch (Exception e) {
             System.out.println("Error init Select Level");
@@ -149,9 +150,7 @@ public class SelectLevelState extends AbstractState {
                     int c = _level.getCols();
                     State gameState = new GameState(_engine, r, c, _isRandom);
                     _engine.reqNewState(gameState);
-                    _audio.stop(Assets.clickSound);
                     _audio.play(Assets.clickSound, 1);
-                    _audio.stop(Assets.clickSound);
                     _audio.stop(Assets.menuTheme);
                 }
             });
@@ -173,23 +172,6 @@ public class SelectLevelState extends AbstractState {
         _gridTypes.put(3, GridType._8x8);
         _gridTypes.put(4, GridType._10x10);
         _gridTypes.put(5, GridType._10x15);
-    }
-
-    // TODO: Esto es una prueba de sonido
-    private void playSound() {
-
-        _audio.play(Assets.testSound, 0);
-//        _audio.setVolume();
-        _timer = new Timer();
-        _timeDelay = 1000;
-        _timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                System.out.println("Audio parado...");
-                _audio.stop(Assets.testSound);
-            }
-        };
-        _timer.schedule(_timerTask, _timeDelay);
     }
 
 //----------------------------------------ATTRIBUTES----------------------------------------------//

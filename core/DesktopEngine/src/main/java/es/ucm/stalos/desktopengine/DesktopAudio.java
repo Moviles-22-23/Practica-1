@@ -25,12 +25,14 @@ public class DesktopAudio implements Audio {
     @Override
     public void play(Sound sound, int numberLoop) {
         Clip clip = ((DesktopSound) sound).getClip();
-        if (clip.isRunning()) {
-            clip.stop();
-            clip.setFramePosition(clip.getFramePosition());
-        }
-
         clip.loop(numberLoop);
+        clip.start();
+    }
+
+    @Override
+    public void playMusic(Sound sound) {
+        Clip clip = ((DesktopSound) sound).getClip();
+        clip.loop(Clip.LOOP_CONTINUOUSLY);
         clip.start();
     }
 

@@ -39,7 +39,7 @@ public class GameState extends AbstractState {
             // Texts
             initTexts();
 
-            _audio.play(Assets.mainTheme, -1);
+            _audio.playMusic(Assets.mainTheme);
 
         } catch (Exception e) {
             System.out.println("Error init GameState");
@@ -86,7 +86,6 @@ public class GameState extends AbstractState {
                     }
                     _board.handleInput(clickPos);
                     _audio.play(Assets.clickSound, 1);
-                    _audio.stop(Assets.clickSound);
                 }
                 // BACK BUTTON WIN
                 else if (_playState == PlayingState.Win && clickInsideSquare(clickPos, _backButtonPos, _backButtonSize))
@@ -108,9 +107,7 @@ public class GameState extends AbstractState {
                 State selectLevelState = new SelectLevelState(_engine, _isRandom);
                 _engine.reqNewState(selectLevelState);
                 _audio.stop(Assets.mainTheme);
-                _audio.stop(Assets.clickSound);
                 _audio.play(Assets.clickSound, 1);
-                _audio.play(Assets.menuTheme, -1);
             }
         };
         _giveupTextPos[0] = _giveupImagePos[0] + (int) (_giveupImageSize[0] * 1.25) + 3;
@@ -132,9 +129,7 @@ public class GameState extends AbstractState {
                 State selectLevel = new SelectLevelState(_engine, _isRandom);
                 _engine.reqNewState(selectLevel);
                 _audio.stop(Assets.mainTheme);
-                _audio.stop(Assets.clickSound);
                 _audio.play(Assets.clickSound, 1);
-                _audio.play(Assets.menuTheme, -1);
             }
         };
 
@@ -156,9 +151,7 @@ public class GameState extends AbstractState {
                     _playState = PlayingState.Win;
                     _board.setPos(new int[]{ _posBoard[0], _posBoard[1] - 50 });
                     _board.setWin(true);
-                    _audio.stop(Assets.winSound);
                     _audio.play(Assets.winSound, 1);
-                    _audio.stop(Assets.winSound);
                 }
                 // Then check for another one
                 else if (_board.checkAnotherSolution()) {
@@ -166,14 +159,11 @@ public class GameState extends AbstractState {
                     _winText2 = "Otra solución";
                     _board.setPos(new int[]{ _posBoard[0], _posBoard[1] - 50 });
                     _board.setWin(true);
-                    _audio.stop(Assets.winSound);
                     _audio.play(Assets.winSound, 1);
-                    _audio.stop(Assets.winSound);
                 } else {
                     _playState = PlayingState.Checking;
                     showText();
                 }
-                _audio.stop(Assets.clickSound);
                 _audio.play(Assets.clickSound, 1);
             }
         };
