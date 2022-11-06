@@ -50,14 +50,13 @@ public class MainMenuState extends AbstractState {
                     Assets.testLevel = "testLevel.txt";
                     State selectLevelState = new SelectLevelState(_engine);
                     _engine.reqNewState(selectLevelState);
-                    _audio.stop(Assets.clickSound);
                     _audio.play(Assets.clickSound, 1);
-                    _audio.stop(Assets.clickSound);
+                    _audio.pause(Assets.menuTheme);
                 }
             };
 
             // Audio
-            _audio.play(Assets.menuTheme, -1);
+            _audio.playMusic(Assets.menuTheme);
 
         } catch (Exception e) {
             System.out.println(e);

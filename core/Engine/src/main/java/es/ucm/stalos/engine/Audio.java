@@ -23,6 +23,13 @@ public interface Audio {
     void play(Sound sound, int numberLoops);
 
     /**
+     * Play a looped specified sound
+     *
+     * @param sound Sound to be played
+     */
+    void playMusic(Sound sound);
+
+    /**
      * Pause an specified sound. It can be resume.
      *
      * @param sound Sound to be paused
