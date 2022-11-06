@@ -19,18 +19,18 @@ public class MainMenuState extends AbstractState {
         super(engine);
     }
 
-//-----------------------------------------OVERRIDE-----------------------------------------------//
+    //-----------------------------------------OVERRIDE-----------------------------------------------//
     @Override
     public boolean init() {
         try {
             // TITLE
             _titleText = "Nonogramas";
             _titleFont = _graphics.newFont("Molle-Regular.ttf", 50, true);
-            _titleSize[0] = (_graphics.getLogWidth()/ 10) * 7;
+            _titleSize[0] = (_graphics.getLogWidth() / 10) * 7;
             _titleSize[1] = _graphics.getLogHeight() / 10;
 
-            _titlePos[0] = (_graphics.getLogWidth() / 2) - (int)(_titleSize[0] / 2);
-            _titlePos[1] = (_graphics.getLogHeight() / 10) + (int)_titleSize[1];
+            _titlePos[0] = (_graphics.getLogWidth() / 2) - (int) (_titleSize[0] / 2);
+            _titlePos[1] = (_graphics.getLogHeight() / 10) + (int) _titleSize[1];
 
             // PLAYBUTTON
             _playButtonText = "Jugar";
@@ -50,9 +50,15 @@ public class MainMenuState extends AbstractState {
                     Assets.testLevel = "testLevel.txt";
                     State selectLevelState = new SelectLevelState(_engine);
                     _engine.reqNewState(selectLevelState);
-                    _audio.stop(Assets.testSound);
+                    _audio.stop(Assets.clickSound);
+                    _audio.play(Assets.clickSound, 1);
+                    _audio.stop(Assets.clickSound);
                 }
             };
+
+            // Audio
+            _audio.play(Assets.menuTheme, -1);
+
         } catch (Exception e) {
             System.out.println(e);
             return false;
@@ -71,7 +77,7 @@ public class MainMenuState extends AbstractState {
 
         // Play Button
         g.setColor(color);
-        int [] pos = {_playButtonPos[0], _playButtonPos[1] + (int)_playButtonSize[1]};
+        int[] pos = {_playButtonPos[0], _playButtonPos[1] + (int) _playButtonSize[1]};
         g.drawText(_playButtonText, pos, _playButtonFont);
     }
 
@@ -89,7 +95,7 @@ public class MainMenuState extends AbstractState {
         }
     }
 
-//----------------------------------------ATTRIBUTES----------------------------------------------//
+    //----------------------------------------ATTRIBUTES----------------------------------------------//
     // TITLE
     String _titleText;
     Font _titleFont;

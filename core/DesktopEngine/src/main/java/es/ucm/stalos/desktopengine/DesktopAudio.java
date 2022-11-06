@@ -6,14 +6,14 @@ import es.ucm.stalos.engine.Sound;
 import javax.sound.sampled.Clip;
 
 public class DesktopAudio implements Audio {
-    public DesktopAudio(){
+    public DesktopAudio() {
 
     }
 
     @Override
     public Sound newSound(String file) throws Exception {
         DesktopSound sound = new DesktopSound("./assets/sounds/" + file);
-        if(!sound.init()) throw new Exception();
+        if (!sound.init()) throw new Exception();
         return sound;
     }
 
@@ -24,10 +24,10 @@ public class DesktopAudio implements Audio {
 
     @Override
     public void play(Sound sound, int numberLoop) {
-        Clip clip = ((DesktopSound)sound).getClip();
-        if(clip.isRunning()){
+        Clip clip = ((DesktopSound) sound).getClip();
+        if (clip.isRunning()) {
             clip.stop();
-            clip.setFramePosition(0);
+            clip.setFramePosition(clip.getFramePosition());
         }
 
         clip.loop(numberLoop);
@@ -36,8 +36,8 @@ public class DesktopAudio implements Audio {
 
     @Override
     public void pause(Sound sound) {
-        Clip clip = ((DesktopSound)sound).getClip();
-        if(!clip.isRunning())
+        Clip clip = ((DesktopSound) sound).getClip();
+        if (!clip.isRunning())
             return;
 
         // Calling just this method will paused the sound
@@ -46,8 +46,8 @@ public class DesktopAudio implements Audio {
 
     @Override
     public void stop(Sound sound) {
-        Clip clip = ((DesktopSound)sound).getClip();
-        if(!clip.isRunning())
+        Clip clip = ((DesktopSound) sound).getClip();
+        if (!clip.isRunning())
             return;
 
         // Calling just this method will paused the sound
@@ -58,7 +58,7 @@ public class DesktopAudio implements Audio {
 
     @Override
     public void resume(Sound sound) {
-        Clip clip = ((DesktopSound)sound).getClip();
+        Clip clip = ((DesktopSound) sound).getClip();
         clip.start();
     }
 }

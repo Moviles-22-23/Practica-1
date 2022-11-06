@@ -40,7 +40,11 @@ public class LoadState extends AbstractState {
 
 
             // Audio
-            Assets.testSound = audio.newSound("testSound.wav");
+            //Assets.testSound = audio.newSound("testSound.wav");
+            Assets.menuTheme = audio.newSound("SomethingBetweenUs.wav");
+            Assets.mainTheme = audio.newSound("Jhove–BeenAWhile.wav");
+            Assets.clickSound = audio.newSound("tapSound.wav");
+            Assets.winSound = audio.newSound("winning-notification.wav");
 
             // Start MainMenu
             State mainMenu = new MainMenuState(_engine);

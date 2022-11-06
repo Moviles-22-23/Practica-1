@@ -37,6 +37,8 @@ public class GameState extends AbstractState {
             // Texts
             initTexts();
 
+            _audio.play(Assets.mainTheme, -1);
+
         } catch (Exception e) {
             System.out.println("Error init GameState");
             System.out.println(e);
@@ -68,10 +70,10 @@ public class GameState extends AbstractState {
                 /// GIVE-UP BUTTON
                 if (_playState == PlayingState.Gaming && clickInsideSquare(clickPos, _giveupImagePos, _giveupButtonSize))
                     _giveupCallback.doSomething();
-                // CHECK BUTTON
+                    // CHECK BUTTON
                 else if (_playState == PlayingState.Gaming && clickInsideSquare(clickPos, _checkImagePos, _checkButtonSize))
                     _checkCallback.doSomething();
-                // BOARD INPUT
+                    // BOARD INPUT
                 else if (_playState != PlayingState.Win && clickInsideSquare(clickPos, _posBoard, _sizeBoard)) {
                     //
                     if (_playState == PlayingState.Checking && _timer != null && _timerTask != null) {
@@ -81,6 +83,8 @@ public class GameState extends AbstractState {
                         _timer = null;
                     }
                     _board.handleInput(clickPos);
+                    _audio.play(Assets.clickSound, 1);
+                    _audio.stop(Assets.clickSound);
                 }
                 // BACK BUTTON WIN
                 else if (_playState == PlayingState.Win && clickInsideSquare(clickPos, _backButtonPos, _backButtonSize))
@@ -101,6 +105,10 @@ public class GameState extends AbstractState {
             public void doSomething() {
                 State selectLevelState = new SelectLevelState(_engine);
                 _engine.reqNewState(selectLevelState);
+                _audio.stop(Assets.mainTheme);
+                _audio.stop(Assets.clickSound);
+                _audio.play(Assets.clickSound, 1);
+                _audio.play(Assets.menuTheme, -1);
             }
         };
         _giveupTextPos[0] = _giveupImagePos[0] + (int) (_giveupImageSize[0] * 1.25) + 3;
@@ -121,6 +129,10 @@ public class GameState extends AbstractState {
             public void doSomething() {
                 State selectLevel = new SelectLevelState(_engine);
                 _engine.reqNewState(selectLevel);
+                _audio.stop(Assets.mainTheme);
+                _audio.stop(Assets.clickSound);
+                _audio.play(Assets.clickSound, 1);
+                _audio.play(Assets.menuTheme, -1);
             }
         };
 
@@ -141,16 +153,24 @@ public class GameState extends AbstractState {
                 if (_board.checkOriginalSolution()) {
                     _playState = PlayingState.Win;
                     _board.setWin(true);
+                    _audio.stop(Assets.winSound);
+                    _audio.play(Assets.winSound, 1);
+                    _audio.stop(Assets.winSound);
                 }
                 // Then check for another one
                 else if (_board.checkAnotherSolution()) {
                     _playState = PlayingState.Win;
                     _winText2 = "Otra solución";
                     _board.setWin(true);
+                    _audio.stop(Assets.winSound);
+                    _audio.play(Assets.winSound, 1);
+                    _audio.stop(Assets.winSound);
                 } else {
                     _playState = PlayingState.Checking;
                     showText();
                 }
+                _audio.stop(Assets.clickSound);
+                _audio.play(Assets.clickSound, 1);
             }
         };
     }
@@ -243,15 +263,15 @@ public class GameState extends AbstractState {
         _textHints2 = "Tienes mal " + mistakes[1] + " casillas";
 
         int digits = String.valueOf(mistakes[0]).length();
-        if(digits == 1)
+        if (digits == 1)
             _hintPos1[0] = (int) (_graphics.getLogWidth() * 0.35);
-        else if(digits == 2)
+        else if (digits == 2)
             _hintPos1[0] = (int) (_graphics.getLogWidth() * 0.35);
 
         digits = String.valueOf(mistakes[1]).length();
-        if(digits == 1)
+        if (digits == 1)
             _hintPos2[0] = (int) (_graphics.getLogWidth() * 0.33);
-        else if(digits == 2)
+        else if (digits == 2)
             _hintPos2[0] = (int) (_graphics.getLogWidth() * 0.33);
 
         // TIMER
@@ -342,4 +362,7 @@ public class GameState extends AbstractState {
     final int[] _winPos1 = new int[2];
     final int[] _winPos2 = new int[2];
     Font _fontWin;
+
+    // Audio
+
 }

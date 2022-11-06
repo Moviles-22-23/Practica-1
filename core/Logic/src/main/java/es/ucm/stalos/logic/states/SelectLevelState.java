@@ -38,6 +38,9 @@ public class SelectLevelState extends AbstractState {
                 public void doSomething() {
                     State mainMenuState = new MainMenuState(_engine);
                     _engine.reqNewState(mainMenuState);
+                    _audio.stop(Assets.clickSound);
+                    _audio.play(Assets.clickSound, 1);
+                    _audio.stop(Assets.clickSound);
                 }
             };
             _backTextPos[0] = _backImagePos[0] + (int) (_backImageSize[0] * 1.25) + 3;
@@ -108,6 +111,7 @@ public class SelectLevelState extends AbstractState {
 
     /**
      * Initialize the buttons to select the levels
+     *
      * @throws Exception in case of font creation fails
      */
     private void initSelectLevelButtons() throws Exception {
@@ -135,6 +139,10 @@ public class SelectLevelState extends AbstractState {
                     int c = _level.getCols();
                     State gameState = new GameState(_engine, r, c);
                     _engine.reqNewState(gameState);
+                    _audio.stop(Assets.clickSound);
+                    _audio.play(Assets.clickSound, 1);
+                    _audio.stop(Assets.clickSound);
+                    _audio.stop(Assets.menuTheme);
                 }
             });
             _selectButtons.add(_level);
@@ -158,7 +166,7 @@ public class SelectLevelState extends AbstractState {
     }
 
     // TODO: Esto es una prueba de sonido
-    private void playSound(){
+    private void playSound() {
 
         _audio.play(Assets.testSound, 0);
 //        _audio.setVolume();

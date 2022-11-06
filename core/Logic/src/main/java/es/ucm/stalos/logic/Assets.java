@@ -18,6 +18,10 @@ public class Assets {
 
     // Audio
     public static Sound testSound;
+    public static Sound mainTheme;
+    public static Sound menuTheme;
+    public static Sound clickSound;
+    public static Sound winSound;
 
     // Levels
     public static String testLevel;
