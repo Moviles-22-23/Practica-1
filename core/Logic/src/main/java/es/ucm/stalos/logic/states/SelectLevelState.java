@@ -55,7 +55,7 @@ public class SelectLevelState extends AbstractState {
             _titlePos[1] = (int) (_graphics.getLogHeight() * 0.28f);
 
             // MODE TEXT
-            if(_isRandom) _modeTitle = "JUEGO ALEATORIO";
+            if (_isRandom) _modeTitle = "JUEGO ALEATORIO";
             else _modeTitle = "JUEGO CLASICO";
             _modeTitleFont = _graphics.newFont("JosefinSans-Bold.ttf", 25, true);
             _modeTitlePos[0] = (int) (_graphics.getLogWidth() * 0.1f);
@@ -65,7 +65,7 @@ public class SelectLevelState extends AbstractState {
             initSelectLevelButtons();
 
             // AUDIO
-            _audio.resume(Assets.menuTheme);
+            _audio.playMusic(Assets.menuTheme);
 
         } catch (Exception e) {
             System.out.println("Error init Select Level");
@@ -151,7 +151,7 @@ public class SelectLevelState extends AbstractState {
                     State gameState = new GameState(_engine, r, c, _isRandom);
                     _engine.reqNewState(gameState);
                     _audio.play(Assets.clickSound, 1);
-                    _audio.stop(Assets.menuTheme);
+                    _audio.stopMusic(Assets.menuTheme);
                 }
             });
             _selectButtons.add(_level);

@@ -24,8 +24,6 @@ public class AndroidAudio implements Audio {
         if (!sound.init()) throw new Exception();
 
         AssetFileDescriptor afd = sound.getAssetDescriptor();
-
-        //_mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
         sound.setId(_soundPool.load(afd, 1));
 
         return sound;
@@ -45,28 +43,52 @@ public class AndroidAudio implements Audio {
 
     @Override
     public void playMusic(Sound sound) {
-        _mediaPlayer.start();
+        AssetFileDescriptor afd = ((AndroidSound) sound).getAssetDescriptor();
+        if (!_mediaPlayer.isPlaying()) {
+            try {
+                _mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                _mediaPlayer.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            _mediaPlayer.start();
+            System.out.println("playmusic");
+        }
     }
 
     @Override
     public void pause(Sound sound) {
         int id = ((AndroidSound) sound).getPlayId();
         _soundPool.pause(id);
-        //_mediaPlayer.pause();
+    }
+
+    @Override
+    public void pauseMusic(Sound music) {
+        _mediaPlayer.pause();
     }
 
     @Override
     public void stop(Sound sound) {
         int id = ((AndroidSound) sound).getPlayId();
         _soundPool.stop(id);
-        //_mediaPlayer.stop();
+    }
+
+    @Override
+    public void stopMusic(Sound music) {
+        _mediaPlayer.stop();
+        _mediaPlayer.reset();
     }
 
     @Override
     public void resume(Sound sound) {
         int id = ((AndroidSound) sound).getPlayId();
         _soundPool.resume(id);
-        //_mediaPlayer.start();
+    }
+
+    @Override
+    public void resumeMusic(Sound music) {
+        _mediaPlayer.start();
     }
 
     private AssetManager _assetManager;

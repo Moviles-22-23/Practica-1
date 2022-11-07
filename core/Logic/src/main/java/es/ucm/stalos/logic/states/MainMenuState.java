@@ -39,7 +39,7 @@ public class MainMenuState extends AbstractState {
                     State selectLevelState = new SelectLevelState(_engine, _isRandom);
                     _engine.reqNewState(selectLevelState);
                     _audio.play(Assets.clickSound, 1);
-                    _audio.pause(Assets.menuTheme);
+                    //_audio.pauseMusic(Assets.menuTheme);
                 }
             };
 
@@ -99,7 +99,7 @@ public class MainMenuState extends AbstractState {
                 int[] clickPos = {currEvent.getX(), currEvent.getY()};
 
                 // Play Button
-                if (clickInsideSquare(clickPos, _playButtonPos, _playButtonSize)){
+                if (clickInsideSquare(clickPos, _playButtonPos, _playButtonSize)) {
                     _isRandom = false;
                     _playCallback.doSomething();
                 }

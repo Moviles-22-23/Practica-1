@@ -108,10 +108,11 @@ public class AndroidGraphics extends AbstractGraphics {
     @Override
     public void drawCenteredString(String text, int[] pos, float[] size, Font font) {
         Typeface currFont = ((AndroidFont) font).getAndroidFont();
+
         _paint.setTypeface(currFont);
         _paint.setTextSize(font.getSize());
         _paint.setTextAlign(Paint.Align.CENTER);
-        _canvas.drawText(text, pos[0], pos[1], _paint);
+        _canvas.drawText(text, pos[0] + size[0] / 2, pos[1] + size[1] / 2, _paint);
         _paint.reset();
     }
 
@@ -149,7 +150,7 @@ public class AndroidGraphics extends AbstractGraphics {
     /**
      * Support function to drawRect(...)
      */
-    private void paintRect(int[] pos, float[] size){
+    private void paintRect(int[] pos, float[] size) {
         _paint.setStrokeWidth(_rectThick);
         _canvas.drawRect(pos[0], pos[1], pos[0] + size[0], pos[1] + size[1], _paint);
         _paint.reset();
@@ -170,8 +171,7 @@ public class AndroidGraphics extends AbstractGraphics {
 
     @Override
     public void prepareFrame() {
-        while (!_holder.getSurface().isValid())
-        {
+        while (!_holder.getSurface().isValid()) {
             System.out.println("PREPARE FRAME: NULL");
         }
 
@@ -206,7 +206,7 @@ public class AndroidGraphics extends AbstractGraphics {
         return _canvas;
     }
 
-//----------------------------------------------------------------//
+    //----------------------------------------------------------------//
     // VARIABLES
     private final WindowManager _wManager;
     private final Window _window;

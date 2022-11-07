@@ -32,8 +32,10 @@ public class DesktopAudio implements Audio {
     @Override
     public void playMusic(Sound sound) {
         Clip clip = ((DesktopSound) sound).getClip();
-        clip.loop(Clip.LOOP_CONTINUOUSLY);
-        clip.start();
+        if (!clip.isRunning()) {
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+            clip.start();
+        }
     }
 
     @Override
@@ -44,6 +46,11 @@ public class DesktopAudio implements Audio {
 
         // Calling just this method will paused the sound
         clip.stop();
+    }
+
+    @Override
+    public void pauseMusic(Sound music) {
+        pause(music);
     }
 
     @Override
@@ -59,8 +66,19 @@ public class DesktopAudio implements Audio {
     }
 
     @Override
+    public void stopMusic(Sound music) {
+        stop(music);
+    }
+
+    @Override
     public void resume(Sound sound) {
         Clip clip = ((DesktopSound) sound).getClip();
-        clip.start();
+        if (!clip.isRunning())
+            clip.start();
+    }
+
+    @Override
+    public void resumeMusic(Sound music) {
+        resume(music);
     }
 }

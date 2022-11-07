@@ -37,6 +37,13 @@ public interface Audio {
     void pause(Sound sound);
 
     /**
+     * Pause the background music
+     *
+     * @param music Music to be stopped
+     */
+    void pauseMusic(Sound music);
+
+    /**
      * Stopped an specified sound. Restart the clip.
      *
      * @param sound Sound to be stopped
@@ -44,9 +51,23 @@ public interface Audio {
     void stop(Sound sound);
 
     /**
+     * Stop the background music
+     *
+     * @param music Music to be stopped
+     */
+    void stopMusic(Sound music);
+
+    /**
      * Resume an specified paused sound.
      *
      * @param sound Sound to be resumed.
      */
     void resume(Sound sound);
+
+    /**
+     * Resume the background music
+     *
+     * @param music Music to be resumed
+     */
+    void resumeMusic(Sound music);
 }

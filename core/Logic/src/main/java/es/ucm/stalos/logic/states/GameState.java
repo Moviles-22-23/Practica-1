@@ -106,7 +106,7 @@ public class GameState extends AbstractState {
             public void doSomething() {
                 State selectLevelState = new SelectLevelState(_engine, _isRandom);
                 _engine.reqNewState(selectLevelState);
-                _audio.stop(Assets.mainTheme);
+                _audio.stopMusic(Assets.mainTheme);
                 _audio.play(Assets.clickSound, 1);
             }
         };
@@ -128,7 +128,7 @@ public class GameState extends AbstractState {
             public void doSomething() {
                 State selectLevel = new SelectLevelState(_engine, _isRandom);
                 _engine.reqNewState(selectLevel);
-                _audio.stop(Assets.mainTheme);
+                _audio.stopMusic(Assets.mainTheme);
                 _audio.play(Assets.clickSound, 1);
             }
         };
@@ -149,7 +149,7 @@ public class GameState extends AbstractState {
                 // At first it checks the original solution
                 if (_board.checkOriginalSolution()) {
                     _playState = PlayingState.Win;
-                    _board.setPos(new int[]{ _posBoard[0], _posBoard[1] - 50 });
+                    _board.setPos(new int[]{_posBoard[0], _posBoard[1] - 50});
                     _board.setWin(true);
                     _audio.play(Assets.winSound, 1);
                 }
@@ -157,7 +157,7 @@ public class GameState extends AbstractState {
                 else if (_board.checkAnotherSolution()) {
                     _playState = PlayingState.Win;
                     _winText2 = "Otra solución";
-                    _board.setPos(new int[]{ _posBoard[0], _posBoard[1] - 50 });
+                    _board.setPos(new int[]{_posBoard[0], _posBoard[1] - 50});
                     _board.setWin(true);
                     _audio.play(Assets.winSound, 1);
                 } else {
