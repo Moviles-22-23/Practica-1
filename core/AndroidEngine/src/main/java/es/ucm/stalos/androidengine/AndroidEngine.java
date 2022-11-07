@@ -81,6 +81,8 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
 
             this._renderThread = new Thread(this);
             this._renderThread.start();
+
+            ((AndroidAudio) _audio).resume();
         }
     }
 
@@ -97,6 +99,8 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
                     e.printStackTrace();
                 }
             }
+
+            ((AndroidAudio) _audio).pause();
         }
     }
 

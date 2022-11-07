@@ -63,6 +63,10 @@ public class AndroidAudio implements Audio {
         _soundPool.pause(id);
     }
 
+    public void pause() {
+        _mediaPlayer.pause();
+    }
+
     @Override
     public void pauseMusic(Sound music) {
         _mediaPlayer.pause();
@@ -88,6 +92,10 @@ public class AndroidAudio implements Audio {
 
     @Override
     public void resumeMusic(Sound music) {
+        _mediaPlayer.start();
+    }
+
+    public void resume() {
         _mediaPlayer.start();
     }
 
