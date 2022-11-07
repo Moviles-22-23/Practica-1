@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import es.ucm.stalos.engine.AbstractState;
 import es.ucm.stalos.engine.Engine;
 import es.ucm.stalos.engine.Font;
@@ -23,7 +20,6 @@ public class SelectLevelState extends AbstractState {
     public SelectLevelState(Engine engine, boolean isRandom) {
         super(engine);
         this._isRandom = isRandom;
-        System.out.println("GAME MODE RANDOM: " + _isRandom);
     }
 
 //-----------------------------------------OVERRIDE-----------------------------------------------//
@@ -31,10 +27,39 @@ public class SelectLevelState extends AbstractState {
     @Override
     public boolean init() {
         try {
-            // BACK LEVEL
-            _backFont = _graphics.newFont("JosefinSans-Bold.ttf", 20, true);
-            _backImageSize[0] = (_graphics.getLogWidth() / 14);
-            _backImageSize[1] = (_graphics.getLogHeight() / 25);
+            // Texts
+            _textsFont = _graphics.newFont("JosefinSans-Bold.ttf", 25, true);
+
+            // MODE TEXT
+            if (_isRandom) _modeText = "JUEGO ALEATORIO";
+            else _modeText = "JUEGO CLASICO";
+            _modeSize[0] = _graphics.getLogWidth();
+            _modeSize[1] = _graphics.getLogHeight() * 0.1f;
+            _modePos[0] = (int) (_graphics.getLogWidth() - _modeSize[0]);
+            _modePos[1] = (int) ((_graphics.getLogHeight() - _modeSize[1]) * 0.18f);
+
+            // Comment Text
+            _commentSize[0] = _graphics.getLogWidth();
+            _commentSize[1] = _graphics.getLogHeight() * 0.1f;
+            _commentPos[0] = (int) (_graphics.getLogWidth() - _commentSize[0]);
+            _commentPos[1] = (int) ((_graphics.getLogHeight() - _commentSize[1]) * 0.28f);
+
+            // Back Button
+            // Image
+            _backImageSize[0] = _graphics.getLogWidth() * 0.072f;
+            _backImageSize[1] = _graphics.getLogHeight() * 0.04f;
+            _backImagePos[0] = 10;
+            _backImagePos[1] = 31;
+
+            // Text
+            _backTextSize[0] = _graphics.getLogWidth() * 0.2f;
+            _backTextSize[1] = _backImageSize[1];
+            _backTextPos[0] = (int) (_backImagePos[0] + _backImageSize[0]);
+            _backTextPos[1] = _backImagePos[1];
+
+            // Back Button
+            _backButtonSize[0] = _backImageSize[0] + _backTextSize[0];
+            _backButtonSize[1] = _backImageSize[1];
             _backCallback = new ButtonCallback() {
                 @Override
                 public void doSomething() {
@@ -43,23 +68,6 @@ public class SelectLevelState extends AbstractState {
                     _audio.play(Assets.clickSound, 1);
                 }
             };
-            _backTextPos[0] = _backImagePos[0] + (int) (_backImageSize[0] * 1.25) + 3;
-            _backTextPos[1] = _backImagePos[1] + (int) (_backImageSize[1] * 2 / 3) + 3;
-
-            _backButtonSize[0] = 100;
-            _backButtonSize[1] = _backImageSize[1];
-
-            // SELECT LEVEL TEXT
-            _titleFont = _graphics.newFont("JosefinSans-Bold.ttf", 25, true);
-            _titlePos[0] = (int) (_graphics.getLogWidth() * 0.1f);
-            _titlePos[1] = (int) (_graphics.getLogHeight() * 0.28f);
-
-            // MODE TEXT
-            if (_isRandom) _modeTitle = "JUEGO ALEATORIO";
-            else _modeTitle = "JUEGO CLASICO";
-            _modeTitleFont = _graphics.newFont("JosefinSans-Bold.ttf", 25, true);
-            _modeTitlePos[0] = (int) (_graphics.getLogWidth() * 0.1f);
-            _modeTitlePos[1] = (int) (_graphics.getLogHeight() * 0.20f);
 
             // BUTTONS
             initSelectLevelButtons();
@@ -78,16 +86,15 @@ public class SelectLevelState extends AbstractState {
 
     @Override
     public void render() {
-        int color = 0x313131FF;
-        _graphics.setColor(color);
-        _graphics.drawText(_title, _titlePos, _titleFont);
-        _graphics.drawText(_modeTitle, _modeTitlePos, _modeTitleFont);
+        // Texts
+        _graphics.setColor(_greyColor);
+        _graphics.drawCenteredString(_modeText, _modePos, _modeSize, _textsFont);
+        _graphics.drawCenteredString(_commentText, _commentPos, _commentSize, _textsFont);
 
         // Back Button
-        color = 0X000000FF;
-        _graphics.setColor(color);
-        _graphics.drawImage(_backButtonImage, _backImagePos, _backImageSize);
-        _graphics.drawText(_backText, _backTextPos, _backFont);
+        _graphics.setColor(_blackColor);
+        _graphics.drawImage(_backImage, _backImagePos, _backImageSize);
+        _graphics.drawCenteredString(_backText, _backTextPos, _backTextSize, _textsFont);
 
         // SelectLevel buttons
         for (SelectLevelButton button : _selectButtons) {
@@ -103,8 +110,7 @@ public class SelectLevelState extends AbstractState {
             if (currEvent == Input.TouchEvent.touchDown) {
                 int[] clickPos = {currEvent.getX(), currEvent.getY()};
 
-                if (clickInsideSquare(clickPos, _backImagePos, _backButtonSize))
-                    _backCallback.doSomething();
+                if (clickInsideSquare(clickPos, _backImagePos, _backButtonSize)) _backCallback.doSomething();
                 else {
                     for (SelectLevelButton button : _selectButtons) {
                         int[] pos = button.getPos();
@@ -128,7 +134,7 @@ public class SelectLevelState extends AbstractState {
     private void initSelectLevelButtons() throws Exception {
         _selectButtons = new ArrayList<>();
 
-        float min = Math.min(((_graphics.getLogWidth() / 10) * 2), ((_graphics.getLogHeight() / 10) * 2));
+        float min = Math.min((_graphics.getLogWidth() * 0.2f), (_graphics.getLogHeight() * 0.2f));
         float[] size = new float[]{min, min};
 
         Font font = _graphics.newFont("Molle-Regular.ttf", 20, true);
@@ -139,8 +145,8 @@ public class SelectLevelState extends AbstractState {
 
         int j = 0;
         for (int i = 0; i < GridType.MAX.getValue(); i++) {
-            pos[0] = (_graphics.getLogWidth() / 10) * (1 + (3 * j));
-            pos[1] = (_graphics.getLogHeight() / 7) * (3 + (i / 3) * 2);
+            pos[0] = (int)(_graphics.getLogWidth() * 0.1f) * (1 + (3 * j));
+            pos[1] = (int)(_graphics.getLogHeight() * 0.143f) * (3 + (i / 3) * 2);
 
             final SelectLevelButton _level = new SelectLevelButton(pos, size, _gridTypes.get(i), font);
             _level.setCallback(new ButtonCallback() {
@@ -156,8 +162,7 @@ public class SelectLevelState extends AbstractState {
             });
             _selectButtons.add(_level);
             j++;
-            if (j == 3)
-                j = 0;
+            if (j == 3) j = 0;
         }
     }
 
@@ -175,41 +180,33 @@ public class SelectLevelState extends AbstractState {
     }
 
 //----------------------------------------ATTRIBUTES----------------------------------------------//
-
-    // GAME MODE
+    // Game Mode
     boolean _isRandom;
 
-    // BACK BUTTON
+    // Texts
+    private Font _textsFont;
+
+    // Mode Text
+    private String _modeText = "Juego clasico";
+    private int[] _modePos = new int[2];
+    private float[] _modeSize = new float[2];
+
+    // Comment Text
+    private final String _commentText = "Selecciona el tamaño del puzzle";
+    private int[] _commentPos = new int[2];
+    private float[] _commentSize = new float[2];
+
+    // Back Button
     private final String _backText = "Volver";
-    private final Image _backButtonImage = Assets.backArrow;
-    /**
-     * BackButtonIcon's position
-     */
-    private final int[] _backImagePos = {15, 50};
-    /**
-     * BackText's position
-     */
-    private final int[] _backTextPos = new int[2];
-    /**
-     * BackButtonIcon's size
-     */
-    private final float[] _backImageSize = new float[2];
-    /**
-     * BackButtonIcon + text's size
-     */
-    private final float[] _backButtonSize = new float[2];
-    private Font _backFont;
+    private int[] _backTextPos = new int[2];
+    private float[] _backTextSize = new float[2];
+
+    private final Image _backImage = Assets.backArrow;
+    private int[] _backImagePos = new int[2];
+    private float[] _backImageSize = new float[2];
+
+    private float[] _backButtonSize = new float[2];
     private ButtonCallback _backCallback;
-
-    // SELECT LEVEL TEXT
-    private final String _title = "Selecciona el tamaño del puzzle";
-    private final int[] _titlePos = new int[2];
-    private Font _titleFont;
-
-    // GAME MODE TEXT
-    private String _modeTitle = "Juego clasico";
-    private final int[] _modeTitlePos = new int[2];
-    private Font _modeTitleFont;
 
     // SELECT LEVEL BUTTONS
     /**
@@ -221,4 +218,10 @@ public class SelectLevelState extends AbstractState {
      * different grid level types
      */
     Map<Integer, GridType> _gridTypes;
+
+    // TODO ¿Mover?
+    // Colors
+    private final int _greyColor = 0x313131FF;
+    private final int _blackColor = 0x000000FF;
+    private final int _redColor = 0xFF0000FF;
 }

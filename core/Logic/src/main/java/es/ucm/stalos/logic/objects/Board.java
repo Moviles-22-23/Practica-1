@@ -43,7 +43,6 @@ public class Board {
         this._pos = pos;
         this._size = size;
         this._isRandom = isRandom;
-        System.out.println("GAME BOARD RANDOM: " + _isRandom);
 
         // Cell Size must be square so we have to use the min between rows and cols
         float maxRowsSize = size[1] * 2 / (rows * 2 + (int) Math.ceil(rows / 2.0f));
@@ -56,7 +55,8 @@ public class Board {
     public boolean init(Engine engine) {
         try {
             _engine = engine;
-            _fontSize = 30;
+            System.out.println("Aux: " + _hintSize);
+            _fontSize = (int) (_hintSize * 0.9f);
             _hintFont = engine.getGraphics().newFont("JosefinSans-Bold.ttf", _fontSize, true);
 
             if(_isRandom) createRandomSolution();
@@ -68,7 +68,6 @@ public class Board {
             System.out.println("Error leyendo el mapa");
             return false;
         }
-
         return true;
     }
 
@@ -266,16 +265,21 @@ public class Board {
             graphics.drawRect(pos, size);
         }
         else{
+            int oneRowSize = (int)(_size[0] / _rows);
+            int oneColSize = (int)(_size[1] / _cols);
+            int rowMargin = (int)(((_size[0] / _rows) - _cellSize) * 0.5f);
+            int colMargin = (int)(((_size[1] / _cols) - _cellSize) * 0.5f);
+
+            int size = Math.min(oneRowSize, oneColSize);
+            int margin = Math.min(rowMargin, colMargin);
+
             // Aqui dibuja solo la solucion cuando hemos ganado
             for (int i = 0; i < _rows; i++) {
                 for (int j = 0; j < _cols; j++) {
-                    graphics.setColor(0x00FF00FF);
-                    int oneRowSize = (int)(_size[0] / _rows);
-                    int oneColSize = (int)(_size[1] / _cols);
-                    int rowMargin = (int)(((_size[0] / _rows) - _cellSize) * 0.5f);
-                    int colMargin = (int)(((_size[1] / _cols) - _cellSize) * 0.5f);
                     graphics.setColor(0x0000FFFF);
-                    int[] solPos = {_pos[0] + oneRowSize * j + rowMargin, _pos[1] + oneColSize * i + colMargin };
+
+                    int[] solPos = {_pos[0] + size * j + margin, _pos[1] + size * i + margin };
+
                     // Utiliza el estado del tablero por si se ha resuelto con otra solucion
                     if(_boardState[i][j].cellType == CellType.BLUE) graphics.fillSquare(solPos, _cellSize);
                 }
@@ -407,7 +411,7 @@ public class Board {
         for (int i = 0; i < _rows; i++) {
             for (int j = 0; j < _cols; j++) {
                 Cell c = _boardState[i][j];
-                if (c.cellType == CellType.GREY && _sol[i][j]) {
+                if (c.cellType == CellType.GREY && _sol[i][j] || c.cellType == CellType.WHITE && _sol[i][j]) {
                     mistakes[0]++;
                 } else if (c.cellType == CellType.BLUE && !_sol[i][j]) {
                     mistakes[1]++;
@@ -461,9 +465,9 @@ public class Board {
     Cell[][] _boardState;
     List<int[]> _wrongCells;
     boolean _isWin = false;
-    boolean _isRandom = false;
+    boolean _isRandom;
 
-    int[] _pos = {10, 270};
+    int[] _pos;
     float[] _size;
     float _cellSize;
     float _hintSize;

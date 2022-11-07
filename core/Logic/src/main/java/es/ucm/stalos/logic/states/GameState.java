@@ -22,7 +22,6 @@ public class GameState extends AbstractState {
         this._rows = rows;
         this._cols = columns;
         this._isRandom = isRandom;
-        System.out.println("GAME MODE RANDOM: " + _isRandom);
     }
 
 //-----------------------------------------OVERRIDE-----------------------------------------------//
@@ -42,7 +41,7 @@ public class GameState extends AbstractState {
             _audio.playMusic(Assets.mainTheme);
 
         } catch (Exception e) {
-            System.out.println("Error init GameState");
+            System.out.println("Error init Game State");
             System.out.println(e);
             return false;
         }
@@ -72,12 +71,11 @@ public class GameState extends AbstractState {
                 /// GIVE-UP BUTTON
                 if (_playState == PlayingState.Gaming && clickInsideSquare(clickPos, _giveupImagePos, _giveupButtonSize))
                     _giveupCallback.doSomething();
-                    // CHECK BUTTON
+                // CHECK BUTTON
                 else if (_playState == PlayingState.Gaming && clickInsideSquare(clickPos, _checkImagePos, _checkButtonSize))
                     _checkCallback.doSomething();
-                    // BOARD INPUT
+                // BOARD INPUT
                 else if (_playState != PlayingState.Win && clickInsideSquare(clickPos, _posBoard, _sizeBoard)) {
-                    //
                     if (_playState == PlayingState.Checking && _timer != null && _timerTask != null) {
                         _timerTask.run();
                         _timer.cancel();
@@ -88,7 +86,7 @@ public class GameState extends AbstractState {
                     _audio.play(Assets.clickSound, 1);
                 }
                 // BACK BUTTON WIN
-                else if (_playState == PlayingState.Win && clickInsideSquare(clickPos, _backButtonPos, _backButtonSize))
+                else if (_playState == PlayingState.Win && clickInsideSquare(clickPos, _backImagePos, _backButtonSize))
                     _backCallback.doSomething();
             }
         }
@@ -97,10 +95,21 @@ public class GameState extends AbstractState {
 //-------------------------------------------MISC-------------------------------------------------//
 
     private void initButtons() throws Exception {
-        // GIVE UP
-        _giveupFont = _graphics.newFont("JosefinSans-Bold.ttf", 20, true);
-        _giveupImageSize[0] = (_graphics.getLogWidth() / 14);
-        _giveupImageSize[1] = (_graphics.getLogHeight() / 25);
+        _fontButtons = _graphics.newFont("JosefinSans-Bold.ttf", 20, true);
+
+        // Give Up
+        _giveupImageSize[0] = _graphics.getLogWidth() * 0.071f;
+        _giveupImageSize[1] = _graphics.getLogHeight() * 0.04f;
+        _giveupImagePos[0] = 10;
+        _giveupImagePos[1] = 31;
+
+        _giveupTextSize[0] = _graphics.getLogWidth() * 0.2f;
+        _giveupTextSize[1] = _giveupImageSize[1];
+        _giveupTextPos[0] = (int) (_giveupImagePos[0] + _giveupImageSize[0]);
+        _giveupTextPos[1] = _giveupImagePos[1];
+
+        _giveupButtonSize[0] = _giveupImageSize[0] + _giveupTextSize[0];
+        _giveupButtonSize[1] = _giveupImageSize[1];
         _giveupCallback = new ButtonCallback() {
             @Override
             public void doSomething() {
@@ -110,39 +119,20 @@ public class GameState extends AbstractState {
                 _audio.play(Assets.clickSound, 1);
             }
         };
-        _giveupTextPos[0] = _giveupImagePos[0] + (int) (_giveupImageSize[0] * 1.25) + 3;
-        _giveupTextPos[1] = _giveupImagePos[1] + (int) (_giveupImageSize[1] * 2 / 3) + 3;
 
-        _giveupButtonSize[0] = 110;
-        _giveupButtonSize[1] = _giveupImageSize[1];
+        // Check
+        _checkTextSize[0] = _graphics.getLogWidth() * 0.3f;
+        _checkTextSize[1] = _giveupImageSize[1];
+        _checkTextPos[0] = (int) (_graphics.getLogWidth() - _checkTextSize[0]);
+        _checkTextPos[1] = _giveupImagePos[1];
 
-        // BACK BUTTON
-        _backFont = _graphics.newFont("JosefinSans-Bold.ttf", 20, true);
-        _backButtonPos[0] = (int) (_graphics.getLogWidth() * 0.44);
-        _backButtonPos[1] = (int) (_graphics.getLogHeight() * 0.93);
-
-        _backButtonSize[0] = (int) (_graphics.getLogWidth() * 0.14);
-        _backButtonSize[1] = (int) (_graphics.getLogHeight() * 0.05);
-        _backCallback = new ButtonCallback() {
-            @Override
-            public void doSomething() {
-                State selectLevel = new SelectLevelState(_engine, _isRandom);
-                _engine.reqNewState(selectLevel);
-                _audio.stopMusic(Assets.mainTheme);
-                _audio.play(Assets.clickSound, 1);
-            }
-        };
-
-        // CHECK
         _checkImageSize[0] = _giveupImageSize[0];
         _checkImageSize[1] = _giveupImageSize[1];
+        _checkImagePos[0] = (int) (_graphics.getLogWidth() - _checkTextSize[0] - _checkImageSize[0]);
+        _checkImagePos[1] = _giveupImagePos[1];
 
-        _checkTextPos[0] = _checkImagePos[0] + 32;
-        _checkTextPos[1] = _giveupTextPos[1];
-
-        _checkButtonSize[0] = 130;
+        _checkButtonSize[0] = _checkImageSize[0] + _checkTextSize[0];
         _checkButtonSize[1] = _checkImageSize[1];
-
         _checkCallback = new ButtonCallback() {
             @Override
             public void doSomething() {
@@ -167,74 +157,101 @@ public class GameState extends AbstractState {
                 _audio.play(Assets.clickSound, 1);
             }
         };
+
+        // Back
+        _backImageSize[0] = _giveupImageSize[1];
+        _backImageSize[1] = _giveupImageSize[1];
+        _backTextSize[0] = _graphics.getLogWidth() * 0.2f;
+        _backTextSize[1] = _giveupImageSize[1];
+
+        _backImagePos[0] = (int) ((_graphics.getLogWidth() - (_backTextSize[0] + _backImageSize[0])) * 0.5f);
+        _backImagePos[1] = (int) (_graphics.getLogHeight() * 0.9f);
+        _backTextPos[0] = (int) (_backImagePos[0] + _backImageSize[0]);
+        _backTextPos[1] = _backImagePos[1];
+
+        _backButtonSize[0] = _backImageSize[0] + _backTextSize[0];
+        _backButtonSize[1] = _backImageSize[1];
+        _backCallback = new ButtonCallback() {
+            @Override
+            public void doSomething() {
+                State selectLevel = new SelectLevelState(_engine, _isRandom);
+                _engine.reqNewState(selectLevel);
+                _audio.stopMusic(Assets.mainTheme);
+                _audio.play(Assets.clickSound, 1);
+            }
+        };
+
     }
 
     private void initTexts() throws Exception {
+        _fontText = _graphics.newFont("JosefinSans-Bold.ttf", 30, true);
+
         // TEXT HINTS
-        _fontHint = _graphics.newFont("JosefinSans-Bold.ttf", 1, true);
-        _hintPos1[1] = (int) (_graphics.getLogHeight() * 0.2);
-        _hintPos2[1] = (int) (_graphics.getLogHeight() * 0.25);
+        _hintSize1[0] = _graphics.getLogWidth();
+        _hintSize1[1] = _graphics.getLogHeight() * 0.08f;
+        _hintPos1[0] = 0;
+        _hintPos1[1] = (int) (_graphics.getLogHeight() * 0.1f);
+
+        _hintSize2[0] = _graphics.getLogWidth();
+        _hintSize2[1] = _graphics.getLogHeight() * 0.08f;
+        _hintPos2[0] = 0;
+        _hintPos2[1] = (int) (_graphics.getLogHeight() * 0.18f);
 
         // WIN TEXT
-        _fontWin = _graphics.newFont("JosefinSans-Bold.ttf", 23, true);
-        _winPos1[0] = (int) (_graphics.getLogWidth() * 0.3);
-        _winPos1[1] = (int) (_graphics.getLogHeight() * 0.2);
+        _winSize1[0] = _graphics.getLogWidth();
+        _winSize1[1] = _graphics.getLogHeight() * 0.08f;
+        _winPos1[0] = 0;
+        _winPos1[1] = (int) (_graphics.getLogHeight() * 0.1f);
 
-        _winPos2[0] = (int) (_graphics.getLogWidth() * 0.3);
-        _winPos2[1] = (int) (_graphics.getLogHeight() * 0.25);
+        _winSize2[0] = _graphics.getLogWidth();
+        _winSize2[1] = _graphics.getLogHeight() * 0.08f;
+        _winPos2[0] = 0;
+        _winPos2[1] = (int) (_graphics.getLogHeight() * 0.18f);
     }
 
     public void renderButtons() {
-        int color;
+        _graphics.setColor(_blackColor);
         switch (_playState) {
             case Gaming:
                 // GiveUp Button
-                color = 0X000000FF;
-                _graphics.setColor(color);
-                _graphics.drawImage(_giveupButtonImage, _giveupImagePos, _giveupImageSize);
-                _graphics.drawText(_giveupText, _giveupTextPos, _giveupFont);
-
+                _graphics.drawImage(_giveupImage, _giveupImagePos, _giveupImageSize);
+                _graphics.drawCenteredString(_giveupText, _giveupTextPos, _giveupTextSize, _fontButtons);
                 // Check Button
-                _graphics.drawImage(_checkButtonImage, _checkImagePos, _checkImageSize);
-                _graphics.drawText(_checkText, _checkTextPos, _giveupFont);
-
+                _graphics.drawImage(_checkImage, _checkImagePos, _checkImageSize);
+                _graphics.drawCenteredString(_checkText, _checkTextPos, _checkTextSize, _fontButtons);
                 break;
             case Win: {
                 // Back Button
-                color = 0X000000FF;
-                _graphics.setColor(color);
-                int[] pos = new int[2];
-                pos[0] = _backButtonPos[0];
-                pos[1] = _backButtonPos[1] + (int) (_backButtonSize[1] * 0.65);
-                _graphics.drawText(_backText, pos, _backFont);
+                _graphics.drawImage(_backImage, _backImagePos, _backImageSize);
+                _graphics.drawCenteredString(_backText, _backTextPos, _backTextSize, _fontButtons);
                 break;
             }
         }
     }
 
     public void renderText() {
-        int color;
         switch (_playState) {
             case Checking:
                 // TEXT HINTS
-                color = 0XFF0000FF;
-                _graphics.setColor(color);
-                _graphics.drawText(_textHints1, _hintPos1, _fontHint);
-                _graphics.drawText(_textHints2, _hintPos2, _fontHint);
+                System.out.println(_hintsText1 + " en " + _hintPos1[0] + ", " + _hintPos1[1]);
+                System.out.println(_hintsText2);
+                _graphics.setColor(_redColor);
+
+                _graphics.drawCenteredString(_hintsText1, _hintPos1, _hintSize1, _fontText);
+                _graphics.drawCenteredString(_hintsText2, _hintPos2, _hintSize2, _fontText);
                 break;
             case Win:
                 // TEXT WIN
-                color = 0X000000FF;
-                _graphics.setColor(color);
-                _graphics.drawText(_winText1, _winPos1, _fontWin);
-                _graphics.drawText(_winText2, _winPos2, _fontWin);
+                _graphics.setColor(_blackColor);
+                _graphics.drawCenteredString(_winText1, _winPos1, _winSize1, _fontText);
+                _graphics.drawCenteredString(_winText2, _winPos2, _winSize2, _fontText);
                 break;
             default:
                 break;
         }
     }
 
-    public void initBoard() {
+    public void initBoard() throws Exception {
         // Create the board
         _posBoard[0] = 20;
         _posBoard[1] = 200;
@@ -242,27 +259,34 @@ public class GameState extends AbstractState {
         _sizeBoard[1] = 360.0f;
 
         _board = new Board(_rows, _cols, _posBoard, _sizeBoard, _isRandom);
-        _board.init(_engine);
+        if(!_board.init(_engine)) throw new Exception("Error al crear el board");
     }
 
     private void showText() {
         _playState = PlayingState.Checking;
         // ATTRIBUTES
         int[] mistakes = _board.countMistakes();
-        _textHints1 = "Te falta " + mistakes[0] + " casillas";
-        _textHints2 = "Tienes mal " + mistakes[1] + " casillas";
 
-        int digits = String.valueOf(mistakes[0]).length();
-        if (digits == 1)
-            _hintPos1[0] = (int) (_graphics.getLogWidth() * 0.35);
-        else if (digits == 2)
-            _hintPos1[0] = (int) (_graphics.getLogWidth() * 0.35);
+        if(mistakes[0] == 0) _hintsText1 = "No te faltan casillas";
+        else if (mistakes[0] == 1) _hintsText1 = "Te falta " + mistakes[0] + " casilla";
+        else _hintsText1 = "Te faltan " + mistakes[0] + " casillas";
 
-        digits = String.valueOf(mistakes[1]).length();
-        if (digits == 1)
-            _hintPos2[0] = (int) (_graphics.getLogWidth() * 0.33);
-        else if (digits == 2)
-            _hintPos2[0] = (int) (_graphics.getLogWidth() * 0.33);
+        if(mistakes[1] == 0) _hintsText2 = "No tienes casillas mal";
+        else if (mistakes[1] == 1) _hintsText2 = "Tienes mal " + mistakes[1] + " casilla";
+        else _hintsText2 = "Tienes mal " + mistakes[1] + " casillas";
+
+        // TODO borrar
+//        int digits = String.valueOf(mistakes[0]).length();
+//        if (digits == 1)
+//            _hintPos1[0] = (int) (_graphics.getLogWidth() * 0.35);
+//        else if (digits == 2)
+//            _hintPos1[0] = (int) (_graphics.getLogWidth() * 0.35);
+//
+//        digits = String.valueOf(mistakes[1]).length();
+//        if (digits == 1)
+//            _hintPos2[0] = (int) (_graphics.getLogWidth() * 0.33);
+//        else if (digits == 2)
+//            _hintPos2[0] = (int) (_graphics.getLogWidth() * 0.33);
 
         // TIMER
         _timer = new Timer();
@@ -280,82 +304,82 @@ public class GameState extends AbstractState {
 //----------------------------------------ATTRIBUTES----------------------------------------------//
 
     // Game Mode
-    boolean _isRandom;
+    private PlayingState _playState = PlayingState.Gaming;
+    private boolean _isRandom;
 
     // Atributos del estado
-    int _rows;
-    int _cols;
+    private int _rows;
+    private int _cols;
 
     // Board
-    Board _board;
-    int[] _posBoard = new int[2];
-    float[] _sizeBoard = new float[2];
+    private Board _board;
+    private int[] _posBoard = new int[2];
+    private float[] _sizeBoard = new float[2];
+
+    // Texts
+    private Font _fontText;
+
+    private String _hintsText1 = "Te faltan x casillas";
+    private int[] _hintPos1 = new int[2];
+    private float[] _hintSize1 = new float[2];
+
+    private String _hintsText2 = "Tienes mal x casillas";
+    private int[] _hintPos2 = new int[2];
+    private float[] _hintSize2 = new float[2];
+
+    private final String _winText1 = "ENHORABUENA!";
+    private int[] _winPos1 = new int[2];
+    private float[] _winSize1 = new float[2];
+
+    private String _winText2 = "Solución original";
+    private int[] _winPos2 = new int[2];
+    private float[] _winSize2 = new float[2];
+
+    // Buttons
+    private Font _fontButtons;
 
     // Give Up Button
-    final String _giveupText = "Rendirse";
-    final Image _giveupButtonImage = Assets.backArrow;
-    /**
-     * GiveUpButtonIcon's position
-     */
-    final int[] _giveupImagePos = {15, 50};
-    /**
-     * GiveUpText's position
-     */
-    final int[] _giveupTextPos = new int[2];
-    /**
-     * GiveUpButtonIcon's size
-     */
-    final float[] _giveupImageSize = new float[2];
-    /**
-     * GiveUpButtonIcon + text's size
-     */
-    final float[] _giveupButtonSize = new float[2];
-    Font _giveupFont;
-    ButtonCallback _giveupCallback;
+    private final String _giveupText = "Rendirse";
+    private int[] _giveupTextPos = new int[2];
+    private float[] _giveupTextSize = new float[2];
 
-    // Back Button
-    final String _backText = "Volver";
-    final int[] _backButtonPos = new int[2];
-    final float[] _backButtonSize = new float[2];
-    Font _backFont;
-    ButtonCallback _backCallback;
+    private final Image _giveupImage = Assets.backArrow;
+    private int[] _giveupImagePos = new int[2];
+    private float[] _giveupImageSize = new float[2];
+
+    private float[] _giveupButtonSize = new float[2];
+    private ButtonCallback _giveupCallback;
 
     // Check Button
-    final String _checkText = "Comprobar";
-    final Image _checkButtonImage = Assets.lens;
-    /**
-     * CheckButtonIcon's position
-     */
-    final int[] _checkImagePos = {240, 50};
-    /**
-     * CheckText's position
-     */
-    final int[] _checkTextPos = new int[2];
-    /**
-     * CheckButtonIcon's size
-     */
-    final float[] _checkImageSize = new float[2];
-    /**
-     * CheckButtonIcon + text's size
-     */
-    final float[] _checkButtonSize = new float[2];
-    ButtonCallback _checkCallback;
+    private final String _checkText = "Comprobar";
+    private int[] _checkTextPos = new int[2];
+    private float[] _checkTextSize = new float[2];
 
-    // Text hints
-    String _textHints1 = "";
-    String _textHints2 = "";
-    Font _fontHint;
-    final int[] _hintPos1 = new int[2];
-    final int[] _hintPos2 = new int[2];
-    PlayingState _playState = PlayingState.Gaming;
+    private final Image _checkImage = Assets.lens;
+    private int[] _checkImagePos = new int[2];
+    private float[] _checkImageSize = new float[2];
 
-    // WIN TEXT
-    String _winText1 = "ENHORABUENA!";
-    String _winText2 = "Solución original";
-    final int[] _winPos1 = new int[2];
-    final int[] _winPos2 = new int[2];
-    Font _fontWin;
+    private float[] _checkButtonSize = new float[2];
+    private ButtonCallback _checkCallback;
+
+    // Back Button
+    private final String _backText = "Volver";
+    private int[] _backTextPos = new int[2];
+    private float[] _backTextSize = new float[2];
+
+    private final Image _backImage = Assets.backArrow;
+    private int[] _backImagePos = new int[2];
+    private float[] _backImageSize = new float[2];
+
+    private float[] _backButtonSize = new float[2];
+    private ButtonCallback _backCallback;
 
     // Audio
+
+    // TODO ¿Mover?
+    // Colors
+    private final int _greyColor = 0x313131FF;
+    private final int _blackColor = 0x000000FF;
+    private final int _redColor = 0xFF0000FF;
 
 }

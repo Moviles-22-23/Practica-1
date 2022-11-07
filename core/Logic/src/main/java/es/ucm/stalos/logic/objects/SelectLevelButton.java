@@ -64,8 +64,7 @@ public class SelectLevelButton {
 
     public void render(Graphics gr) {
         gr.drawRect(_buttonPos, _buttonSize);
-
-        gr.drawText(_text, _textPos, _font);
+        gr.drawCenteredString(_text, _buttonPos, _buttonSize, _font);
     }
 
     public void setCallback(ButtonCallback cb)
