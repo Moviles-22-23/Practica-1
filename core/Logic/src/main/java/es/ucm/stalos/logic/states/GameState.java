@@ -235,9 +235,10 @@ public class GameState extends AbstractState {
                 // TEXT HINTS
                 System.out.println(_hintsText1 + " en " + _hintPos1[0] + ", " + _hintPos1[1]);
                 System.out.println(_hintsText2);
-                _graphics.setColor(_redColor);
 
+                _graphics.setColor(_redColor);
                 _graphics.drawCenteredString(_hintsText1, _hintPos1, _hintSize1, _fontText);
+                _graphics.setColor(_redColor);
                 _graphics.drawCenteredString(_hintsText2, _hintPos2, _hintSize2, _fontText);
                 break;
             case Win:
