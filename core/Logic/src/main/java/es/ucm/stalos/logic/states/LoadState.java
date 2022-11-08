@@ -49,9 +49,6 @@ public class LoadState extends AbstractState {
             // Start MainMenu
             State mainMenu = new MainMenuState(_engine);
             _engine.reqNewState(mainMenu);
-            // TODO
-//            State select = new SelectLevelState(_engine);
-//            _engine.reqNewState(select);
 
         } catch (Exception e) {
             System.err.println(e);

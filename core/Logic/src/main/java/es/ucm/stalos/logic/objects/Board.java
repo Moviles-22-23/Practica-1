@@ -109,14 +109,35 @@ public class Board {
     }
 
     private void createRandomSolution(){
-        Random rn = new Random();
+        // Llena todoo de false
         for (int i = 0; i < _rows; i++) {
             for (int j = 0; j < _cols; j++) {
-                boolean aux = rn.nextBoolean();
-                System.out.println("Aux: " + aux);
-                _sol[i][j] = aux;
+                _sol[i][j] = false;
             }
         }
+
+        Random rn = new Random();
+        float percent = 0.70f;
+        float total = 0;
+
+        while(total / (_rows * _cols) < percent){
+            int i = Math.abs(rn.nextInt() % _rows);
+            int j = Math.abs(rn.nextInt() % _cols);
+            System.out.println("Pos: " + i + ", " + j + ")");
+            if(!_sol[i][j]){
+                _sol[i][j] = true;
+                total++;
+                System.out.println(total / (_rows * _cols));
+            }
+        }
+
+//        for (int i = 0; i < _rows; i++) {
+//            for (int j = 0; j < _cols; j++) {
+//                boolean aux = rn.nextBoolean();
+//                System.out.println("Aux: " + aux);
+//                _sol[i][j] = aux;
+//            }
+//        }
     }
 
     private void loadLevel() {
