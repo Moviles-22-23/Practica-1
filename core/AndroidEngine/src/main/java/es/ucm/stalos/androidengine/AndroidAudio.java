@@ -47,13 +47,14 @@ public class AndroidAudio implements Audio {
         if (!_mediaPlayer.isPlaying()) {
             try {
                 _mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                _mediaPlayer.setLooping(true);
                 _mediaPlayer.prepare();
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
             _mediaPlayer.start();
-            System.out.println("playmusic");
+            //System.out.println("playmusic");
         }
     }
 
