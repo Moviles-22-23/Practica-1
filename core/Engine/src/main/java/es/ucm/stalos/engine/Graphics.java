@@ -1,7 +1,5 @@
 package es.ucm.stalos.engine;
 
-import java.awt.FontMetrics;
-
 public interface Graphics {
 
     /**

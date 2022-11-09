@@ -25,6 +25,11 @@ public abstract class AbstractEngine implements Engine {
         return _audio;
     }
 
+    @Override
+    public FileReader getFileReader(){
+        return _fReader;
+    }
+
     protected void updateDeltaTime() {
         _currentTime = System.nanoTime();
         long nanoElapsedTime = _currentTime - _lastFrameTime;
@@ -38,6 +43,7 @@ public abstract class AbstractEngine implements Engine {
     protected Graphics _graphics;
     protected Input _input;
     protected Audio _audio;
+    protected FileReader _fReader;
 
     // DELTA TIME
     protected long _lastFrameTime = 0;

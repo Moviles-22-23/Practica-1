@@ -59,7 +59,7 @@ public class Board {
             _fontSize = (int) (_hintSize * 0.9f);
             _hintFont = engine.getGraphics().newFont("JosefinSans-Bold.ttf", _fontSize, true);
 
-            if(_isRandom) createRandomSolution();
+            if (_isRandom) createRandomSolution();
             else readSolution();
 
             loadLevel();
@@ -76,7 +76,7 @@ public class Board {
             // LevelPack Name
             String name = "levels/levelPack" + String.valueOf(_rows) + "x" + String.valueOf(_cols) + ".txt";
             // IFile from the current platform
-            IFile file = _engine.newFile(name);
+            IFile file = _engine.getFileReader().newFile(name);
             BufferedReader br = file.getBufferReader();
             //
             String line;
@@ -108,7 +108,7 @@ public class Board {
         }
     }
 
-    private void createRandomSolution(){
+    private void createRandomSolution() {
         Random rn = new Random();
         for (int i = 0; i < _rows; i++) {
             for (int j = 0; j < _cols; j++) {
@@ -197,9 +197,9 @@ public class Board {
         }
     }
 
-//----------------------------------------MAIN-LOOP-----------------------------------------------//
+    //----------------------------------------MAIN-LOOP-----------------------------------------------//
     public void render(Graphics graphics) {
-        if(!_isWin) {
+        if (!_isWin) {
             // Variable auiliares para pintar
             int[] pos = new int[2];
             float[] size = new float[2];
@@ -219,7 +219,7 @@ public class Board {
                     // Range of hints rows
                     else if (i >= _hintCols.length && j < _hintRows[0].length) {
                         // Los 0 no hace falta ponerlos
-                        if(_hintRows[i - _hintCols.length][j] != 0) {
+                        if (_hintRows[i - _hintCols.length][j] != 0) {
                             graphics.setColor(0x000000FF);
                             pos[0] = _pos[0] + (int) (j * _hintSize);
                             pos[1] = _pos[1] + (int) ((_hintCols.length * _hintSize) + ((i - _hintCols.length) * _cellSize));
@@ -231,7 +231,7 @@ public class Board {
                     }
                     // Range of hints cols
                     else if (i < _hintCols.length && j >= _hintRows[0].length) {
-                        if(_hintCols[i][j - _hintRows[0].length] != 0) {
+                        if (_hintCols[i][j - _hintRows[0].length] != 0) {
                             graphics.setColor(0x000000FF);
                             pos[0] = _pos[0] + (int) ((_hintRows[0].length * _hintSize) + ((j - _hintRows[0].length) * _cellSize));
                             pos[1] = _pos[1] + (int) (i * _hintSize);
@@ -263,12 +263,11 @@ public class Board {
             size[0] = _hintCols[0].length * _cellSize;
             size[1] = _hintCols.length * _hintSize;
             graphics.drawRect(pos, size);
-        }
-        else{
-            int oneRowSize = (int)(_size[0] / _rows);
-            int oneColSize = (int)(_size[1] / _cols);
-            int rowMargin = (int)(((_size[0] / _rows) - _cellSize) * 0.5f);
-            int colMargin = (int)(((_size[1] / _cols) - _cellSize) * 0.5f);
+        } else {
+            int oneRowSize = (int) (_size[0] / _rows);
+            int oneColSize = (int) (_size[1] / _cols);
+            int rowMargin = (int) (((_size[0] / _rows) - _cellSize) * 0.5f);
+            int colMargin = (int) (((_size[1] / _cols) - _cellSize) * 0.5f);
 
             int size = Math.min(oneRowSize, oneColSize);
             int margin = Math.min(rowMargin, colMargin);
@@ -278,10 +277,11 @@ public class Board {
                 for (int j = 0; j < _cols; j++) {
                     graphics.setColor(0x0000FFFF);
 
-                    int[] solPos = {_pos[0] + size * j + margin, _pos[1] + size * i + margin };
+                    int[] solPos = {_pos[0] + size * j + margin, _pos[1] + size * i + margin};
 
                     // Utiliza el estado del tablero por si se ha resuelto con otra solucion
-                    if(_boardState[i][j].cellType == CellType.BLUE) graphics.fillSquare(solPos, _cellSize);
+                    if (_boardState[i][j].cellType == CellType.BLUE)
+                        graphics.fillSquare(solPos, _cellSize);
                 }
             }
         }
@@ -424,10 +424,8 @@ public class Board {
         return mistakes;
     }
 
-    public void resetWrongCells()
-    {
-        for (int [] index : _wrongCells)
-        {
+    public void resetWrongCells() {
+        for (int[] index : _wrongCells) {
             int i = index[0];
             int j = index[1];
             _boardState[i][j].cellType = CellType.BLUE;
@@ -452,7 +450,9 @@ public class Board {
         _size = newSize;
     }
 
-    public void setWin(boolean state) { _isWin = state; }
+    public void setWin(boolean state) {
+        _isWin = state;
+    }
 
     //----------------------------------------ATTRIBUTES----------------------------------------------//
     private Engine _engine;

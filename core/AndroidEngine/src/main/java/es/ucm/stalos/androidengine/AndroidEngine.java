@@ -15,7 +15,7 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
     }
 
     public boolean init(State initState, int w, int h, AppCompatActivity activity) {
-        _assetsMan = activity.getApplicationContext().getAssets();
+        AssetManager assetsMan = activity.getApplicationContext().getAssets();
 
         //STATE
         _currState = initState;
@@ -27,7 +27,10 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
         _input = new AndroidInput(this);
 
         // AUDIO
-        _audio = new AndroidAudio(_assetsMan);
+        _audio = new AndroidAudio(assetsMan);
+
+        // FILE READER
+        _fReader = new AndroidFileReader(assetsMan);
 
         return ((AndroidGraphics) _graphics).init((AndroidInput) _input, activity) && _currState.init();
     }
@@ -67,14 +70,6 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
 
     }
 
-    @Override
-    public IFile newFile(String _fileName) throws Exception {
-        AndroidFile file = new AndroidFile(_fileName, _assetsMan);
-        if (!file.init()) throw new Exception();
-
-        return file;
-    }
-
     public void resume() {
         if (!this._running) {
             this._running = true;
@@ -104,7 +99,6 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
         }
     }
 
-    AssetManager _assetsMan;
     private Thread _renderThread;
     private boolean _running;
 }

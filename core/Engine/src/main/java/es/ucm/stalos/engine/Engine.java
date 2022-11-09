@@ -24,7 +24,7 @@ public interface Engine {
     Audio getAudio();
 
     /**
-     * Create and return a new file
+     * @return Instance of File Reader
      */
-    IFile newFile(String _fileName) throws Exception;
+    FileReader getFileReader();
 }

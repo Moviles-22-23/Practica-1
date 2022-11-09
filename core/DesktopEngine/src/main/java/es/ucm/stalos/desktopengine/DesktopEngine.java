@@ -19,6 +19,8 @@ public class DesktopEngine extends AbstractEngine implements Runnable {
         _graphics = new DesktopGraphics(nameGame, this, w, h);
         // AUDIO
         _audio = new DesktopAudio();
+        // FILE READER
+        _fReader = new DesktopFileReader();
 
         return ((DesktopGraphics) _graphics).init() && ((DesktopInput) _input).init() && _currState.init();
     }
@@ -97,12 +99,4 @@ public class DesktopEngine extends AbstractEngine implements Runnable {
 
     private Thread _renderThread;
     private boolean _running;
-
-    @Override
-    public IFile newFile(String _fileName) throws Exception {
-        DesktopFile file = new DesktopFile("./assets/" + _fileName);
-        if (!file.init()) throw new Exception();
-
-        return file;
-    }
 }

@@ -5,6 +5,7 @@ import java.io.File;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 
 import es.ucm.stalos.engine.Sound;
 
@@ -30,6 +31,12 @@ public class DesktopSound implements Sound {
 
     public Clip getClip() {
         return _clip;
+    }
+
+    public void setVolume(float newVolume)
+    {
+        FloatControl gainControl = (FloatControl) _clip.getControl(FloatControl.Type.MASTER_GAIN);
+        gainControl.setValue(-10.0f);
     }
 
     private Clip _clip;
