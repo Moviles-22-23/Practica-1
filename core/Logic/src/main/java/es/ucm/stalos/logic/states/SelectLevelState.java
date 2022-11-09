@@ -219,9 +219,7 @@ public class SelectLevelState extends AbstractState {
      */
     Map<Integer, GridType> _gridTypes;
 
-    // TODO ¿Mover?
     // Colors
     private final int _greyColor = 0x313131FF;
     private final int _blackColor = 0x000000FF;
-    private final int _redColor = 0xFF0000FF;
 }

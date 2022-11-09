@@ -2,7 +2,7 @@ package es.ucm.stalos.engine;
 
 public interface State {
     /**
-     * Initialize the state of the fame
+     * Initialize the state
      * @return false if it fails
      * */
     boolean init();

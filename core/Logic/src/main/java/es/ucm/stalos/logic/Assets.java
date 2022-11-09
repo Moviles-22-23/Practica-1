@@ -1,6 +1,5 @@
 package es.ucm.stalos.logic;
 
-import es.ucm.stalos.engine.Font;
 import es.ucm.stalos.engine.Image;
 import es.ucm.stalos.engine.Sound;
 
@@ -17,12 +16,8 @@ public class Assets {
     public static Image lens;
 
     // Audio
-    public static Sound testSound;
     public static Sound mainTheme;
     public static Sound menuTheme;
     public static Sound clickSound;
     public static Sound winSound;
-
-    // Levels
-    public static String testLevel;
 }

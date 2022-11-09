@@ -213,11 +213,6 @@ public class DesktopGraphics extends AbstractGraphics {
     }
 
     @Override
-    public void save() {
-
-    }
-
-    @Override
     public void restore() {
         _graphics.dispose();
     }

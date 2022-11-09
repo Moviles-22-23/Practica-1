@@ -55,7 +55,6 @@ public class Board {
     public boolean init(Engine engine) {
         try {
             _engine = engine;
-            System.out.println("Aux: " + _hintSize);
             _fontSize = (int) (_hintSize * 0.9f);
             _hintFont = engine.getGraphics().newFont("JosefinSans-Bold.ttf", _fontSize, true);
 
@@ -71,6 +70,11 @@ public class Board {
         return true;
     }
 
+    /**
+     * Read a levelPack from the assets to
+     * make a new gridLevel
+     * @throws FileNotFoundException
+     */
     private void readSolution() throws FileNotFoundException {
         try {
             // LevelPack Name
@@ -84,8 +88,6 @@ public class Board {
             int numLevels = Integer.parseInt(line);
             Random rn = new Random();
             int levelChoosen = Math.abs(rn.nextInt() % numLevels);
-
-            System.out.println("Level: " + levelChoosen);
 
             // Skip lines to be on the correct level
             for (int i = 0; i < levelChoosen; i++) {
@@ -108,8 +110,11 @@ public class Board {
         }
     }
 
+    /**
+     * Generate a random grid
+     */
     private void createRandomSolution(){
-        // Llena todoo de false
+        // 1. Initialize all solutions to false
         for (int i = 0; i < _rows; i++) {
             for (int j = 0; j < _cols; j++) {
                 _sol[i][j] = false;
@@ -120,26 +125,21 @@ public class Board {
         float percent = 0.70f;
         float total = 0;
 
+        // 2. Randomly set cells to true
+        //    until get a 70% filled grid
         while(total / (_rows * _cols) < percent){
             int i = Math.abs(rn.nextInt() % _rows);
             int j = Math.abs(rn.nextInt() % _cols);
-            System.out.println("Pos: " + i + ", " + j + ")");
             if(!_sol[i][j]){
                 _sol[i][j] = true;
                 total++;
-                System.out.println(total / (_rows * _cols));
             }
         }
-
-//        for (int i = 0; i < _rows; i++) {
-//            for (int j = 0; j < _cols; j++) {
-//                boolean aux = rn.nextBoolean();
-//                System.out.println("Aux: " + aux);
-//                _sol[i][j] = aux;
-//            }
-//        }
     }
 
+    /**
+     * Auxiliar function to load different level stuff
+     */
     private void loadLevel() {
         loadHintsRows();
         loadHintsCols();
@@ -147,12 +147,14 @@ public class Board {
     }
 
     /**
+     * Load the hints' row in function of the filled cells in the row
+     *
      * Is important to read right to left the row to fill hintsRows
      * - 2 1 | 1 1 0 1 0
      */
     private void loadHintsRows() {
         int cont, auxJ;
-        // Cada fila de las pistas (Up to Down)
+        // Each hint's row (Up to Down)
         for (int i = 0; i < _sol.length; i++) {
             // Reset cont and auxJ
             cont = 0;
@@ -175,6 +177,9 @@ public class Board {
         }
     }
 
+    /**
+     * Load the hints' column in function of the filled cells in the column
+     */
     private void loadHintsCols() {
         int cont, auxI;
 
@@ -201,12 +206,13 @@ public class Board {
         }
     }
 
+    /**
+     * Generate every cell of the board calculating the respective position.
+     */
     private void loadBoardState() {
         int[] cellsPos = new int[2];
         cellsPos[0] = _pos[0] + (int) (_hintSize * _hintRows[0].length);
         cellsPos[1] = _pos[1] + (int) (_hintSize * _hintCols.length);
-
-        int aux = cellsPos[0];
 
         int[] pos = new int[2];
         for (int i = 0; i < _rows; i++) {
@@ -316,6 +322,10 @@ public class Board {
         }
     }
 
+    /**
+     * Checking of the original solution
+     * @return true if it is the original one
+     */
     public boolean checkOriginalSolution() {
         boolean possible = true;
         int i = 0, j;
@@ -324,8 +334,6 @@ public class Board {
             while (possible && j < _cols) {
                 if ((_boardState[i][j].cellType == CellType.BLUE && !_sol[i][j]) ||
                         (_boardState[i][j].cellType != CellType.BLUE && _sol[i][j])) {
-                    System.out.println("Error in row: " + i + ", col: " + j);
-                    System.out.println("That cell is: " + _boardState[i][j].cellType + ", and should be " + _sol[i][j]);
                     possible = false;
                 }
                 j++;
@@ -335,6 +343,10 @@ public class Board {
         return possible;
     }
 
+    /**
+     * Checking for another possible solution
+     * @return true if it isn't the original one
+     */
     public boolean checkAnotherSolution() {
         boolean possible = true;
 
@@ -342,7 +354,6 @@ public class Board {
         int i = 0;
         while (possible && i < _rows) {
             possible = checkRow(i);
-            if (possible) System.out.println("La fila " + i + " es correcta");
             i++;
         }
 
@@ -350,13 +361,17 @@ public class Board {
         int j = 0;
         while (possible && j < _cols) {
             possible = checkCol(j);
-            if (possible) System.out.println("La columna " + j + " es correcta");
             j++;
         }
 
         return possible;
     }
 
+    /**
+     * Auxiliar function to check a row in checkAnotherSolution()
+     * @param row to be checked
+     * @return true if the row matches with the respective hint
+     */
     public boolean checkRow(int row) {
         boolean possible = true;
         boolean hintStart;
@@ -389,6 +404,11 @@ public class Board {
         return possible;
     }
 
+    /**
+     * Auxiliar function to check a col in checkAnotherSolution()
+     * @param col to be checked
+     * @return true if the column matches with the respective hint
+     */
     public boolean checkCol(int col) {
         boolean possible = true;
         boolean hintStart = false;
@@ -445,6 +465,9 @@ public class Board {
         return mistakes;
     }
 
+    /**
+     * Reset red cells to blue
+     */
     public void resetWrongCells() {
         for (int[] index : _wrongCells) {
             int i = index[0];
@@ -454,44 +477,67 @@ public class Board {
     }
 
     //-------------------------------------------MISC-------------------------------------------------//
-    // Numero de filas y columnas del tablero
-    public int getNum_rows() {
-        return _rows;
-    }
-
-    public int getCols() {
-        return _cols;
-    }
-
     public void setPos(int[] newPos) {
         _pos = newPos;
-    }
-
-    public void setSize(float[] newSize) {
-        _size = newSize;
     }
 
     public void setWin(boolean state) {
         _isWin = state;
     }
-
     //----------------------------------------ATTRIBUTES----------------------------------------------//
     private Engine _engine;
 
+    /**
+     *  Number of rows of the grid
+     */
     private final int _rows;
+    /**
+     *  Number of columns of the grid
+     */
     private final int _cols;
+    /**
+     * Array which contains the solution
+     */
     boolean[][] _sol;
+    /**
+     * Array which contains
+     */
     int[][] _hintRows;
     int[][] _hintCols;
+    /**
+     *  Array of the cells
+     */
     Cell[][] _boardState;
+    /**
+     *  List of the red cells that
+     *  have to turn back into blue
+     */
     List<int[]> _wrongCells;
     boolean _isWin = false;
     boolean _isRandom;
 
+    /**
+     * Logic position of the entire grid
+     */
     int[] _pos;
+    /**
+     * Size of the entire grid
+     */
     float[] _size;
+    /**
+     * Cell size
+     */
     float _cellSize;
+    /**
+     * Hints' text size
+     */
     float _hintSize;
+    /**
+     * Hints' text font
+     */
     Font _hintFont;
+    /**
+     * Font size
+     */
     int _fontSize;
 }

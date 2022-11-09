@@ -190,21 +190,11 @@ public class AndroidGraphics extends AbstractGraphics {
     }
 
     @Override
-    public void save() {
-        _canvas.save();
-    }
-
-    @Override
     public void restore() {
-        //_canvas.restore();
         _holder.unlockCanvasAndPost(_canvas);
     }
 
 //----------------------------------------------------------------//
-
-    public Canvas getCanvas() {
-        return _canvas;
-    }
 
     //----------------------------------------------------------------//
     // VARIABLES

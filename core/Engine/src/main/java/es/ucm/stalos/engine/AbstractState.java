@@ -11,6 +11,7 @@ public abstract class AbstractState implements State {
         this._graphics = engine.getGraphics();
         this._audio = _engine.getAudio();
     }
+
     /**
      * Calculate if the position of the click is inside an square
      * @param clickPos CLick position to be checked
@@ -28,7 +29,6 @@ public abstract class AbstractState implements State {
 
     }
 
-
     @Override
     public void render() {
 
@@ -42,6 +42,8 @@ public abstract class AbstractState implements State {
     protected Engine _engine;
     protected Graphics _graphics;
     protected Audio _audio;
+
+    // Attributes to create a timer
     protected Timer _timer;
     protected TimerTask _timerTask;
     protected int _timeDelay;

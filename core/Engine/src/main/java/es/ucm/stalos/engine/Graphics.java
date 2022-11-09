@@ -130,7 +130,5 @@ public interface Graphics {
      */
     void scale(float x, float y);
 
-    void save();
-
     void restore();
 }

@@ -48,5 +48,4 @@ public class AndroidSound implements Sound {
     private AssetFileDescriptor _assetDescriptor;
     private AssetManager _assetManager;
     private int _id, _playId;
-
 }

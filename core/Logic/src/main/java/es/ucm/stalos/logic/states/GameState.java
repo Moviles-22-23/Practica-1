@@ -232,10 +232,7 @@ public class GameState extends AbstractState {
     public void renderText() {
         switch (_playState) {
             case Checking:
-                // TEXT HINTS
-                System.out.println(_hintsText1 + " en " + _hintPos1[0] + ", " + _hintPos1[1]);
-                System.out.println(_hintsText2);
-
+                // HINTS TEXT
                 _graphics.setColor(_redColor);
                 _graphics.drawCenteredString(_hintsText1, _hintPos1, _hintSize1, _fontText);
                 _graphics.setColor(_redColor);
@@ -275,19 +272,6 @@ public class GameState extends AbstractState {
         if(mistakes[1] == 0) _hintsText2 = "No tienes casillas mal";
         else if (mistakes[1] == 1) _hintsText2 = "Tienes mal " + mistakes[1] + " casilla";
         else _hintsText2 = "Tienes mal " + mistakes[1] + " casillas";
-
-        // TODO borrar
-//        int digits = String.valueOf(mistakes[0]).length();
-//        if (digits == 1)
-//            _hintPos1[0] = (int) (_graphics.getLogWidth() * 0.35);
-//        else if (digits == 2)
-//            _hintPos1[0] = (int) (_graphics.getLogWidth() * 0.35);
-//
-//        digits = String.valueOf(mistakes[1]).length();
-//        if (digits == 1)
-//            _hintPos2[0] = (int) (_graphics.getLogWidth() * 0.33);
-//        else if (digits == 2)
-//            _hintPos2[0] = (int) (_graphics.getLogWidth() * 0.33);
 
         // TIMER
         _timer = new Timer();
@@ -375,12 +359,7 @@ public class GameState extends AbstractState {
     private float[] _backButtonSize = new float[2];
     private ButtonCallback _backCallback;
 
-    // Audio
-
-    // TODO ¿Mover?
     // Colors
-    private final int _greyColor = 0x313131FF;
     private final int _blackColor = 0x000000FF;
     private final int _redColor = 0xFF0000FF;
-
 }

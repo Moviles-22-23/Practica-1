@@ -99,7 +99,13 @@ public class AndroidAudio implements Audio {
         _mediaPlayer.start();
     }
 
+    /**
+     * Reference to the AssetManager of Android
+     */
     private AssetManager _assetManager;
+    /**
+     * Reference to the audio library of Android
+     */
     private MediaPlayer _mediaPlayer;
     private SoundPool _soundPool;
 }

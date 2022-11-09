@@ -34,8 +34,6 @@ public class MainMenuState extends AbstractState {
                     State selectLevelState = new SelectLevelState(_engine, _isRandom);
                     _engine.reqNewState(selectLevelState);
                     _audio.play(Assets.clickSound, 0);
-                    // TODO borrar
-                    //_audio.pauseMusic(Assets.menuTheme);
                 }
             };
 
@@ -117,8 +115,6 @@ public class MainMenuState extends AbstractState {
     private int[] _playRandomButtonPos = new int[2];
     private float[] _playRandomButtonSize = new float[2];
 
-    // TODO ¿Mover?
     // Colors
     private final int _blackColor = 0x000000FF;
-    private final int _redColor = 0xFF0000FF;
 }

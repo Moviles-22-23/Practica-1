@@ -11,7 +11,10 @@ import java.util.ArrayList;
 
 
 public class AndroidInput extends AbstractInput implements View.OnTouchListener {
-
+    public AndroidInput(Engine e) {
+        super(e);
+        _events = new ArrayList<>();
+    }
 
     @Override
     public boolean onTouch(View v, MotionEvent e) {
@@ -19,11 +22,5 @@ public class AndroidInput extends AbstractInput implements View.OnTouchListener 
             onTouchDownEvent((int) e.getX(), (int) e.getY());
         }
         return true;
-    }
-
-
-    public AndroidInput(Engine e) {
-        super(e);
-        _events = new ArrayList<>();
     }
 }
