@@ -26,6 +26,7 @@ public class DesktopAudio implements Audio {
     public void play(Sound sound, int numberLoop) {
         Clip clip = ((DesktopSound) sound).getClip();
         clip.loop(numberLoop);
+        clip.setFramePosition(0);
         clip.start();
     }
 

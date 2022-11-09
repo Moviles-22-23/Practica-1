@@ -65,7 +65,7 @@ public class SelectLevelState extends AbstractState {
                 public void doSomething() {
                     State mainMenuState = new MainMenuState(_engine);
                     _engine.reqNewState(mainMenuState);
-                    _audio.play(Assets.clickSound, 1);
+                    _audio.play(Assets.clickSound, 0);
                 }
             };
 
@@ -156,7 +156,7 @@ public class SelectLevelState extends AbstractState {
                     int c = _level.getCols();
                     State gameState = new GameState(_engine, r, c, _isRandom);
                     _engine.reqNewState(gameState);
-                    _audio.play(Assets.clickSound, 1);
+                    _audio.play(Assets.clickSound, 0);
                     _audio.stopMusic(Assets.menuTheme);
                 }
             });

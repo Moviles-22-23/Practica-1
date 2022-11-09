@@ -33,7 +33,7 @@ public class MainMenuState extends AbstractState {
                 public void doSomething() {
                     State selectLevelState = new SelectLevelState(_engine, _isRandom);
                     _engine.reqNewState(selectLevelState);
-                    _audio.play(Assets.clickSound, 1);
+                    _audio.play(Assets.clickSound, 0);
                     // TODO borrar
                     //_audio.pauseMusic(Assets.menuTheme);
                 }
