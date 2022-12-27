@@ -14,10 +14,11 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.HashMap;
+
 import es.ucm.stalos.engine.AbstractGraphics;
-import es.ucm.stalos.engine.Engine;
-import es.ucm.stalos.engine.Font;
-import es.ucm.stalos.engine.Image;
+import es.ucm.stalos.engine.IFont;
+import es.ucm.stalos.engine.IImage;
 
 public class AndroidGraphics extends AbstractGraphics {
     protected AndroidGraphics(int w, int h, WindowManager windowManager, Window window) {
@@ -51,21 +52,40 @@ public class AndroidGraphics extends AbstractGraphics {
         return true;
     }
 
-//-----------------------------------------------------------------//
+    //-----------------------------------------------------------------//
 
+    /**
+     * Creates and stores a new image ready to be used
+     *
+     * @param name     Image's name-key to store
+     * @param fileName File name of the image with extension
+     * @throws Exception if the creation fails
+     */
     @Override
-    public Image newImage(String name) throws Exception {
-        AndroidImage img = new AndroidImage("images/" + name, _assetManager);
-        if (!img.init()) throw new Exception();
+    public void newImage(String name, String fileName) throws Exception {
+        AndroidImage img = new AndroidImage("images/" + fileName, _assetManager);
+        if (!img.init())
+            throw new Exception();
 
-        return img;
+        _images.put(name, img);
     }
 
+    /**
+     * Creates and stores a new font ready to be used
+     *
+     * @param name     Font's name-key to store
+     * @param fileName File name of the font with extension
+     * @param size     Size of the font
+     * @param isBold   Determines if the font will be bold
+     * @throws Exception if the creation fails
+     */
     @Override
-    public Font newFont(String filename, int size, boolean isBold) throws Exception {
-        AndroidFont font = new AndroidFont("fonts/" + filename, size, isBold, _assetManager);
-        if (!font.init()) throw new Exception();
-        return font;
+    public void newFont(String name, String fileName, int size, boolean isBold) throws Exception {
+        AndroidFont font = new AndroidFont("fonts/" + fileName, size, isBold, _assetManager);
+        if (!font.init())
+            throw new Exception();
+
+        _fonts.put(name, font);
     }
 
 //-----------------------------------------------------------------//
@@ -89,30 +109,61 @@ public class AndroidGraphics extends AbstractGraphics {
 //-----------------------------------------------------------------//
 
     @Override
-    public void drawImage(Image image, int[] pos, float[] size) {
-        Rect source = new Rect(0, 0, image.getWidth(), image.getHeight());
+    public void drawImage(String imageName, int[] pos, float[] size) {
+        if (!_images.containsKey(imageName)) {
+            System.err.println("La imagen '" + imageName + "' no existe...");
+            return;
+        }
+        IImage im = _images.get(imageName);
+
+        Rect source = new Rect(0, 0, im.getWidth(), im.getHeight());
         Rect destiny = new Rect(pos[0], pos[1], (int) (pos[0] + size[0]), (int) (pos[1] + size[1]));
-        _canvas.drawBitmap(((AndroidImage) image).getBitmap(), source, destiny, null);
+        _canvas.drawBitmap(((AndroidImage) im).getBitmap(), source, destiny, null);
     }
 
     @Override
-    public void drawText(String text, int[] pos, Font font) {
-        Typeface currFont = ((AndroidFont) font).getAndroidFont();
+    public void drawText(String text, String fontName, int[] pos) {
+        if (!_fonts.containsKey(fontName)) {
+            System.err.println("La fuente '" + fontName + "' no existe...");
+            return;
+        }
+
+        IFont fo = _fonts.get(fontName);
+        Typeface currFont = ((AndroidFont) fo).getAndroidFont();
         _paint.setTypeface(currFont);
-        _paint.setTextSize(font.getSize());
+        _paint.setTextSize(fo.getSize());
         _paint.setTextAlign(Paint.Align.LEFT);
         _canvas.drawText(text, pos[0], pos[1], _paint);
         _paint.reset();
     }
 
     @Override
-    public void drawCenteredString(String text, int[] pos, float[] size, Font font) {
-        Typeface currFont = ((AndroidFont) font).getAndroidFont();
+    public void drawCenteredString(String text, String fontName, int[] pos, float[] size) {
+        if (!_fonts.containsKey(fontName)) {
+            System.err.println("La fuente '" + fontName + "' no existe...");
+            return;
+        }
 
+        IFont fo = _fonts.get(fontName);
+        Typeface currFont = ((AndroidFont)fo).getAndroidFont();
         _paint.setTypeface(currFont);
-        _paint.setTextSize(font.getSize());
+        _paint.setTextSize(fo.getSize());
         _paint.setTextAlign(Paint.Align.CENTER);
-        _canvas.drawText(text, pos[0] + size[0] / 2, pos[1] + size[1] / 2, _paint);
+
+        // La posicion en x va a ser siempre la misma gracias al Aling.CENTER
+        final int xPos = (int) (pos[0] + size[0] / 2);
+        // yPos se modifica con los saltos del linea
+        int numLines = text.split("\n").length;
+
+        // Primera linea
+        int yPos = (int) ((pos[1] + size[1] / 2) - ((_paint.descent() + _paint.ascent()) / 2) - ((_paint.descent() - _paint.ascent()) / 2) * (numLines - 1));
+        for (String line : text.split("\n")) {
+
+            _canvas.drawText(line, xPos, yPos, _paint);
+            // Va aumentando la diferencia entre lineas
+            yPos += _paint.descent() - _paint.ascent();
+        }
+//        _canvas.restore();
         _paint.reset();
     }
 

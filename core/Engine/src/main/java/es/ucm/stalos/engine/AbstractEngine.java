@@ -1,32 +1,32 @@
 package es.ucm.stalos.engine;
 
-public abstract class AbstractEngine implements Engine {
+public abstract class AbstractEngine implements IEngine {
     public AbstractEngine(){
     }
 
     @Override
-    public void reqNewState(State newState){
+    public void reqNewState(IState newState){
         _changeState = true;
         _newState = newState;
     }
 
     @Override
-    public Graphics getGraphics() {
+    public IGraphics getGraphics() {
         return _graphics;
     }
 
     @Override
-    public Input getInput() {
+    public IInput getInput() {
         return _input;
     }
 
     @Override
-    public Audio getAudio(){
+    public IAudio getAudio(){
         return _audio;
     }
 
     @Override
-    public FileReader getFileReader(){
+    public IFileReader getFileReader(){
         return _fReader;
     }
 
@@ -38,12 +38,12 @@ public abstract class AbstractEngine implements Engine {
     }
 
     protected boolean _changeState = false;
-    protected State _newState;
-    protected State _currState;
-    protected Graphics _graphics;
-    protected Input _input;
-    protected Audio _audio;
-    protected FileReader _fReader;
+    protected IState _newState;
+    protected IState _currState;
+    protected IGraphics _graphics;
+    protected IInput _input;
+    protected IAudio _audio;
+    protected IFileReader _fReader;
 
     // DELTA TIME
     protected long _lastFrameTime = 0;

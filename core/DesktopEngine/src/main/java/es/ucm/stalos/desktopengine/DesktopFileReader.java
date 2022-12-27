@@ -1,9 +1,9 @@
 package es.ucm.stalos.desktopengine;
 
-import es.ucm.stalos.engine.FileReader;
+import es.ucm.stalos.engine.IFileReader;
 import es.ucm.stalos.engine.IFile;
 
-public class DesktopFileReader implements FileReader {
+public class DesktopFileReader implements IFileReader {
     public DesktopFileReader() {
     }
 

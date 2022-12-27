@@ -5,19 +5,20 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import es.ucm.stalos.engine.AbstractState;
-import es.ucm.stalos.engine.Engine;
-import es.ucm.stalos.engine.Font;
-import es.ucm.stalos.engine.Image;
-import es.ucm.stalos.engine.Input;
-import es.ucm.stalos.engine.State;
+import es.ucm.stalos.engine.IEngine;
+import es.ucm.stalos.engine.IInput;
+import es.ucm.stalos.engine.IState;
 import es.ucm.stalos.logic.Assets;
+import es.ucm.stalos.logic.enums.FontName;
+import es.ucm.stalos.logic.enums.ImageName;
 import es.ucm.stalos.logic.enums.PlayingState;
+import es.ucm.stalos.logic.enums.SoundName;
 import es.ucm.stalos.logic.interfaces.ButtonCallback;
 import es.ucm.stalos.logic.objects.Board;
 
 public class GameState extends AbstractState {
 
-    public GameState(Engine engine, int rows, int columns, boolean isRandom) {
+    public GameState(IEngine engine, int rows, int columns, boolean isRandom) {
         super(engine);
         this._rows = rows;
         this._cols = columns;
@@ -38,10 +39,10 @@ public class GameState extends AbstractState {
             // Texts
             initTexts();
 
-            _audio.playMusic(Assets.mainTheme);
+            _audio.playMusic(SoundName.MainTheme.getName());
 
         } catch (Exception e) {
-            System.out.println("Error init Game State");
+            System.out.println("Error init Game IState");
             System.out.println(e);
             return false;
         }
@@ -62,19 +63,19 @@ public class GameState extends AbstractState {
 
     @Override
     public void handleInput() {
-        List<Input.TouchEvent> events = _engine.getInput().getTouchEvents();
+        List<IInput.TouchEvent> events = _engine.getInput().getTouchEvents();
         for (int i = 0; i < events.size(); i++) {
-            Input.TouchEvent currEvent = events.get(i);
-            if (currEvent == Input.TouchEvent.touchDown) {
+            IInput.TouchEvent currEvent = events.get(i);
+            if (currEvent == IInput.TouchEvent.touchDown) {
                 int[] clickPos = {currEvent.getX(), currEvent.getY()};
 
                 /// GIVE-UP BUTTON
                 if (_playState == PlayingState.Gaming && clickInsideSquare(clickPos, _giveupImagePos, _giveupButtonSize))
                     _giveupCallback.doSomething();
-                // CHECK BUTTON
+                    // CHECK BUTTON
                 else if (_playState == PlayingState.Gaming && clickInsideSquare(clickPos, _checkImagePos, _checkButtonSize))
                     _checkCallback.doSomething();
-                // BOARD INPUT
+                    // BOARD INPUT
                 else if (_playState != PlayingState.Win && clickInsideSquare(clickPos, _posBoard, _sizeBoard)) {
                     if (_playState == PlayingState.Checking && _timer != null && _timerTask != null) {
                         _timerTask.run();
@@ -83,7 +84,7 @@ public class GameState extends AbstractState {
                         _timer = null;
                     }
                     _board.handleInput(clickPos);
-                    _audio.play(Assets.clickSound, 0);
+                    _audio.playSound(SoundName.ClickSound.getName(), 0);
                 }
                 // BACK BUTTON WIN
                 else if (_playState == PlayingState.Win && clickInsideSquare(clickPos, _backImagePos, _backButtonSize))
@@ -94,9 +95,7 @@ public class GameState extends AbstractState {
 
 //-------------------------------------------MISC-------------------------------------------------//
 
-    private void initButtons() throws Exception {
-        _fontButtons = _graphics.newFont("JosefinSans-Bold.ttf", 20, true);
-
+    private void initButtons() {
         // Give Up
         _giveupImageSize[0] = _graphics.getLogWidth() * 0.071f;
         _giveupImageSize[1] = _graphics.getLogHeight() * 0.04f;
@@ -113,10 +112,10 @@ public class GameState extends AbstractState {
         _giveupCallback = new ButtonCallback() {
             @Override
             public void doSomething() {
-                State selectLevelState = new SelectLevelState(_engine, _isRandom);
+                IState selectLevelState = new SelectLevelState(_engine, _isRandom);
                 _engine.reqNewState(selectLevelState);
-                _audio.stopMusic(Assets.mainTheme);
-                _audio.play(Assets.clickSound, 0);
+                _audio.stopMusic(SoundName.MainTheme.getName());
+                _audio.playSound(SoundName.ClickSound.getName(), 0);
             }
         };
 
@@ -141,7 +140,7 @@ public class GameState extends AbstractState {
                     _playState = PlayingState.Win;
                     _board.setPos(new int[]{_posBoard[0], _posBoard[1] - 50});
                     _board.setWin(true);
-                    _audio.play(Assets.winSound, 0);
+                    _audio.playSound(SoundName.WinSound.getName(), 0);
                 }
                 // Then check for another one
                 else if (_board.checkAnotherSolution()) {
@@ -149,12 +148,12 @@ public class GameState extends AbstractState {
                     _winText2 = "Otra solución";
                     _board.setPos(new int[]{_posBoard[0], _posBoard[1] - 50});
                     _board.setWin(true);
-                    _audio.play(Assets.winSound, 0);
+                    _audio.playSound(SoundName.WinSound.getName(), 0);
                 } else {
                     _playState = PlayingState.Checking;
                     showText();
                 }
-                _audio.play(Assets.clickSound, 0);
+                _audio.playSound(SoundName.ClickSound.getName(), 0);
             }
         };
 
@@ -174,18 +173,16 @@ public class GameState extends AbstractState {
         _backCallback = new ButtonCallback() {
             @Override
             public void doSomething() {
-                State selectLevel = new SelectLevelState(_engine, _isRandom);
+                IState selectLevel = new SelectLevelState(_engine, _isRandom);
                 _engine.reqNewState(selectLevel);
-                _audio.stopMusic(Assets.mainTheme);
-                _audio.play(Assets.clickSound, 0);
+                _audio.stopMusic(SoundName.MainTheme.getName());
+                _audio.playSound(SoundName.ClickSound.getName(), 0);
             }
         };
 
     }
 
-    private void initTexts() throws Exception {
-        _fontText = _graphics.newFont("JosefinSans-Bold.ttf", 30, true);
-
+    private void initTexts() {
         // TEXT HINTS
         _hintSize1[0] = _graphics.getLogWidth();
         _hintSize1[1] = _graphics.getLogHeight() * 0.08f;
@@ -214,16 +211,19 @@ public class GameState extends AbstractState {
         switch (_playState) {
             case Gaming:
                 // GiveUp Button
-                _graphics.drawImage(_giveupImage, _giveupImagePos, _giveupImageSize);
-                _graphics.drawCenteredString(_giveupText, _giveupTextPos, _giveupTextSize, _fontButtons);
+                _graphics.drawImage(ImageName.BackArrow.getName(), _giveupImagePos, _giveupImageSize);
+                _graphics.drawCenteredString(_giveupText, FontName.SelectStateButton.getName(),
+                        _giveupTextPos, _giveupTextSize);
                 // Check Button
-                _graphics.drawImage(_checkImage, _checkImagePos, _checkImageSize);
-                _graphics.drawCenteredString(_checkText, _checkTextPos, _checkTextSize, _fontButtons);
+                _graphics.drawImage(ImageName.Lents.getName(), _checkImagePos, _checkImageSize);
+                _graphics.drawCenteredString(_checkText, FontName.SelectStateButton.getName(),
+                        _checkTextPos, _checkTextSize);
                 break;
             case Win: {
                 // Back Button
-                _graphics.drawImage(_backImage, _backImagePos, _backImageSize);
-                _graphics.drawCenteredString(_backText, _backTextPos, _backTextSize, _fontButtons);
+                _graphics.drawImage(ImageName.BackArrow.getName(), _backImagePos, _backImageSize);
+                _graphics.drawCenteredString(_backText, FontName.SelectStateButton.getName(),
+                        _backTextPos, _backTextSize);
                 break;
             }
         }
@@ -234,15 +234,19 @@ public class GameState extends AbstractState {
             case Checking:
                 // HINTS TEXT
                 _graphics.setColor(_redColor);
-                _graphics.drawCenteredString(_hintsText1, _hintPos1, _hintSize1, _fontText);
+                _graphics.drawCenteredString(_hintsText1, FontName.SelectStateButton.getName(),
+                        _hintPos1, _hintSize1);
                 _graphics.setColor(_redColor);
-                _graphics.drawCenteredString(_hintsText2, _hintPos2, _hintSize2, _fontText);
+                _graphics.drawCenteredString(_hintsText2,  FontName.SelectStateButton.getName(),
+                        _hintPos2, _hintSize2);
                 break;
             case Win:
                 // TEXT WIN
                 _graphics.setColor(_blackColor);
-                _graphics.drawCenteredString(_winText1, _winPos1, _winSize1, _fontText);
-                _graphics.drawCenteredString(_winText2, _winPos2, _winSize2, _fontText);
+                _graphics.drawCenteredString(_winText1,  FontName.SelectStateButton.getName(),
+                        _winPos1, _winSize1);
+                _graphics.drawCenteredString(_winText2,  FontName.SelectStateButton.getName(),
+                        _winPos2, _winSize2);
                 break;
             default:
                 break;
@@ -256,8 +260,8 @@ public class GameState extends AbstractState {
         _sizeBoard[0] = 360.0f;
         _sizeBoard[1] = 360.0f;
 
-        _board = new Board(_rows, _cols, _posBoard, _sizeBoard, _isRandom);
-        if(!_board.init(_engine)) throw new Exception("Error al crear el board");
+        _board = new Board(this, _rows, _cols, _posBoard, _sizeBoard, _isRandom);
+        if (!_board.init(_engine)) throw new Exception("Error al crear el board");
     }
 
     private void showText() {
@@ -265,11 +269,11 @@ public class GameState extends AbstractState {
         // ATTRIBUTES
         int[] mistakes = _board.countMistakes();
 
-        if(mistakes[0] == 0) _hintsText1 = "No te faltan casillas";
+        if (mistakes[0] == 0) _hintsText1 = "No te faltan casillas";
         else if (mistakes[0] == 1) _hintsText1 = "Te falta " + mistakes[0] + " casilla";
         else _hintsText1 = "Te faltan " + mistakes[0] + " casillas";
 
-        if(mistakes[1] == 0) _hintsText2 = "No tienes casillas mal";
+        if (mistakes[1] == 0) _hintsText2 = "No tienes casillas mal";
         else if (mistakes[1] == 1) _hintsText2 = "Tienes mal " + mistakes[1] + " casilla";
         else _hintsText2 = "Tienes mal " + mistakes[1] + " casillas";
 
@@ -286,6 +290,18 @@ public class GameState extends AbstractState {
         _timer.schedule(_timerTask, _timeDelay);
     }
 
+    /**
+     * Creates the hint's font in order to have different
+     * sizes of this font every time a board is created.
+     * Not all boards have the same hint's font size.
+     *
+     * @param size Size of the font
+     */
+    public void createHintFont(int size) throws Exception {
+        _graphics.newFont(FontName.HintFont.getName(),
+                Assets.josePath,
+                size, true);
+    }
 //----------------------------------------ATTRIBUTES----------------------------------------------//
 
     // Game Mode
@@ -302,8 +318,6 @@ public class GameState extends AbstractState {
     private float[] _sizeBoard = new float[2];
 
     // Texts
-    private Font _fontText;
-
     private String _hintsText1 = "Te faltan x casillas";
     private int[] _hintPos1 = new int[2];
     private float[] _hintSize1 = new float[2];
@@ -321,14 +335,11 @@ public class GameState extends AbstractState {
     private float[] _winSize2 = new float[2];
 
     // Buttons
-    private Font _fontButtons;
-
     // Give Up Button
     private final String _giveupText = "Rendirse";
     private int[] _giveupTextPos = new int[2];
     private float[] _giveupTextSize = new float[2];
 
-    private final Image _giveupImage = Assets.backArrow;
     private int[] _giveupImagePos = new int[2];
     private float[] _giveupImageSize = new float[2];
 
@@ -340,7 +351,6 @@ public class GameState extends AbstractState {
     private int[] _checkTextPos = new int[2];
     private float[] _checkTextSize = new float[2];
 
-    private final Image _checkImage = Assets.lens;
     private int[] _checkImagePos = new int[2];
     private float[] _checkImageSize = new float[2];
 
@@ -352,7 +362,6 @@ public class GameState extends AbstractState {
     private int[] _backTextPos = new int[2];
     private float[] _backTextSize = new float[2];
 
-    private final Image _backImage = Assets.backArrow;
     private int[] _backImagePos = new int[2];
     private float[] _backImageSize = new float[2];
 

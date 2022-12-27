@@ -1,12 +1,16 @@
 package es.ucm.stalos.engine;
 
-public abstract class AbstractGraphics implements Graphics {
+import java.util.HashMap;
+
+public abstract class AbstractGraphics implements IGraphics {
 
     protected AbstractGraphics(int w, int h) {
         _logWidth = w;
         _logHeight = h;
         _logPosX = 0.0f;
         _logPosY = 0.0f;
+        _images = new HashMap<>();
+        _fonts = new HashMap<>();
     }
 
     /**
@@ -29,7 +33,7 @@ public abstract class AbstractGraphics implements Graphics {
      * @param y Y-axis position
      * @return the real position [x, y]
      */
-    protected int[] finalPosition(float x, float y) {
+    protected int[] transformPosition(float x, float y) {
         _scaleFactor = getScaleFactor();
         float offsetX = (getWidth() - (_logWidth * _scaleFactor)) / 2.0f;
         float offsetY = (getHeight() - (_logHeight) * _scaleFactor) / 2.0f;
@@ -47,7 +51,7 @@ public abstract class AbstractGraphics implements Graphics {
      * @param h height value
      * @return the real size [width, height]
      */
-    protected int[] finalSize(float w, float h) {
+    protected int[] transformSize(float w, float h) {
         _scaleFactor = getScaleFactor();
 
         return new int[] {
@@ -62,7 +66,7 @@ public abstract class AbstractGraphics implements Graphics {
      * @param size size value
      * @return the real size
      */
-    protected int finalSize(float size) {
+    protected int transformSize(float size) {
         _scaleFactor = getScaleFactor();
         return (int) (size * _scaleFactor);
     }
@@ -130,4 +134,13 @@ public abstract class AbstractGraphics implements Graphics {
 
     // Scale factor
     protected float _scaleFactor;
+
+    /**
+     * Dictionary which contains the images
+     */
+    protected HashMap<String, IImage> _images;
+    /**
+     * Dictionary which contains the fonts
+     */
+    protected HashMap<String, IFont> _fonts;
 }

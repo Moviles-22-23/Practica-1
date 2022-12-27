@@ -8,9 +8,9 @@ public enum PlayingState {
     Checking(1),
     Win(2);
 
-    PlayingState(int i) { this.value = i; }
+    PlayingState(int playingState) { this._playingState = playingState; }
 
-    public int getValue () { return value; }
+    public int get_playingState() { return _playingState; }
 
-    private int value;
+    private int _playingState;
 }

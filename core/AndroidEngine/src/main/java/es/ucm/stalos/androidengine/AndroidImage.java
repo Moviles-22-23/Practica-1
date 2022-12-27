@@ -7,9 +7,9 @@ import android.graphics.BitmapFactory;
 import java.io.IOException;
 import java.io.InputStream;
 
-import es.ucm.stalos.engine.Image;
+import es.ucm.stalos.engine.IImage;
 
-public class AndroidImage implements Image {
+public class AndroidImage implements IImage {
     public AndroidImage(String filename, AssetManager assetManager) {
         _filename = filename;
         _assetManager = assetManager;

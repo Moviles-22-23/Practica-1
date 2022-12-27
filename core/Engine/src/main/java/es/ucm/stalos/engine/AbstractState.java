@@ -3,9 +3,9 @@ package es.ucm.stalos.engine;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public abstract class AbstractState implements State {
+public abstract class AbstractState implements IState {
 
-    protected AbstractState(Engine engine)
+    protected AbstractState(IEngine engine)
     {
         this._engine = engine;
         this._graphics = engine.getGraphics();
@@ -39,9 +39,9 @@ public abstract class AbstractState implements State {
 
     }
 
-    protected Engine _engine;
-    protected Graphics _graphics;
-    protected Audio _audio;
+    protected IEngine _engine;
+    protected IGraphics _graphics;
+    protected IAudio _audio;
 
     // Attributes to create a timer
     protected Timer _timer;

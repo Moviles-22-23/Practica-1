@@ -2,10 +2,10 @@ package es.ucm.stalos.androidengine;
 
 import android.content.res.AssetManager;
 
-import es.ucm.stalos.engine.FileReader;
+import es.ucm.stalos.engine.IFileReader;
 import es.ucm.stalos.engine.IFile;
 
-public class AndroidFileReader implements FileReader {
+public class AndroidFileReader implements IFileReader {
     public AndroidFileReader(AssetManager aMan)
     {
         _assetsMan = aMan;

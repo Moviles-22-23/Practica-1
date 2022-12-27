@@ -1,22 +1,24 @@
 package es.ucm.stalos.engine;
 
-public interface Graphics {
+public interface IGraphics {
 
     /**
      * Load an image from the assets folder
+     * @param nameKey name-key to save the image
      * @param name name of te image
      * @return the loaded image
      */
-    Image newImage(String name) throws Exception;
+    void newImage(String nameKey, String name) throws Exception;
 
     /**
      * Create a new font with a specified size from a .ttf.
+     * @param nameKey name-key to save the font
      * @param filename name of the font
      * @param size size of the font
      * @param isBold true for bold letters
      * @return
      */
-    Font newFont(String filename, int size, boolean isBold) throws Exception;
+    void newFont(String nameKey, String filename, int size, boolean isBold) throws Exception;
 
 //-----------------------------------------------------------------//
     /**
@@ -33,26 +35,30 @@ public interface Graphics {
 //-----------------------------------------------------------------//
     /**
      * Show an image in the screen
-     * @param image Image to show
+     * @param imageName imageName-key of the image to be used
      * @param pos Upper-Left position
      * @param size Size of the image
      */
-    void drawImage(Image image, int[] pos, float[]size);
+    void drawImage(String imageName, int[] pos, float[]size);
 
     /**
      * Draw a text from Down-Left position
+     *
+     * @param fontName fontName-key of the image to be used
+     * @param text Text to be showed
+     * @param pos Position of the text
      */
-    void drawText(String text, int[] pos, Font font);
+    void drawText( String fontName, String text, int[] pos);
 
     /**
      * Draw a String centered in the middle of a Rectangle.
      *
+     * @param fontName fontName-key of the image to be used
      * @param text The String to draw.
      * @param pos Upper-Left corner
      * @param size [Width, Height]
-     * @param font Font of the current text
      */
-    void drawCenteredString(String text, int[] pos, float[] size, Font font);
+    void drawCenteredString( String fontName, String text, int[] pos, float[] size);
 
     /**
      * Draw an empty square

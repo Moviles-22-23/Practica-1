@@ -2,16 +2,16 @@ package es.ucm.stalos.logic.states;
 
 import java.util.List;
 import es.ucm.stalos.engine.AbstractState;
-import es.ucm.stalos.engine.Engine;
-import es.ucm.stalos.engine.Font;
-import es.ucm.stalos.engine.Input.TouchEvent;
-import es.ucm.stalos.engine.State;
-import es.ucm.stalos.logic.Assets;
+import es.ucm.stalos.engine.IEngine;
+import es.ucm.stalos.engine.IState;
+import es.ucm.stalos.engine.IInput.TouchEvent;
+import es.ucm.stalos.logic.enums.FontName;
+import es.ucm.stalos.logic.enums.SoundName;
 import es.ucm.stalos.logic.interfaces.ButtonCallback;
 
 public class MainMenuState extends AbstractState {
 
-    public MainMenuState(Engine engine) {
+    public MainMenuState(IEngine engine) {
         super(engine);
     }
 
@@ -20,20 +20,18 @@ public class MainMenuState extends AbstractState {
     public boolean init() {
         try {
             // TITLE
-            _titleFont = _graphics.newFont("Molle-Regular.ttf", 50, true);
             _titleSize[0] = _graphics.getLogWidth() * 0.7f;
             _titleSize[1] = _graphics.getLogHeight() * 0.1f;
             _titlePos[0] = (int) ((_graphics.getLogWidth() - _titleSize[0]) * 0.5f);
             _titlePos[1] = (int) ((_graphics.getLogHeight() - _titleSize[1]) * 0.1f);
 
             // BUTTONS
-            _buttonsFont = _graphics.newFont("JosefinSans-Bold.ttf", 35, true);
             _playCallback = new ButtonCallback() {
                 @Override
                 public void doSomething() {
-                    State selectLevelState = new SelectLevelState(_engine, _isRandom);
+                    IState selectLevelState = new SelectLevelState(_engine, _isRandom);
                     _engine.reqNewState(selectLevelState);
-                    _audio.play(Assets.clickSound, 0);
+                    _audio.playSound(SoundName.ClickSound.getName(), 0);
                 }
             };
 
@@ -49,8 +47,8 @@ public class MainMenuState extends AbstractState {
             _playRandomButtonPos[0] = (int) ((_graphics.getLogWidth() - _playRandomButtonSize[0]) * 0.5f);
             _playRandomButtonPos[1] = (int) ((_graphics.getLogHeight() - _playRandomButtonSize[1]) * 0.60f);
 
-            // Audio
-            _audio.playMusic(Assets.menuTheme);
+            // IAudio
+            _audio.playMusic(SoundName.MenuTheme.getName());
         } catch (Exception e) {
             System.out.println("Error init Main Menu");
             System.out.println(e);
@@ -64,11 +62,14 @@ public class MainMenuState extends AbstractState {
         _graphics.setColor(_blackColor);
 
         // Title
-        _graphics.drawCenteredString(_titleText, _titlePos, _titleSize, _titleFont);
+        _graphics.drawCenteredString(_titleText, FontName.TitleMainMenu.getName(),
+                _titlePos, _titleSize);
         // Play Button
-        _graphics.drawCenteredString(_playButtonText, _playButtonPos, _playButtonSize, _buttonsFont);
+        _graphics.drawCenteredString(_playButtonText, FontName.ButtonMainMenu.getName(),
+                _playButtonPos, _playButtonSize);
         // Play Random Button
-        _graphics.drawCenteredString(_playRandomButtonText, _playRandomButtonPos, _playRandomButtonSize, _buttonsFont);
+        _graphics.drawCenteredString(_playRandomButtonText, FontName.ButtonMainMenu.getName(),
+                _playRandomButtonPos, _playRandomButtonSize);
     }
 
     @Override
@@ -96,13 +97,11 @@ public class MainMenuState extends AbstractState {
     //----------------------------------------ATTRIBUTES----------------------------------------------//
     // Title
     private final String _titleText = "Nonogramas";
-    private Font _titleFont;
     private int[] _titlePos = new int[2];
     private float[] _titleSize = new float[2];
 
     // Buttons
     private boolean _isRandom = false;
-    private Font _buttonsFont;
     private ButtonCallback _playCallback;
 
     // Play Button

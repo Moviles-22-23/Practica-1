@@ -3,7 +3,7 @@ package es.ucm.stalos.logic.objects;
 import java.util.HashMap;
 import java.util.Map;
 
-import es.ucm.stalos.engine.Graphics;
+import es.ucm.stalos.engine.IGraphics;
 import es.ucm.stalos.logic.enums.CellType;
 
 public class Cell {
@@ -32,7 +32,7 @@ public class Cell {
         _colors.put(CellType.RED, 0xFF0000FF);
     }
 
-    public void render(Graphics graphics) {
+    public void render(IGraphics graphics) {
         // Filled Square
         int[] fillPos = new int[]{fx, fy};
         graphics.setColor(_colors.get(cellType));

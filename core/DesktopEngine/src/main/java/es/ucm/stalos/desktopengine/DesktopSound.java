@@ -7,9 +7,9 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 
-import es.ucm.stalos.engine.Sound;
+import es.ucm.stalos.engine.ISound;
 
-public class DesktopSound implements Sound {
+public class DesktopSound implements ISound {
     public DesktopSound(String filename) {
         _filename = filename;
     }

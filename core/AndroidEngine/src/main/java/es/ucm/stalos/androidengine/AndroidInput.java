@@ -4,14 +4,13 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import es.ucm.stalos.engine.AbstractInput;
-import es.ucm.stalos.engine.Engine;
-import es.ucm.stalos.engine.Input;
+import es.ucm.stalos.engine.IEngine;
 
 import java.util.ArrayList;
 
 
 public class AndroidInput extends AbstractInput implements View.OnTouchListener {
-    public AndroidInput(Engine e) {
+    public AndroidInput(IEngine e) {
         super(e);
         _events = new ArrayList<>();
     }

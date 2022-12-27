@@ -7,11 +7,12 @@ import android.media.SoundPool;
 
 import java.io.IOException;
 
-import es.ucm.stalos.engine.Audio;
-import es.ucm.stalos.engine.Sound;
+import es.ucm.stalos.engine.AbstractAudio;
+import es.ucm.stalos.engine.ISound;
 
-public class AndroidAudio implements Audio {
+public class AndroidAudio extends AbstractAudio {
     public AndroidAudio(AssetManager assetManager) {
+        super();
         _assetManager = assetManager;
         _mediaPlayer = new MediaPlayer();
         _mediaPlayer.reset();
@@ -19,31 +20,36 @@ public class AndroidAudio implements Audio {
     }
 
     @Override
-    public Sound newSound(String file) throws Exception {
-        AndroidSound sound = new AndroidSound("sounds/" + file, _assetManager);
-        if (!sound.init()) throw new Exception();
+    public void newSound(String name, String fileName) throws Exception {
+        AndroidSound sound = new AndroidSound("sounds/" + fileName, _assetManager);
+        if (!sound.init())
+            throw new Exception();
 
+        _sounds.put(name, sound);
         AssetFileDescriptor afd = sound.getAssetDescriptor();
         sound.setId(_soundPool.load(afd, 1));
 
-        return sound;
     }
 
     @Override
-    public Sound getSound(String id) {
-        return null;
-    }
+    public void playSound(String soundName, int numberLoops) {
+        ISound so = isContain(soundName);
+        if(so == null)
+            return;
 
-    @Override
-    public void play(Sound sound, int numberLoops) {
-        int id = ((AndroidSound) sound).getId();
+        int id = ((AndroidSound) so).getId();
         int playId = _soundPool.play(id, 100, 100, 1, numberLoops, 1);
-        ((AndroidSound) sound).setPlayId(playId);
+        ((AndroidSound) so).setPlayId(playId);
     }
 
     @Override
-    public void playMusic(Sound sound) {
-        AssetFileDescriptor afd = ((AndroidSound) sound).getAssetDescriptor();
+    public void playMusic(String soundName) {
+        ISound so = isContain(soundName);
+        if(so == null)
+            return;
+
+
+        AssetFileDescriptor afd = ((AndroidSound) so).getAssetDescriptor();
         if (!_mediaPlayer.isPlaying()) {
             try {
                 _mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
@@ -54,13 +60,16 @@ public class AndroidAudio implements Audio {
             }
 
             _mediaPlayer.start();
-            //System.out.println("playmusic");
         }
     }
 
     @Override
-    public void pause(Sound sound) {
-        int id = ((AndroidSound) sound).getPlayId();
+    public void pause(String soundName) {
+        ISound so = isContain(soundName);
+        if(so == null)
+            return;
+
+        int id = ((AndroidSound) so).getPlayId();
         _soundPool.pause(id);
     }
 
@@ -69,30 +78,38 @@ public class AndroidAudio implements Audio {
     }
 
     @Override
-    public void pauseMusic(Sound music) {
+    public void pauseMusic(String soundName) {
         _mediaPlayer.pause();
     }
 
     @Override
-    public void stop(Sound sound) {
-        int id = ((AndroidSound) sound).getPlayId();
+    public void stop(String soundName) {
+        ISound so = isContain(soundName);
+        if(so == null)
+            return;
+
+        int id = ((AndroidSound) so).getPlayId();
         _soundPool.stop(id);
     }
 
     @Override
-    public void stopMusic(Sound music) {
+    public void stopMusic(String soundName) {
         _mediaPlayer.stop();
         _mediaPlayer.reset();
     }
 
     @Override
-    public void resume(Sound sound) {
-        int id = ((AndroidSound) sound).getPlayId();
+    public void resume(String soundName) {
+        ISound so = isContain(soundName);
+        if(so == null)
+            return;
+
+        int id = ((AndroidSound) so).getPlayId();
         _soundPool.resume(id);
     }
 
     @Override
-    public void resumeMusic(Sound music) {
+    public void resumeMusic(String soundName) {
         _mediaPlayer.start();
     }
 

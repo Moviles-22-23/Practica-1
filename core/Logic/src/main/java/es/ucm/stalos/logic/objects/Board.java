@@ -13,16 +13,16 @@ package es.ucm.stalos.logic.objects;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import es.ucm.stalos.engine.Engine;
-import es.ucm.stalos.engine.Font;
-import es.ucm.stalos.engine.Graphics;
+import es.ucm.stalos.engine.IEngine;
+import es.ucm.stalos.engine.IGraphics;
 import es.ucm.stalos.engine.IFile;
 import es.ucm.stalos.logic.enums.CellType;
+import es.ucm.stalos.logic.enums.FontName;
+import es.ucm.stalos.logic.states.GameState;
 
 public class Board {
     /**
@@ -33,7 +33,8 @@ public class Board {
      * @param pos  Up-Left position
      * @param size Board size (hints includes)
      */
-    public Board(int rows, int cols, int[] pos, float[] size, boolean isRandom) {
+    public Board(GameState gameState, int rows, int cols, int[] pos, float[] size, boolean isRandom) {
+        this._gameState = gameState;
         this._rows = rows;
         this._cols = cols;
         this._sol = new boolean[rows][cols];
@@ -52,11 +53,11 @@ public class Board {
     }
 
     //-------------------------------------------INIT-------------------------------------------------//
-    public boolean init(Engine engine) {
+    public boolean init(IEngine engine) {
         try {
             _engine = engine;
-            _fontSize = (int) (_hintSize * 0.9f);
-            _hintFont = engine.getGraphics().newFont("JosefinSans-Bold.ttf", _fontSize, true);
+            int _fontSize = (int) (_hintSize * 0.9f);
+            _gameState.createHintFont(_fontSize);
 
             if (_isRandom) createRandomSolution();
             else readSolution();
@@ -225,7 +226,7 @@ public class Board {
     }
 
     //----------------------------------------MAIN-LOOP-----------------------------------------------//
-    public void render(Graphics graphics) {
+    public void render(IGraphics graphics) {
         if (!_isWin) {
             // Variable auiliares para pintar
             int[] pos = new int[2];
@@ -253,7 +254,8 @@ public class Board {
                             size[0] = _hintSize;
                             size[1] = _cellSize;
                             numText = Integer.toString(_hintRows[i - _hintCols.length][j]);
-                            graphics.drawCenteredString(numText, pos, size, _hintFont);
+                            graphics.drawCenteredString(numText, FontName.HintFont.getName(),
+                                    pos, size);
                         }
                     }
                     // Range of hints cols
@@ -265,7 +267,8 @@ public class Board {
                             size[0] = _cellSize;
                             size[1] = _hintSize;
                             numText = Integer.toString(_hintCols[i][j - _hintRows[0].length]);
-                            graphics.drawCenteredString(numText, pos, size, _hintFont);
+                            graphics.drawCenteredString(numText, FontName.HintFont.getName(),
+                                    pos, size);
                         }
                     }
                     // Range of board
@@ -411,7 +414,7 @@ public class Board {
      */
     public boolean checkCol(int col) {
         boolean possible = true;
-        boolean hintStart = false;
+        boolean hintStart;
         int currRow = _rows - 1;
         int currHint = _hintCols.length - 1;
         int hintCounter = 0;
@@ -485,7 +488,7 @@ public class Board {
         _isWin = state;
     }
     //----------------------------------------ATTRIBUTES----------------------------------------------//
-    private Engine _engine;
+    private IEngine _engine;
 
     /**
      *  Number of rows of the grid
@@ -533,11 +536,7 @@ public class Board {
      */
     float _hintSize;
     /**
-     * Hints' text font
+     * Reference to the GameState
      */
-    Font _hintFont;
-    /**
-     * Font size
-     */
-    int _fontSize;
+    GameState _gameState;
 }

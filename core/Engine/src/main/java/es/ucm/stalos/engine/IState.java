@@ -1,6 +1,6 @@
 package es.ucm.stalos.engine;
 
-public interface State {
+public interface IState {
     /**
      * Initialize the state
      * @return false if it fails

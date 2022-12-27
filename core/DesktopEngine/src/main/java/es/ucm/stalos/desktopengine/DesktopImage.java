@@ -1,14 +1,12 @@
 package es.ucm.stalos.desktopengine;
 
-import es.ucm.stalos.engine.Image;
+import es.ucm.stalos.engine.IImage;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-public class DesktopImage implements Image {
+public class DesktopImage implements IImage {
     public DesktopImage(String filename) {
         _filename = filename;
     }

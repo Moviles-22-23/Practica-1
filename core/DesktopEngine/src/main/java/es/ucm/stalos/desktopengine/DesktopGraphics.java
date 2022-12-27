@@ -3,17 +3,16 @@ package es.ucm.stalos.desktopengine;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferStrategy;
 
 import es.ucm.stalos.engine.AbstractGraphics;
-import es.ucm.stalos.engine.Engine;
-import es.ucm.stalos.engine.Font;
-import es.ucm.stalos.engine.Image;
+import es.ucm.stalos.engine.IEngine;
+import es.ucm.stalos.engine.IFont;
+import es.ucm.stalos.engine.IImage;
 
 public class DesktopGraphics extends AbstractGraphics {
 
-    public DesktopGraphics(String title, Engine engine, int w, int h) {
+    public DesktopGraphics(String title, IEngine engine, int w, int h) {
         super(w, h);
         _mainEngine = engine;
         _title = title;
@@ -28,36 +27,31 @@ public class DesktopGraphics extends AbstractGraphics {
         return _screen.init((int) _logWidth, (int) _logHeight);
     }
 
-    public DesktopScreen getScreen() {
-        return _screen;
-    }
-
     public BufferStrategy getStrategy() {
         return _screen.getStrategy();
     }
 
-    public java.awt.Graphics getJavaGraphics() {
-        return _graphics;
-    }
-
 //------------------------------------------------------------------------------------------------//
 
     @Override
-    public Image newImage(String name) throws Exception {
-        DesktopImage img = new DesktopImage("./assets/images/" + name);
-        if (!img.init()) throw new Exception();
-        return img;
+    public void newImage(String name, String fileName) throws Exception {
+        DesktopImage img = new DesktopImage("./assets/images/" + fileName);
+        if (!img.init())
+            throw new Exception();
+
+        _images.put(name, img);
     }
 
     @Override
-    public Font newFont(String filename, int size, boolean isBold) throws Exception {
-        DesktopFont newFont = new DesktopFont("./assets/fonts/" + filename, size, isBold);
+    public void newFont(String name, String fileName, int size, boolean isBold) throws Exception {
+        DesktopFont newFont = new DesktopFont("./assets/fonts/" + fileName, size, isBold);
         if (!newFont.init())
             throw new Exception();
-        return newFont;
+
+        _fonts.put(name, newFont);
     }
 
-//------------------------------------------------------------------------------------------------//
+    //------------------------------------------------------------------------------------------------//
     @Override
     public void clear(int color) {
         while (getStrategy() == null) {
@@ -83,42 +77,47 @@ public class DesktopGraphics extends AbstractGraphics {
 //------------------------------------------------------------------------------------------------//
 
     @Override
-    public void drawImage(Image image, int[] pos, float[] size) {
-        int[] newPos = finalPosition(pos[0], pos[1]);
-        int[] newSize = finalSize(size[0], size[1]);
-        _graphics.drawImage(((DesktopImage) image).getImage(), newPos[0], newPos[1],
+    public void drawImage(String imageName, int[] pos, float[] size) {
+        if (!_images.containsKey(imageName)) {
+            System.err.println("La imagen '" + imageName + "' no existe...");
+            return;
+        }
+
+        IImage im = _images.get(imageName);
+        int[] newPos = transformPosition(pos[0], pos[1]);
+        int[] newSize = transformSize(size[0], size[1]);
+        _graphics.drawImage(((DesktopImage) im).getImage(), newPos[0], newPos[1],
                 newSize[0], newSize[1], null);
         _graphics.setPaintMode();
     }
 
     @Override
     public void drawRect(int[] pos, float side) {
-        int[] newPos = finalPosition(pos[0], pos[1]);
-        int newSize = finalSize(side);
+        int[] newPos = transformPosition(pos[0], pos[1]);
+        int newSize = transformSize(side);
         _graphics.drawRect(newPos[0], newPos[1], newSize, newSize);
         _graphics.setPaintMode();
     }
 
     @Override
     public void drawRect(int[] pos, float[] size) {
-        int[] newPos = finalPosition(pos[0], pos[1]);
-        int[] newSize = finalSize(size[0], size[1]);
+        int[] newPos = transformPosition(pos[0], pos[1]);
+        int[] newSize = transformSize(size[0], size[1]);
         _graphics.drawRect(newPos[0], newPos[1], newSize[0], newSize[1]);
         _graphics.setPaintMode();
     }
 
     @Override
     public void drawLine(int[] start, int[] end) {
-        int[] point1 = finalPosition(start[0], start[1]);
-        int[] point2 = finalPosition(end[0], end[1]);
+        int[] point1 = transformPosition(start[0], start[1]);
+        int[] point2 = transformPosition(end[0], end[1]);
         _graphics.drawLine(point1[0], point1[1], point2[0], point2[1]);
         _graphics.setPaintMode();
     }
 
-    private java.awt.Font initFont(Font font)
-    {
+    private java.awt.Font initFont(IFont font) {
         java.awt.Font javaFont = ((DesktopFont) font).getJavaFont();
-        float tam = finalSize(font.getSize());
+        float tam = transformSize(font.getSize());
         javaFont = javaFont.deriveFont(tam);
         // Set the font
         _graphics.setFont(javaFont);
@@ -127,12 +126,19 @@ public class DesktopGraphics extends AbstractGraphics {
     }
 
     @Override
-    public void drawText(String text, int[] pos, Font font) {
+    public void drawText(String text, String fontName, int[] pos) {
+        if (!_fonts.containsKey(fontName)) {
+            System.err.println("La fuente '" + fontName + "' no existe...");
+            return;
+        }
+
+        IFont fo = _fonts.get(fontName);
+
         // Init font
-        java.awt.Font javaFont = initFont(font);
+        java.awt.Font javaFont = initFont(fo);
 
         // Scale
-        int[] newPos = finalPosition(pos[0], pos[1]);
+        int[] newPos = transformPosition(pos[0], pos[1]);
 
         // Drawing
         _graphics.drawString(text, newPos[0], newPos[1]);
@@ -140,20 +146,27 @@ public class DesktopGraphics extends AbstractGraphics {
     }
 
     @Override
-    public void drawCenteredString(String text, int[] pos, float[] size, Font font) {
-        java.awt.Font javaFont = initFont(font);
-        
+    public void drawCenteredString(String text, String fontName, int[] pos, float[] size) {
+        if (!_fonts.containsKey(fontName)) {
+            System.err.println("La fuente '" + fontName + "' no existe...");
+            return;
+        }
+        IFont fo = _fonts.get(fontName);
+
+        // Init font
+        java.awt.Font javaFont = initFont(fo);
+
         // Calculates de logic pos and size
-        int[] logicPos = finalPosition(pos[0], pos[1]);
-        int[] logicSize = finalSize(size[0], size[1]);
+        int[] logicPos = transformPosition(pos[0], pos[1]);
+        int[] logicSize = transformSize(size[0], size[1]);
 
         // Get the FontMetrics
         FontMetrics metrics = _graphics.getFontMetrics(javaFont);
 
         // Determine the X coordinate for the text
-        int x = logicPos[0] + ((int) logicSize[0] - metrics.stringWidth(text)) / 2;
+        int x = logicPos[0] + (logicSize[0] - metrics.stringWidth(text)) / 2;
         // Determine the Y coordinate for the text (note we add the ascent, as in java_2D 0 is top of the screen)
-        int y = logicPos[1] + (((int) logicSize[1] - metrics.getHeight()) / 2) + metrics.getAscent();
+        int y = logicPos[1] + ((logicSize[1] - metrics.getHeight()) / 2) + metrics.getAscent();
 
         // Drawing
         _graphics.drawString(text, x, y);
@@ -164,16 +177,16 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public void fillSquare(int[] pos, float side) {
-        int[] newPos = finalPosition(pos[0], pos[1]);
-        int newSize = finalSize(side);
+        int[] newPos = transformPosition(pos[0], pos[1]);
+        int newSize = transformSize(side);
         _graphics.fillRect(newPos[0], newPos[1], newSize, newSize);
         _graphics.setPaintMode();
     }
 
     @Override
     public void fillSquare(int[] pos, float[] size) {
-        int[] newPos = finalPosition(pos[0], pos[1]);
-        int[] newSize = finalSize(size[0], size[1]);
+        int[] newPos = transformPosition(pos[0], pos[1]);
+        int[] newSize = transformSize(size[0], size[1]);
         _graphics.fillRect(newPos[0], newPos[1], newSize[0], newSize[1]);
         _graphics.setPaintMode();
     }
@@ -204,7 +217,7 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public void translate(int x, int y) {
-        ((Graphics2D) _graphics).translate(x, y);
+        _graphics.translate(x, y);
     }
 
     @Override
@@ -220,7 +233,7 @@ public class DesktopGraphics extends AbstractGraphics {
 //------------------------------------------------------------------------------------------------//
 
     // VARIABLES
-    private final Engine _mainEngine;
+    private final IEngine _mainEngine;
     private final String _title;
     private DesktopScreen _screen;
     private java.awt.Graphics _graphics;

@@ -1,23 +1,20 @@
 package es.ucm.stalos.logic;
 
-import es.ucm.stalos.engine.Image;
-import es.ucm.stalos.engine.Sound;
+import es.ucm.stalos.engine.IImage;
+import es.ucm.stalos.engine.ISound;
 
 public class Assets {
     // Images
-    public static Image playButton;
-    public static Image greyButton;
-    public static Image giveUpButton;
-    public static Image checkButton;
-    public static Image cellHelp;
-    public static Image cellHelp2;
-    public static Image cellHelp3;
-    public static Image backArrow;
-    public static Image lens;
+    public static final String backArrowPath = "backArrow.png";
+    public static final String lentsPath = "lents.png";
 
-    // Audio
-    public static Sound mainTheme;
-    public static Sound menuTheme;
-    public static Sound clickSound;
-    public static Sound winSound;
+    // IAudio
+    public static final String mainThemePath = "mainTheme.wav";
+    public static final String menuThemePath = "menuTheme.wav";
+    public static final String clickSoundPath = "clickSound.wav";
+    public static final String winSoundPath = "winSound.wav";
+
+    // Font
+    public static final String mollePath = "Molle-Regular.ttf";
+    public static final String josePath = "JosefinSans-Bold.ttf";
 }

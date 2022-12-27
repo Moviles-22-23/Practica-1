@@ -3,9 +3,9 @@ package es.ucm.stalos.desktopengine;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-import es.ucm.stalos.engine.Font;
+import es.ucm.stalos.engine.IFont;
 
-public class DesktopFont implements Font {
+public class DesktopFont implements IFont {
     public DesktopFont(String fileName, float size, boolean isBold) {
         _fileName = fileName;
         _size = size;

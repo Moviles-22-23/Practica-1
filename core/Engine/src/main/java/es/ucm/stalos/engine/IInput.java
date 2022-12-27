@@ -2,27 +2,26 @@ package es.ucm.stalos.engine;
 
 import java.util.List;
 
-public interface Input {
+public interface IInput {
     /**
      * Enum to classify every TouchEvent that can happens
      */
     enum TouchEvent {
         touchDown(0),
         touchUp(1),
-        touchDrag(2),
-        MAX(3);
+        touchDrag(2);
 
         private int _x, _y;
-        private final int _value;
+        private final int _touchEvent;
 
         public void setX(int x) { _x = x; }
         public void setY(int y) { _y = y; }
 
-        public int getValue() { return _value; }
+        public int getValue() { return _touchEvent; }
         public int getX() { return _x; }
         public int getY() { return _y; }
 
-        TouchEvent(int i) { this._value = i; }
+        TouchEvent(int touchEvent) { this._touchEvent = touchEvent; }
 
     }
 

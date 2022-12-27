@@ -1,6 +1,6 @@
 package es.ucm.stalos.engine;
 
-public interface Font {
+public interface IFont {
     /**
      * Apply a new size to the font
      */

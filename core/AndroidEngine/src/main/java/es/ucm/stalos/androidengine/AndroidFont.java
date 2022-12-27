@@ -1,14 +1,11 @@
 package es.ucm.stalos.androidengine;
 
 import android.content.res.AssetManager;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 
-import java.io.InputStream;
+import es.ucm.stalos.engine.IFont;
 
-import es.ucm.stalos.engine.Font;
-
-public class AndroidFont implements Font {
+public class AndroidFont implements IFont {
 
     public AndroidFont(String fileName, float size, boolean isBold, AssetManager assetManager) {
         _fileName = fileName;

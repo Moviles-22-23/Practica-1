@@ -3,14 +3,13 @@ package es.ucm.stalos.desktopengine;
 import java.awt.image.BufferStrategy;
 
 import es.ucm.stalos.engine.AbstractEngine;
-import es.ucm.stalos.engine.IFile;
-import es.ucm.stalos.engine.State;
+import es.ucm.stalos.engine.IState;
 
 public class DesktopEngine extends AbstractEngine implements Runnable {
     public DesktopEngine() {
     }
 
-    public boolean init(State initState, String nameGame, int w, int h) {
+    public boolean init(IState initState, String nameGame, int w, int h) {
         // STATE
         _currState = initState;
         // INPUT

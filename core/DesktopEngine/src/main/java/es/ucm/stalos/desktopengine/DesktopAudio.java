@@ -1,38 +1,41 @@
 package es.ucm.stalos.desktopengine;
 
-import es.ucm.stalos.engine.Audio;
-import es.ucm.stalos.engine.Sound;
+import es.ucm.stalos.engine.AbstractAudio;
+import es.ucm.stalos.engine.ISound;
 
 import javax.sound.sampled.Clip;
 
-public class DesktopAudio implements Audio {
+public class DesktopAudio extends AbstractAudio {
     public DesktopAudio() {
-
+        super();
     }
 
     @Override
-    public Sound newSound(String file) throws Exception {
-        DesktopSound sound = new DesktopSound("./assets/sounds/" + file);
+    public void newSound(String name, String fileName) throws Exception {
+        DesktopSound sound = new DesktopSound("./assets/sounds/" + fileName);
         if (!sound.init()) throw new Exception();
-        return sound;
+        _sounds.put(name, sound);
     }
 
     @Override
-    public Sound getSound(String id) {
-        return null;
-    }
+    public void playSound(String soundName, int numberLoops) {
+        ISound so = isContain(soundName);
+        if(so == null)
+            return;
 
-    @Override
-    public void play(Sound sound, int numberLoop) {
-        Clip clip = ((DesktopSound) sound).getClip();
-        clip.loop(numberLoop);
+        Clip clip = ((DesktopSound) so).getClip();
+        clip.loop(numberLoops);
         clip.setFramePosition(0);
         clip.start();
     }
 
     @Override
-    public void playMusic(Sound sound) {
-        Clip clip = ((DesktopSound) sound).getClip();
+    public void playMusic(String soundName) {
+        ISound so = isContain(soundName);
+        if(so == null)
+            return;
+
+        Clip clip = ((DesktopSound) so).getClip();
         if (!clip.isRunning()) {
             clip.loop(Clip.LOOP_CONTINUOUSLY);
             clip.start();
@@ -40,8 +43,12 @@ public class DesktopAudio implements Audio {
     }
 
     @Override
-    public void pause(Sound sound) {
-        Clip clip = ((DesktopSound) sound).getClip();
+    public void pause(String soundName) {
+        ISound so = isContain(soundName);
+        if(so == null)
+            return;
+
+        Clip clip = ((DesktopSound) so).getClip();
         if (!clip.isRunning())
             return;
 
@@ -50,13 +57,17 @@ public class DesktopAudio implements Audio {
     }
 
     @Override
-    public void pauseMusic(Sound music) {
-        pause(music);
+    public void pauseMusic(String soundName) {
+        pause(soundName);
     }
 
     @Override
-    public void stop(Sound sound) {
-        Clip clip = ((DesktopSound) sound).getClip();
+    public void stop(String soundName) {
+        ISound so = isContain(soundName);
+        if(so == null)
+            return;
+
+        Clip clip = ((DesktopSound) so).getClip();
         if (!clip.isRunning())
             return;
 
@@ -67,19 +78,23 @@ public class DesktopAudio implements Audio {
     }
 
     @Override
-    public void stopMusic(Sound music) {
-        stop(music);
+    public void stopMusic(String soundName) {
+        stop(soundName);
     }
 
     @Override
-    public void resume(Sound sound) {
-        Clip clip = ((DesktopSound) sound).getClip();
+    public void resume(String soundName) {
+        ISound so = isContain(soundName);
+        if(so == null)
+            return;
+
+        Clip clip = ((DesktopSound) so).getClip();
         if (!clip.isRunning())
             clip.start();
     }
 
     @Override
-    public void resumeMusic(Sound music) {
-        resume(music);
+    public void resumeMusic(String soundName) {
+        resume(soundName);
     }
 }

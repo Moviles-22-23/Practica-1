@@ -3,14 +3,14 @@ package es.ucm.stalos.engine;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AbstractInput implements Input {
-    protected AbstractInput(Engine e) {
+public class AbstractInput implements IInput {
+    protected AbstractInput(IEngine e) {
         _engine = e;
         _events = new ArrayList<>();
     }
 
     @Override
-    public List<TouchEvent> getTouchEvents() {
+    public synchronized List<TouchEvent> getTouchEvents() {
         if (!_events.isEmpty()) {
             List<TouchEvent> touchEvents = new ArrayList<>(_events);
             _events.clear();
@@ -25,7 +25,7 @@ public class AbstractInput implements Input {
      * @param x Window X position
      * @param y Window Y position
      */
-    protected void onTouchDownEvent(int x, int y) {
+    protected synchronized void onTouchDownEvent(int x, int y) {
         AbstractGraphics g = (AbstractGraphics) _engine.getGraphics();
 
         TouchEvent currEvent = TouchEvent.touchDown;
@@ -36,6 +36,6 @@ public class AbstractInput implements Input {
         _events.add(currEvent);
     }
 
-    protected Engine _engine;
+    protected IEngine _engine;
     protected List<TouchEvent> _events;
 }

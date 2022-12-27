@@ -1,30 +1,30 @@
 package es.ucm.stalos.engine;
 
-public interface Engine {
+public interface IEngine {
     /**
      * Request a change state. It is used to not change immediately, but
      * to do later.
      * @param newState New state to change
      */
-    public void reqNewState(State newState);
+    public void reqNewState(IState newState);
 
     /**
      * @return Instance of graphic engine
      */
-    Graphics getGraphics();
+    IGraphics getGraphics();
 
     /**
      * @return Instance of input manager
      */
-    Input getInput();
+    IInput getInput();
 
     /**
      * @return Instace of audio manager
      */
-    Audio getAudio();
+    IAudio getAudio();
 
     /**
      * @return Instance of File Reader
      */
-    FileReader getFileReader();
+    IFileReader getFileReader();
 }

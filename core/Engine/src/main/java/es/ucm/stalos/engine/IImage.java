@@ -1,6 +1,6 @@
 package es.ucm.stalos.engine;
 
-public interface Image {
+public interface IImage {
 
     /**
      * @return Width of the image

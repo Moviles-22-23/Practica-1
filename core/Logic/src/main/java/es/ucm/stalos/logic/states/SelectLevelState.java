@@ -5,19 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import es.ucm.stalos.engine.AbstractState;
-import es.ucm.stalos.engine.Engine;
-import es.ucm.stalos.engine.Font;
-import es.ucm.stalos.engine.Image;
-import es.ucm.stalos.engine.Input;
-import es.ucm.stalos.engine.State;
-import es.ucm.stalos.logic.Assets;
+import es.ucm.stalos.engine.IEngine;
+import es.ucm.stalos.engine.IState;
+import es.ucm.stalos.engine.IInput;
+import es.ucm.stalos.logic.enums.FontName;
 import es.ucm.stalos.logic.enums.GridType;
+import es.ucm.stalos.logic.enums.ImageName;
+import es.ucm.stalos.logic.enums.SoundName;
 import es.ucm.stalos.logic.interfaces.ButtonCallback;
 import es.ucm.stalos.logic.objects.SelectLevelButton;
 
 public class SelectLevelState extends AbstractState {
 
-    public SelectLevelState(Engine engine, boolean isRandom) {
+    public SelectLevelState(IEngine engine, boolean isRandom) {
         super(engine);
         this._isRandom = isRandom;
     }
@@ -27,9 +27,6 @@ public class SelectLevelState extends AbstractState {
     @Override
     public boolean init() {
         try {
-            // Texts
-            _textsFont = _graphics.newFont("JosefinSans-Bold.ttf", 25, true);
-
             // MODE TEXT
             if (_isRandom) _modeText = "JUEGO ALEATORIO";
             else _modeText = "JUEGO CLASICO";
@@ -45,7 +42,7 @@ public class SelectLevelState extends AbstractState {
             _commentPos[1] = (int) ((_graphics.getLogHeight() - _commentSize[1]) * 0.28f);
 
             // Back Button
-            // Image
+            // IImage
             _backImageSize[0] = _graphics.getLogWidth() * 0.072f;
             _backImageSize[1] = _graphics.getLogHeight() * 0.04f;
             _backImagePos[0] = 10;
@@ -63,9 +60,9 @@ public class SelectLevelState extends AbstractState {
             _backCallback = new ButtonCallback() {
                 @Override
                 public void doSomething() {
-                    State mainMenuState = new MainMenuState(_engine);
+                    IState mainMenuState = new MainMenuState(_engine);
                     _engine.reqNewState(mainMenuState);
-                    _audio.play(Assets.clickSound, 0);
+                    _audio.playSound(SoundName.ClickSound.getName(), 0);
                 }
             };
 
@@ -73,7 +70,7 @@ public class SelectLevelState extends AbstractState {
             initSelectLevelButtons();
 
             // AUDIO
-            _audio.playMusic(Assets.menuTheme);
+            _audio.playMusic(SoundName.MenuTheme.getName());
 
         } catch (Exception e) {
             System.out.println("Error init Select Level");
@@ -88,13 +85,17 @@ public class SelectLevelState extends AbstractState {
     public void render() {
         // Texts
         _graphics.setColor(_greyColor);
-        _graphics.drawCenteredString(_modeText, _modePos, _modeSize, _textsFont);
-        _graphics.drawCenteredString(_commentText, _commentPos, _commentSize, _textsFont);
+        _graphics.drawCenteredString(_modeText, FontName.SelectStateTitle.getName(),
+                _modePos, _modeSize);
+        _graphics.drawCenteredString(_commentText, FontName.SelectStateDescription.getName(),
+                _commentPos, _commentSize);
 
         // Back Button
         _graphics.setColor(_blackColor);
-        _graphics.drawImage(_backImage, _backImagePos, _backImageSize);
-        _graphics.drawCenteredString(_backText, _backTextPos, _backTextSize, _textsFont);
+        _graphics.drawImage(ImageName.BackArrow.getName(),
+                _backImagePos, _backImageSize);
+        _graphics.drawCenteredString(_backText, FontName.SelectStateButton.getName(),
+                _backTextPos, _backTextSize);
 
         // SelectLevel buttons
         for (SelectLevelButton button : _selectButtons) {
@@ -104,10 +105,10 @@ public class SelectLevelState extends AbstractState {
 
     @Override
     public void handleInput() {
-        List<Input.TouchEvent> events = _engine.getInput().getTouchEvents();
+        List<IInput.TouchEvent> events = _engine.getInput().getTouchEvents();
         for (int i = 0; i < events.size(); i++) {
-            Input.TouchEvent currEvent = events.get(i);
-            if (currEvent == Input.TouchEvent.touchDown) {
+            IInput.TouchEvent currEvent = events.get(i);
+            if (currEvent == IInput.TouchEvent.touchDown) {
                 int[] clickPos = {currEvent.getX(), currEvent.getY()};
 
                 if (clickInsideSquare(clickPos, _backImagePos, _backButtonSize)) _backCallback.doSomething();
@@ -129,35 +130,33 @@ public class SelectLevelState extends AbstractState {
     /**
      * Initialize the buttons to select the levels
      *
-     * @throws Exception in case of font creation fails
      */
-    private void initSelectLevelButtons() throws Exception {
+    private void initSelectLevelButtons() {
         _selectButtons = new ArrayList<>();
 
         float min = Math.min((_graphics.getLogWidth() * 0.2f), (_graphics.getLogHeight() * 0.2f));
         float[] size = new float[]{min, min};
-
-        Font font = _graphics.newFont("Molle-Regular.ttf", 20, true);
 
         int[] pos = new int[2];
 
         initGridTypesMap();
 
         int j = 0;
-        for (int i = 0; i < GridType.MAX.getValue(); i++) {
+        for (int i = 0; i < GridType.MAX.getGridType(); i++) {
             pos[0] = (int)(_graphics.getLogWidth() * 0.1f) * (1 + (3 * j));
             pos[1] = (int)(_graphics.getLogHeight() * 0.143f) * (3 + (i / 3) * 2);
 
-            final SelectLevelButton _level = new SelectLevelButton(pos, size, _gridTypes.get(i), font);
+            final SelectLevelButton _level = new SelectLevelButton(pos, size,
+                    _gridTypes.get(i), FontName.LevelNumber.getName());
             _level.setCallback(new ButtonCallback() {
                 @Override
                 public void doSomething() {
                     int r = _level.getRows();
                     int c = _level.getCols();
-                    State gameState = new GameState(_engine, r, c, _isRandom);
+                    IState gameState = new GameState(_engine, r, c, _isRandom);
                     _engine.reqNewState(gameState);
-                    _audio.play(Assets.clickSound, 0);
-                    _audio.stopMusic(Assets.menuTheme);
+                    _audio.playSound(SoundName.ClickSound.getName(), 0);
+                    _audio.stopMusic(SoundName.MenuTheme.getName());
                 }
             });
             _selectButtons.add(_level);
@@ -173,18 +172,15 @@ public class SelectLevelState extends AbstractState {
         _gridTypes = new HashMap<>();
         _gridTypes.put(0, GridType._4x4);
         _gridTypes.put(1, GridType._5x5);
-        _gridTypes.put(2, GridType._5x10);
+        _gridTypes.put(2, GridType._10x5);
         _gridTypes.put(3, GridType._8x8);
         _gridTypes.put(4, GridType._10x10);
-        _gridTypes.put(5, GridType._10x15);
+        _gridTypes.put(5, GridType._15x10);
     }
 
 //----------------------------------------ATTRIBUTES----------------------------------------------//
     // Game Mode
     boolean _isRandom;
-
-    // Texts
-    private Font _textsFont;
 
     // Mode Text
     private String _modeText = "Juego clasico";
@@ -201,7 +197,6 @@ public class SelectLevelState extends AbstractState {
     private int[] _backTextPos = new int[2];
     private float[] _backTextSize = new float[2];
 
-    private final Image _backImage = Assets.backArrow;
     private int[] _backImagePos = new int[2];
     private float[] _backImageSize = new float[2];
 

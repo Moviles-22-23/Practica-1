@@ -7,12 +7,11 @@ public enum CellType {
     GREY(0),
     BLUE(1),
     WHITE(2),
-    RED(3),
-    MAX(4);
+    RED(3);
 
-    CellType(int i) { this.value = i; }
+    CellType(int cellType) { this._cellType = cellType; }
 
-    public int getValue () { return value; }
+    public int getCellType() { return _cellType; }
 
-    private int value;
+    private int _cellType;
 }

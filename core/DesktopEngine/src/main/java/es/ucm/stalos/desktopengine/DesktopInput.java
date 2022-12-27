@@ -6,10 +6,10 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
 import es.ucm.stalos.engine.AbstractInput;
-import es.ucm.stalos.engine.Engine;
+import es.ucm.stalos.engine.IEngine;
 
 public class DesktopInput extends AbstractInput implements MouseListener, MouseMotionListener {
-    public DesktopInput(Engine e) {
+    public DesktopInput(IEngine e) {
         super(e);
         _events = new ArrayList<>();
     }

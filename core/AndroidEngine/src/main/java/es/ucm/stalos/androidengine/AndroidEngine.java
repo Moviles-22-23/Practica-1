@@ -1,20 +1,18 @@
 package es.ucm.stalos.androidengine;
 
 import android.content.res.AssetManager;
-import android.view.SurfaceView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import es.ucm.stalos.engine.AbstractEngine;
-import es.ucm.stalos.engine.IFile;
-import es.ucm.stalos.engine.State;
+import es.ucm.stalos.engine.IState;
 
 public class AndroidEngine extends AbstractEngine implements Runnable {
     public AndroidEngine() {
 
     }
 
-    public boolean init(State initState, int w, int h, AppCompatActivity activity) {
+    public boolean init(IState initState, int w, int h, AppCompatActivity activity) {
         AssetManager assetsMan = activity.getApplicationContext().getAssets();
 
         //STATE

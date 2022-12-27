@@ -1,6 +1,6 @@
 package es.ucm.stalos.engine;
 
-public interface FileReader {
+public interface IFileReader {
 
     /**
      * Create and return a new file
