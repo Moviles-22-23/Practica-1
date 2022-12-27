@@ -13,7 +13,7 @@ import es.ucm.stalos.engine.IImage;
 public class DesktopGraphics extends AbstractGraphics {
 
     public DesktopGraphics(String title, IEngine engine, int w, int h) {
-        super(w, h);
+        super(w, h, 31, 1, 1, 1);
         _mainEngine = engine;
         _title = title;
     }
