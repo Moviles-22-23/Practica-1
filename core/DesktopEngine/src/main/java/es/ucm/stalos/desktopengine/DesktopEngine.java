@@ -37,7 +37,7 @@ public class DesktopEngine extends AbstractEngine implements Runnable {
         while (this._running && this._graphics.getWidth() == 0) ;
         // Espera activa. Sería más elegante al menos dormir un poco.
 
-        BufferStrategy strategy = ((DesktopGraphics) _graphics).getStrategy();
+        //BufferStrategy strategy = ((DesktopGraphics) _graphics).getStrategy();
         _lastFrameTime = System.nanoTime();
 
         while (_running) {
@@ -58,9 +58,9 @@ public class DesktopEngine extends AbstractEngine implements Runnable {
                     } finally {
                         _graphics.restore();
                     }
-                } while (strategy.contentsRestored());
-                strategy.show();
-            } while (strategy.contentsLost());
+                } while (((DesktopGraphics) _graphics).getStrategy().contentsRestored());
+                ((DesktopGraphics) _graphics).getStrategy().show();
+            } while (((DesktopGraphics) _graphics).getStrategy().contentsLost());
 
             // Inicializacion del nuevo estado en diferido
             if (_changeState) {

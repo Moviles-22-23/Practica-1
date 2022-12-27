@@ -29,23 +29,23 @@ public class AndroidGraphics extends AbstractGraphics {
         _paint = new Paint();
     }
 
-    public boolean init(AndroidInput input, AppCompatActivity activity) {
+    public boolean init(AndroidInput input, AppCompatActivity activity, SurfaceView surfaceView) {
         try {
             // ADDITIONAL FLAGS
             _window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
             _window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-            SurfaceView surfaceView = new SurfaceView(activity.getApplicationContext());
-            activity.setContentView(surfaceView);
+
             // INPUT LISTENER
-            surfaceView.setOnTouchListener(input);
+            _surfaceView = surfaceView;
+            _surfaceView.setOnTouchListener(input);
 
             // WIN SIZE
             Point winSize = new Point();
             _wManager.getDefaultDisplay().getSize(winSize);
             _winSize = winSize;
 
-            _holder = surfaceView.getHolder();
+            _holder = _surfaceView.getHolder();
         } catch (Exception e) {
             return false;
         }
@@ -145,7 +145,7 @@ public class AndroidGraphics extends AbstractGraphics {
         }
 
         IFont fo = _fonts.get(fontName);
-        Typeface currFont = ((AndroidFont)fo).getAndroidFont();
+        Typeface currFont = ((AndroidFont) fo).getAndroidFont();
         _paint.setTypeface(currFont);
         _paint.setTextSize(fo.getSize());
         _paint.setTextAlign(Paint.Align.CENTER);
@@ -256,6 +256,7 @@ public class AndroidGraphics extends AbstractGraphics {
 
     private Point _winSize;
     private Canvas _canvas;
+    private SurfaceView _surfaceView;
     private SurfaceHolder _holder;
 
     /**

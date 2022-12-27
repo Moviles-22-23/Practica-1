@@ -1,6 +1,7 @@
 package es.ucm.stalos.androidengine;
 
 import android.content.res.AssetManager;
+import android.view.SurfaceView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,7 +13,7 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
 
     }
 
-    public boolean init(IState initState, int w, int h, AppCompatActivity activity) {
+    public boolean init(IState initState, int w, int h, AppCompatActivity activity, SurfaceView surfaceView) {
         AssetManager assetsMan = activity.getApplicationContext().getAssets();
 
         //STATE
@@ -30,7 +31,7 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
         // FILE READER
         _fReader = new AndroidFileReader(assetsMan);
 
-        return ((AndroidGraphics) _graphics).init((AndroidInput) _input, activity) && _currState.init();
+        return ((AndroidGraphics) _graphics).init((AndroidInput) _input, activity, surfaceView) && _currState.init();
     }
 
     @Override
@@ -40,7 +41,6 @@ public class AndroidEngine extends AbstractEngine implements Runnable {
             // Programación defensiva
             throw new RuntimeException("run() should not be called directly");
         }
-        //TODO: Bucle principal en android
         _lastFrameTime = System.nanoTime();
         _running = true;
 

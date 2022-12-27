@@ -1,16 +1,14 @@
 package es.ucm.stalos.engine;
 
-import java.awt.Insets;
 import java.util.HashMap;
 
 public abstract class AbstractGraphics implements IGraphics {
 
-    protected AbstractGraphics(int w, int h, int topInset, int bottomInset, int leftInset, int rightInset) {
+    protected AbstractGraphics(int w, int h) {
         _logWidth = w;
         _logHeight = h;
         _logPosX = 0.0f;
         _logPosY = 0.0f;
-        _windowInsets = new Insets(topInset, leftInset, bottomInset, rightInset);
         _images = new HashMap<>();
         _fonts = new HashMap<>();
     }
@@ -21,8 +19,8 @@ public abstract class AbstractGraphics implements IGraphics {
      * @return the scale factor
      */
     private float getScaleFactor() {
-        float widthScale = (getWidth() - _windowInsets.left - _windowInsets.right) / _logWidth;
-        float heightScale = (getHeight() - _windowInsets.top - _windowInsets.bottom) / _logHeight;
+        float widthScale = getWidth() / _logWidth;
+        float heightScale = getHeight() / _logHeight;
 
         // Nos interesa el tamaño más pequeño
         return Math.min(widthScale, heightScale);
@@ -37,8 +35,8 @@ public abstract class AbstractGraphics implements IGraphics {
      */
     protected int[] transformPosition(float x, float y) {
         _scaleFactor = getScaleFactor();
-        float offsetX = _windowInsets.left + ((getWidth() - _windowInsets.left - _windowInsets.right) - (_logWidth * _scaleFactor)) / 2.0f;
-        float offsetY = _windowInsets.top + ((getHeight() - _windowInsets.top - _windowInsets.bottom) - (_logHeight) * _scaleFactor) / 2.0f;
+        float offsetX = (getWidth() - (_logWidth * _scaleFactor)) / 2.0f;
+        float offsetY = (getHeight() - (_logHeight) * _scaleFactor) / 2.0f;
 
         return new int [] {
                 (int) ((x * _scaleFactor) + offsetX),
@@ -81,8 +79,8 @@ public abstract class AbstractGraphics implements IGraphics {
      */
     public int[] logPos(int x, int y) {
         _scaleFactor = getScaleFactor();
-        float offsetX = _windowInsets.left + (_logWidth - ((getWidth() - _windowInsets.left - _windowInsets.right) / _scaleFactor)) / 2;
-        float offsetY = _windowInsets.top + (_logHeight - ((getHeight() - _windowInsets.top - _windowInsets.bottom) / _scaleFactor)) / 2;
+        float offsetX = (_logWidth - (getWidth() / _scaleFactor)) / 2;
+        float offsetY = (_logHeight - (getHeight() / _scaleFactor)) / 2;
 
         int newPosX = (int) ((x / _scaleFactor) + offsetX);
         int newPosY = (int) ((y / _scaleFactor) + offsetY);
@@ -95,8 +93,8 @@ public abstract class AbstractGraphics implements IGraphics {
     }
 
     private int[] translateWindow() {
-        float offsetX = _windowInsets.left + ((getWidth() - _windowInsets.left - _windowInsets.right) - (_logWidth * _scaleFactor)) / 2.0f;
-        float offsetY = _windowInsets.top + ((getHeight() - _windowInsets.top - _windowInsets.bottom) - (_logHeight) * _scaleFactor) / 2.0f;
+        float offsetX = (getWidth() - (_logWidth * _scaleFactor)) / 2.0f;
+        float offsetY = (getHeight() - (_logHeight) * _scaleFactor) / 2.0f;
 
         int newPosX = (int) ((_logPosX * _scaleFactor) + offsetX);
         int newPosY = (int) ((_logPosY * _scaleFactor) + offsetY);
@@ -127,6 +125,7 @@ public abstract class AbstractGraphics implements IGraphics {
         return (int) _logHeight;
     }
 
+
     // Logic position
     protected float _logPosX, _logPosY;
 
@@ -136,9 +135,12 @@ public abstract class AbstractGraphics implements IGraphics {
     // Scale factor
     protected float _scaleFactor;
 
-    // Window Insets
-    private Insets _windowInsets;
-
+    /**
+     * Dictionary which contains the images
+     */
     protected HashMap<String, IImage> _images;
+    /**
+     * Dictionary which contains the fonts
+     */
     protected HashMap<String, IFont> _fonts;
 }
