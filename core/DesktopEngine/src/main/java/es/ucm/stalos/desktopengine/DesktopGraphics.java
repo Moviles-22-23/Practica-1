@@ -3,6 +3,7 @@ package es.ucm.stalos.desktopengine;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.image.BufferStrategy;
 
 import es.ucm.stalos.engine.AbstractGraphics;
@@ -23,8 +24,11 @@ public class DesktopGraphics extends AbstractGraphics {
         _screen = new DesktopScreen(_title);
         _screen.addMouseListener((DesktopInput) _mainEngine.getInput());
         _screen.addMouseMotionListener((DesktopInput) _mainEngine.getInput());
-
-        return _screen.init((int) _logWidth, (int) _logHeight);
+        if(!_screen.init((int) _logWidth, (int) _logHeight)){
+            return false;
+        }
+        _insets = _screen.getInsets();
+        return true;
     }
 
     public BufferStrategy getStrategy() {
@@ -194,6 +198,68 @@ public class DesktopGraphics extends AbstractGraphics {
 //------------------------------------------------------------------------------------------------//
 
     @Override
+    protected float getScaleFactor() {
+        float widthScale = (getWidth() - _insets.left - _insets.right) / _logWidth;
+        float heightScale = (getHeight() - _insets.bottom - _insets.top) / _logHeight;
+
+        // Nos interesa el tamaño más pequeño
+        return Math.min(widthScale, heightScale);
+    }
+
+    @Override
+    protected int[] transformPosition(float x, float y) {
+        _scaleFactor = getScaleFactor();
+        float offsetX = _insets.left + ((getWidth() - _insets.left - _insets.right) - (_logWidth * _scaleFactor)) / 2.0f;
+        float offsetY = _insets.top + ((getHeight() - _insets.bottom - _insets.top) - (_logHeight) * _scaleFactor) / 2.0f;
+
+        return new int [] {
+                (int) ((x * _scaleFactor) + offsetX),
+                (int) ((y * _scaleFactor) + offsetY)
+        };
+    }
+
+
+    @Override
+    public int[] logPos(int x, int y) {
+        x -= _insets.left;
+        y -= _insets.top;
+        _scaleFactor = getScaleFactor();
+        System.out.println("Click: " + x +  ", " + y);
+
+        float offsetX = (_logWidth - ((getWidth() - _insets.left - _insets.right) / _scaleFactor)) / 2.0f;
+        float offsetY = (_logHeight - ((getHeight() - _insets.bottom - _insets.top) / _scaleFactor)) / 2.0f;
+
+        int newPosX = (int) ((x / _scaleFactor) + offsetX);
+        int newPosY = (int) ((y / _scaleFactor) + offsetY);
+
+        int[] newPos = new int[2];
+        newPos[0] = newPosX;
+        newPos[1] = newPosY;
+
+        System.out.println("Click afterlogPos: " + newPosX +  ", " + newPosY);
+        return newPos;
+    }
+
+    @Override
+    protected int[] translateWindow() {
+        float offsetX = _insets.left + ((getWidth() - _insets.left - _insets.right)  - (_logWidth * _scaleFactor)) / 2.0f;
+        float offsetY = _insets.top + ((getHeight() - _insets.bottom - _insets.top) - (_logHeight) * _scaleFactor) / 2.0f;
+
+        int newPosX = (int) ((_logPosX * _scaleFactor) + offsetX);
+        int newPosY = (int) ((_logPosY * _scaleFactor) + offsetY);
+
+        int[] newPos = new int[2];
+        newPos[0] = newPosX;
+        newPos[1] = newPosY;
+
+        return newPos;
+    }
+
+
+
+//------------------------------------------------------------------------------------------------//
+
+    @Override
     public int getWidth() {
         return _screen.getWidth();
     }
@@ -237,4 +303,5 @@ public class DesktopGraphics extends AbstractGraphics {
     private final String _title;
     private DesktopScreen _screen;
     private java.awt.Graphics _graphics;
+    private Insets _insets;
 }

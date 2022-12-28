@@ -102,7 +102,7 @@ public class GameState extends AbstractState {
         _giveupImagePos[0] = 10;
         _giveupImagePos[1] = 31;
 
-        _giveupTextSize[0] = _graphics.getLogWidth() * 0.2f;
+        _giveupTextSize[0] = _graphics.getLogWidth() * 0.25f;
         _giveupTextSize[1] = _giveupImageSize[1];
         _giveupTextPos[0] = (int) (_giveupImagePos[0] + _giveupImageSize[0]);
         _giveupTextPos[1] = _giveupImagePos[1];
@@ -120,7 +120,7 @@ public class GameState extends AbstractState {
         };
 
         // Check
-        _checkTextSize[0] = _graphics.getLogWidth() * 0.3f;
+        _checkTextSize[0] = _graphics.getLogWidth() * 0.35f;
         _checkTextSize[1] = _giveupImageSize[1];
         _checkTextPos[0] = (int) (_graphics.getLogWidth() - _checkTextSize[0]);
         _checkTextPos[1] = _giveupImagePos[1];

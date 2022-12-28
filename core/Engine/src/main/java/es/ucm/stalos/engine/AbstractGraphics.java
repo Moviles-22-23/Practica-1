@@ -18,7 +18,7 @@ public abstract class AbstractGraphics implements IGraphics {
      *
      * @return the scale factor
      */
-    private float getScaleFactor() {
+    protected float getScaleFactor() {
         float widthScale = getWidth() / _logWidth;
         float heightScale = getHeight() / _logHeight;
 
@@ -92,7 +92,7 @@ public abstract class AbstractGraphics implements IGraphics {
         return newPos;
     }
 
-    private int[] translateWindow() {
+    protected int[] translateWindow() {
         float offsetX = (getWidth() - (_logWidth * _scaleFactor)) / 2.0f;
         float offsetY = (getHeight() - (_logHeight) * _scaleFactor) / 2.0f;
 

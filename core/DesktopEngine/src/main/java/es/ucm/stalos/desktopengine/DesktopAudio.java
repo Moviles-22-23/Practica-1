@@ -31,15 +31,15 @@ public class DesktopAudio extends AbstractAudio {
 
     @Override
     public void playMusic(String soundName) {
-        ISound so = isContain(soundName);
-        if(so == null)
-            return;
-
-        Clip clip = ((DesktopSound) so).getClip();
-        if (!clip.isRunning()) {
-            clip.loop(Clip.LOOP_CONTINUOUSLY);
-            clip.start();
-        }
+//        ISound so = isContain(soundName);
+//        if(so == null)
+//            return;
+//
+//        Clip clip = ((DesktopSound) so).getClip();
+//        if (!clip.isRunning()) {
+//            clip.loop(Clip.LOOP_CONTINUOUSLY);
+//            clip.start();
+//        }
     }
 
     @Override

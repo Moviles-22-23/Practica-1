@@ -50,6 +50,12 @@ public class Board {
         float maxColsSize = size[0] * 2 / (cols * 2 + (int) Math.ceil(cols / 2.0f));
         _cellSize = Math.min(maxRowsSize, maxColsSize);
         _hintSize = _cellSize / 2;
+
+        // Center the board
+        // Solo tiene offset si el tablero tiene mas filas que columnas
+        if (_rows > _cols)
+            _offset = (int) (_size[0] - (_cellSize * _cols + _hintSize * (int) Math.ceil(_rows / 2.0f))) / 2;
+        else _offset = 0;
     }
 
     //-------------------------------------------INIT-------------------------------------------------//
@@ -219,7 +225,7 @@ public class Board {
         for (int i = 0; i < _rows; i++) {
             pos[1] = cellsPos[1] + (int) (i * _cellSize);
             for (int j = 0; j < _cols; j++) {
-                pos[0] = cellsPos[0] + (int) (j * _cellSize);
+                pos[0] = cellsPos[0] + (int) (j * _cellSize) + _offset;
                 _boardState[i][j] = new Cell(i, j, pos, _cellSize);
             }
         }
@@ -249,7 +255,7 @@ public class Board {
                         // Los 0 no hace falta ponerlos
                         if (_hintRows[i - _hintCols.length][j] != 0) {
                             graphics.setColor(0x000000FF);
-                            pos[0] = _pos[0] + (int) (j * _hintSize);
+                            pos[0] = _pos[0] + (int) (j * _hintSize) + _offset;
                             pos[1] = _pos[1] + (int) ((_hintCols.length * _hintSize) + ((i - _hintCols.length) * _cellSize));
                             size[0] = _hintSize;
                             size[1] = _cellSize;
@@ -262,7 +268,7 @@ public class Board {
                     else if (i < _hintCols.length && j >= _hintRows[0].length) {
                         if (_hintCols[i][j - _hintRows[0].length] != 0) {
                             graphics.setColor(0x000000FF);
-                            pos[0] = _pos[0] + (int) ((_hintRows[0].length * _hintSize) + ((j - _hintRows[0].length) * _cellSize));
+                            pos[0] = _pos[0] + (int) ((_hintRows[0].length * _hintSize) + ((j - _hintRows[0].length) * _cellSize)) + _offset;
                             pos[1] = _pos[1] + (int) (i * _hintSize);
                             size[0] = _cellSize;
                             size[1] = _hintSize;
@@ -281,14 +287,14 @@ public class Board {
             graphics.setColor(0x000000FF);
 
             // HintsRows Rect
-            pos[0] = _pos[0];
+            pos[0] = _pos[0] + _offset;
             pos[1] = _pos[1] + (int) (_hintSize * _hintCols.length);
             size[0] = _hintRows[0].length * _hintSize;
             size[1] = _hintRows.length * _cellSize;
             graphics.drawRect(pos, size);
 
             // HintCols Rect
-            pos[0] = _pos[0] + (int) (_hintSize * _hintRows[0].length);
+            pos[0] = _pos[0] + (int) (_hintSize * _hintRows[0].length) + _offset;
             pos[1] = _pos[1];
             size[0] = _hintCols[0].length * _cellSize;
             size[1] = _hintCols.length * _hintSize;
@@ -307,7 +313,7 @@ public class Board {
                 for (int j = 0; j < _cols; j++) {
                     graphics.setColor(0x0000FFFF);
 
-                    int[] solPos = {_pos[0] + size * j + margin, _pos[1] + size * i + margin};
+                    int[] solPos = {_pos[0] + size * j + margin + _offset, _pos[1] + size * i + margin};
 
                     // Utiliza el estado del tablero por si se ha resuelto con otra solucion
                     if (_boardState[i][j].cellType == CellType.BLUE)
@@ -498,6 +504,10 @@ public class Board {
      *  Number of columns of the grid
      */
     private final int _cols;
+    /**
+     *  Offset to center the board in asymmetric boards
+     */
+    private int _offset;
     /**
      * Array which contains the solution
      */

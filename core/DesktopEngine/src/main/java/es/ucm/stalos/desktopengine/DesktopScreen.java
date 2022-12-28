@@ -1,7 +1,11 @@
 package es.ucm.stalos.desktopengine;
 
 import java.awt.image.BufferStrategy;
+
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 public class DesktopScreen extends JFrame {
     public DesktopScreen(String titulo){
@@ -14,6 +18,14 @@ public class DesktopScreen extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         setLocationRelativeTo(null);
+
+        // TODO: Insets
+//        JPanel contentPanel = new JPanel();
+//        Border padding = BorderFactory.createEmptyBorder(50, 10, 10, 10);
+//        contentPanel.setBorder(padding);
+//        setContentPane(contentPanel);
+        System.out.println(this.getInsets());
+
         // Renderizado activo
         setIgnoreRepaint(true);
 
